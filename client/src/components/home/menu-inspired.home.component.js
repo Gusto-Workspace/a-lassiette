@@ -71,7 +71,7 @@ export default function MenuInspiredHomeComponent() {
         {/* TITLE */}
         <div className="mx-auto max-w-[1000px] text-center">
           <p className="mb-5 text-[14px] font-light uppercase tracking-[0.42em] text-[#b48a45] md:text-[16px]">
-            Carte et menus
+            Carte et menu
           </p>
 
           <h2 className="text-[40px] uppercase leading-[1.04] tracking-[-0.04em] md:text-[54px] yeseva-one-regular">

@@ -41,7 +41,7 @@ export default function HeroSectionHomeComponent() {
         <button
           type="button"
           aria-label="Previous slide"
-          className="absolute left-[58px] top-[452px] z-50 flex items-center text-[#b48a45]"
+          className="absolute left-[58px] top-[452px] z-20 flex items-center text-[#b48a45]"
           onClick={() =>
             setCurrent((prev) => (prev - 1 + images.length) % images.length)
           }
@@ -54,7 +54,7 @@ export default function HeroSectionHomeComponent() {
         <button
           type="button"
           aria-label="Next slide"
-          className="absolute right-[58px] top-[452px] z-50 flex items-center text-[#b48a45]"
+          className="absolute right-[58px] top-[452px] z-20 flex items-center text-[#b48a45]"
           onClick={() => setCurrent((prev) => (prev + 1) % images.length)}
         >
           <span className="-mr-3 h-px w-[34px] bg-[#b48a45]" />

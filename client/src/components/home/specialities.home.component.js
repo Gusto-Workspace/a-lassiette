@@ -2,11 +2,11 @@ import Image from "next/image";
 
 export default function SpecialtiesHomeComponent() {
   return (
-    <section className="w-full bg-[#f3f3f3] px-[90px] py-[140px] text-[#111111]">
+    <section className="w-full bg-white px-[90px] py-[140px] text-[#111111]">
       <div className="mx-auto max-w-[1600px]">
         {/* TITLE */}
         <div className="mx-auto max-w-[980px] text-center">
-          <h2 className="text-[54px] uppercase leading-[1.06] tracking-[-0.04em] yeseva-one-regular">
+          <h2 className="text-[50px] uppercase leading-[1.06] tracking-[-0.04em] yeseva-one-regular">
             Une cuisine généreuse,
             <br />
             faite maison et de saison

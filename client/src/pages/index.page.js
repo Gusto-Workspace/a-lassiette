@@ -1,9 +1,7 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
 
 // I18N
-import { i18n } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 // COMPONENTS
@@ -18,47 +16,62 @@ import ExperienceHomeComponent from "@/components/home/experience.home.component
 import TestimonialsHomeComponent from "@/components/home/testimonials.home.component";
 import ContactHomeComponent from "@/components/home/contact.home.component";
 
-export default function HomePage(props) {
+export default function HomePage() {
   const title = "A l'Assiette";
-  const description =
-    "La Coquille est un restaurant gastronomique à Concarneau en Bretagne dans le Finistère. Le restaurant est situé sur les quais en face de la Ville Close.";
+  const heroRef = useRef(null);
+
+  const [showScrolledNav, setShowScrolledNav] = useState(false);
+
+  useEffect(() => {
+    const heroEl = heroRef.current;
+    if (!heroEl) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // quand le hero est visible à moins de 5%
+        setShowScrolledNav(entry.intersectionRatio <= 0.1);
+      },
+      {
+        threshold: [0, 0.05, 0.1, 0.25, 0.5, 0.75, 1],
+      },
+    );
+
+    observer.observe(heroEl);
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <>
       <Head>
         <title>{title}</title>
-
-        {/* <>
-          {description && <meta name="description" content={description} />}
-          {title && <meta property="og:title" content={title} />}
-          {description && (
-            <meta property="og:description" content={description} />
-          )}
-          <meta
-            property="og:url"
-            content="https://www.lacoquille-concarneau.fr/"
-          />
-          <meta property="og:type" content="website" />
-          <meta property="og:image" content="/img/1.jpg" />
-          <meta property="og:image:width" content="1920" />
-          <meta property="og:image:height" content="1080" />
-        </> */}
       </Head>
 
       <div className="relative">
-        {/* <NavComponent/> */}
+        <NavComponent
+          isVisible={!showScrolledNav}
+          scrolled={false}
+          logoSrc="/img/logo.png"
+        />
 
-        <div>
+        <NavComponent
+          isVisible={showScrolledNav}
+          scrolled
+          logoSrc="/img/logo.png"
+        />
+
+        <div ref={heroRef}>
           <HeroHomeComponent />
-          <SpecialtiesHomeComponent />
-          <VideoBannerHomeComponent />
-          <TimelineHomeComponent />
-          <MenuInspiredHomeComponent />
-          <ExperienceHomeComponent />
-          <TestimonialsHomeComponent />
-          <ContactHomeComponent />
-          <FooterComponent />
         </div>
+
+        <SpecialtiesHomeComponent />
+        <VideoBannerHomeComponent />
+        <TimelineHomeComponent />
+        <MenuInspiredHomeComponent />
+        <ExperienceHomeComponent />
+        <TestimonialsHomeComponent />
+        <ContactHomeComponent />
+        <FooterComponent />
       </div>
     </>
   );
