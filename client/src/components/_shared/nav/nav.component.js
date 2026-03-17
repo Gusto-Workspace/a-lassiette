@@ -107,7 +107,7 @@ export default function NavComponent({
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-sm uppercase tracking-[0.28em] transition-opacity duration-300 hover:opacity-60 ${
+                className={`text-sm yeseva-one-regular uppercase tracking-[0.28em] transition-opacity duration-300 hover:opacity-60 ${
                   scrolled ? "text-[#111]" : "text-white"
                 }`}
               >
