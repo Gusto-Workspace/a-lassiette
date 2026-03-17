@@ -13,6 +13,7 @@ import FooterComponent from "@/components/_shared/footer/footer.component";
 import SpecialtiesHomeComponent from "@/components/home/specialities.home.component";
 import VideoBannerHomeComponent from "@/components/home/video-banner.home.component";
 import TimelineHomeComponent from "@/components/home/timeline.home.component";
+import MenuInspiredHomeComponent from "@/components/home/menu-inspired.home.component";
 
 export default function HomePage(props) {
   const title = "A l'Assiette";
@@ -49,6 +50,7 @@ export default function HomePage(props) {
           <SpecialtiesHomeComponent />
           <VideoBannerHomeComponent/>
           <TimelineHomeComponent/>
+          <MenuInspiredHomeComponent/>
           <FooterComponent />
         </div>
       </div>
