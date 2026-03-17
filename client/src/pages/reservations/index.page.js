@@ -1,8 +1,11 @@
 import Head from "next/head";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 // I18N
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+// CONTEXT
+import { GlobalContext } from "@/contexts/global.context";
 
 // COMPONENTS
 import NavComponent from "@/components/_shared/nav/nav.component";
@@ -11,10 +14,10 @@ import BannerComponent from "@/components/_shared/banner/banner.component";
 import FormReservationsComponent from "@/components/reservations/form.reservations.component";
 
 export default function ReservationsPage() {
+  const { restaurantContext } = useContext(GlobalContext);
+
   const heroRef = useRef(null);
   const [showScrolledNav, setShowScrolledNav] = useState(false);
-  const [restaurant, setRestaurant] = useState(null);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const heroEl = heroRef.current;
@@ -33,24 +36,6 @@ export default function ReservationsPage() {
 
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/restaurants/${process.env.NEXT_PUBLIC_RESTAURANT_ID}`,
-        );
-        if (!res.ok) throw new Error("Impossible de charger le restaurant");
-        const data = await res.json();
-        setRestaurant(data.restaurant);
-      } catch (e) {
-        setError(e.message || "Erreur de chargement");
-      }
-    })();
-  }, [process.env.NEXT_PUBLIC_API_URL, process.env.NEXT_PUBLIC_RESTAURANT_ID]);
-
-  if (!restaurant) return <div>Chargement ...</div>;
-  if (error) return <section>Erreur : {error}</section>;
 
   return (
     <>
@@ -81,7 +66,8 @@ export default function ReservationsPage() {
 
         <FormReservationsComponent
           apiBaseUrl={process.env.NEXT_PUBLIC_API_URL}
-          restaurant={restaurant}
+          restaurant={restaurantContext.restaurantData}
+          dataLoading={restaurantContext.dataLoading}
         />
 
         <FooterComponent />

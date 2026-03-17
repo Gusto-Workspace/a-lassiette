@@ -8,8 +8,8 @@ export default function FormReservationComponent({
   apiBaseUrl,
   restaurant,
   onBooked,
+  dataLoading,
 }) {
-  const isEditing = false;
   const [reservationData, setReservationData] = useState({
     reservationDate: new Date(),
     reservationTime: "",
@@ -22,7 +22,6 @@ export default function FormReservationComponent({
     table: "",
   });
   const [availableTimes, setAvailableTimes] = useState([]);
-  const [availableTables, setAvailableTables] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -223,77 +222,11 @@ export default function FormReservationComponent({
     openingHours,
   ]);
 
-  useEffect(() => {
-    if (!manage) {
-      setAvailableTables([]);
-      return;
-    }
-    if (
-      !reservationData.numberOfGuests ||
-      !reservationData.reservationDate ||
-      !reservationData.reservationTime
-    ) {
-      setAvailableTables([]);
-      return;
-    }
-    const num = Number(reservationData.numberOfGuests);
-    const required = num % 2 === 0 ? num : num + 1;
-    const eligible = (parameters.tables || []).filter(
-      (t) => Number(t.seats) === required,
-    );
-    let duration = 0;
-    if (parameters.reservation_duration) {
-      duration = Number(parameters.reservation_duration_minutes || 0);
-    }
-    const formattedSelectedDate = format(
-      reservationData.reservationDate,
-      "yyyy-MM-dd",
-    );
-    const [selectedHour, selectedMinute] = reservationData.reservationTime
-      .split(":")
-      .map(Number);
-    const candidateStart = selectedHour * 60 + selectedMinute;
-    const candidateEnd = candidateStart + duration;
-    const available = eligible.filter((table) => {
-      const overlapping = reservationsList.find((r) => {
-        const rDate = new Date(r.reservationDate);
-        const formattedRDate = format(rDate, "yyyy-MM-dd");
-        if (formattedRDate !== formattedSelectedDate) return false;
-        if (!r.table) return false;
-        if (r.table._id) {
-          if (String(r.table._id) !== String(table._id)) return false;
-        } else {
-          if (r.table.name !== table.name) return false;
-        }
-        if (parameters.reservation_duration) {
-          const [rH, rM] = r.reservationTime.split(":").map(Number);
-          const rStart = rH * 60 + rM;
-          const rEnd = rStart + duration;
-          return candidateStart < rEnd && candidateEnd > rStart;
-        }
-        return r.reservationTime === reservationData.reservationTime;
-      });
-      return !overlapping;
-    });
-    setAvailableTables(available);
-  }, [
-    manage,
-    reservationData.reservationDate,
-    reservationData.reservationTime,
-    reservationData.numberOfGuests,
-    reservationsList,
-    parameters.tables,
-    parameters.reservation_duration,
-    parameters.reservation_duration_minutes,
-  ]);
-
   function formatTimeDisplay(time) {
     const [h, m] = time.split(":");
     return `${h}h${m}`;
   }
-  function formatDateDisplay(date) {
-    return format(date, "dd.MM.yyyy");
-  }
+
   function handleInputChange(e) {
     const { name, value } = e.target;
     setReservationData((prev) => ({
@@ -506,33 +439,29 @@ export default function FormReservationComponent({
           </div>
         </div>
       )}
-      <section className="w-full bg-[#eeebe6] px-5 py-[90px] text-[#111111] sm:px-8 lg:px-[90px] lg:py-[120px]">
+
+      <section className="w-full bg-[#eeebe6] px-[90px] py-[90px] text-[#111111] sm:px-8 lg:px-[90px] lg:py-[120px]">
         <div className="mx-auto max-w-[1600px]">
           <div className="mx-auto max-w-[1380px]">
             <div className="mx-auto max-w-[980px] text-center">
-              <p className="mb-5 text-[14px] font-light uppercase tracking-[0.42em] text-[#b48a45] md:text-[16px]">
+              <p className="mb-5 text-[14px] font-light uppercase tracking-[0.42em] text-[#b48a45] tablet:text-[16px]">
                 Réservation
               </p>
-              <h2 className="yeseva-one-regular text-[38px] uppercase leading-[1.04] tracking-[-0.04em] text-[#111111] md:text-[54px]">
-                Réserver une table
+              <h2 className="yeseva-one-regular text-[38px] uppercase leading-[1.04] tracking-[-0.04em] text-[#111111]">
+                Nous avons hâte de vous voir
               </h2>
-              <p className="mx-auto mt-6 max-w-[760px] text-[18px] font-light leading-[1.85] text-black/60">
+              <p className="text-balance mx-auto mt-6 max-w-[760px] text-[18px] font-light leading-[1.85] text-black/60">
                 Choisissez votre date, votre horaire et renseignez vos
                 informations pour finaliser votre réservation.
               </p>
             </div>
-            <form
-              onSubmit={handleSubmit}
-              className="mt-14 flex flex-col gap-10"
-            >
-              {/* BOOKING BAR */}
-              <div className="grid gap-4 lg:grid-cols-[220px_1fr_1fr_1fr_200px] lg:items-center">
-                <div className="hidden lg:block">
-                  <h3 className="yeseva-one-regular text-[28px] leading-[0.95] tracking-[-0.03em] text-[#111111]">
-                    Votre <br /> réservation
-                  </h3>
-                </div>
-                <div className="relative">
+            {!dataLoading ? (
+              <form
+                onSubmit={handleSubmit}
+                className="mt-14 flex flex-col gap-10 tablet:gap-6"
+              >
+                {/* PERSONNES */}
+                <div className="relative w-[calc(50%-12px)]">
                   <label className="mb-3 block text-[12px] uppercase tracking-[0.32em] text-[#b48a45]">
                     Personnes
                   </label>
@@ -541,7 +470,7 @@ export default function FormReservationComponent({
                       name="numberOfGuests"
                       value={reservationData.numberOfGuests}
                       onChange={handleInputChange}
-                      className="h-[56px] w-full appearance-none border border-[#111111]/10 bg-white/60 px-5 pr-12 text-[17px] font-light text-[#111111] outline-none transition focus:border-[#b48a45]"
+                      className="h-[56px] w-full appearance-none border border-[#111111]/10 bg-white/50 px-5 pr-12 text-[17px] font-light text-[#111111] outline-none transition focus:border-[#b48a45]"
                     >
                       {peopleOptions.map((value) => (
                         <option key={value} value={value}>
@@ -556,35 +485,34 @@ export default function FormReservationComponent({
                     />
                   </div>
                 </div>
-              </div>
-              {/* CONTENT */}
-              <div className="grid gap-8 xl:grid-cols-[430px_minmax(0,1fr)]">
-                {/* CALENDAR */}
-                <div className="border border-[#b48a45]/20 bg-white/50 p-5 sm:p-7">
-                  <div className="mb-5">
-                    <p className="text-[12px] uppercase tracking-[0.32em] text-[#b48a45]">
-                      Calendrier
-                    </p>
-                    <h3 className="yeseva-one-regular mt-3 text-[30px] uppercase leading-[1.06] tracking-[-0.03em] text-[#111111]">
-                      Choisissez votre date
-                    </h3>
+
+                <div className="flex flex-col gap-10 tablet:flex-row tablet:gap-6">
+                  {/* CALENDAR */}
+                  <div className="border border-[#b48a45]/20 bg-white/50 p-5 sm:p-7 tablet:w-1/2">
+                    <div className="mb-5">
+                      <p className="text-[12px] uppercase tracking-[0.32em] text-[#b48a45]">
+                        Calendrier
+                      </p>
+                      <h3 className="yeseva-one-regular mt-3 text-[30px] uppercase leading-[1.06] tracking-[-0.03em] text-[#111111]">
+                        Choisissez votre date
+                      </h3>
+                    </div>
+
+                    <div className="reservation-calendar-wrapper">
+                      <Calendar
+                        onChange={handleDateChange}
+                        value={reservationData.reservationDate}
+                        view="month"
+                        locale="fr-FR"
+                        tileDisabled={disableClosedDays}
+                        minDate={new Date()}
+                        className="reservation-calendar w-full border-none bg-transparent"
+                      />
+                    </div>
                   </div>
-                  <div className="reservation-calendar-wrapper">
-                    <Calendar
-                      onChange={handleDateChange}
-                      value={reservationData.reservationDate}
-                      view="month"
-                      locale="fr-FR"
-                      tileDisabled={disableClosedDays}
-                      minDate={new Date()}
-                      className="reservation-calendar w-full border-none bg-transparent"
-                    />
-                  </div>
-                </div>
-                {/* RIGHT SIDE */}
-                <div className="flex flex-col gap-8">
+
                   {/* TIMES */}
-                  <div className="border border-[#b48a45]/20 bg-white/50 p-5 sm:p-7">
+                  <div className="border border-[#b48a45]/20 bg-white/50 p-5 sm:p-7 tablet:w-1/2">
                     <div className="mb-5 flex items-end justify-between gap-4">
                       <div>
                         <p className="text-[12px] uppercase tracking-[0.32em] text-[#b48a45]">
@@ -601,8 +529,9 @@ export default function FormReservationComponent({
                         </div>
                       )}
                     </div>
+
                     {!isLoading && availableTimes.length > 0 ? (
-                      <div className="flex flex-wrap gap-3">
+                      <div className="grid grid-cols-2 desktop:grid-cols-4 flex-wrap gap-2">
                         {availableTimes.map((time) => {
                           const isActive =
                             reservationData.reservationTime === time;
@@ -617,7 +546,7 @@ export default function FormReservationComponent({
                                 }))
                               }
                               disabled={!reservationData.numberOfGuests}
-                              className={`min-w-[110px] border px-4 py-3 text-[15px] font-light transition ${isActive ? "border-[#bb924b] bg-[#bb924b] text-white" : "border-[#111111]/10 bg-white text-[#111111] hover:border-[#b48a45] hover:text-[#b48a45]"}`}
+                              className={`min-w-[50px] border px-4 py-3 text-[15px] font-light transition ${isActive ? "border-[#bb924b] bg-[#bb924b] text-white" : "border-[#111111]/10 bg-white text-[#111111] hover:border-[#b48a45] hover:text-[#b48a45]"}`}
                             >
                               {formatTimeDisplay(time)}
                             </button>
@@ -632,174 +561,99 @@ export default function FormReservationComponent({
                       )
                     )}
                   </div>
-                  {/* FORM */}
-                  <div className="border border-[#b48a45]/20 bg-white/50 p-5 sm:p-7">
-                    <div className="mb-8">
-                      <p className="text-[12px] uppercase tracking-[0.32em] text-[#b48a45]">
-                        Vos informations
-                      </p>
-                      <h3 className="yeseva-one-regular mt-3 text-[30px] uppercase leading-[1.06] tracking-[-0.03em] text-[#111111]">
-                        Finalisez la réservation
-                      </h3>
-                    </div>
-                    <div className="grid gap-5 md:grid-cols-2">
-                      <Field
-                        label="Prénom *"
-                        name="customerFirstName"
-                        value={reservationData.customerFirstName}
+                </div>
+
+                {/* FORM */}
+                <div className="border border-[#b48a45]/20 bg-white/50 p-5 sm:p-7">
+                  <div className="mb-8">
+                    <p className="text-[12px] uppercase tracking-[0.32em] text-[#b48a45]">
+                      Vos informations
+                    </p>
+                    <h3 className="yeseva-one-regular mt-3 text-[30px] uppercase leading-[1.06] tracking-[-0.03em] text-[#111111]">
+                      Finalisez la réservation
+                    </h3>
+                  </div>
+                  <div className="grid gap-5 tablet:grid-cols-2">
+                    <Field
+                      label="Prénom*"
+                      name="customerFirstName"
+                      value={reservationData.customerFirstName}
+                      onChange={handleInputChange}
+                      type="text"
+                    />
+                    <Field
+                      label="Nom*"
+                      name="customerLastName"
+                      value={reservationData.customerLastName}
+                      onChange={handleInputChange}
+                      type="text"
+                    />
+                    <Field
+                      label="Email*"
+                      name="customerEmail"
+                      value={reservationData.customerEmail}
+                      onChange={handleInputChange}
+                      type="email"
+                    />
+                    <Field
+                      label="Téléphone*"
+                      name="customerPhone"
+                      value={reservationData.customerPhone}
+                      onChange={handleInputChange}
+                      type="tel"
+                    />
+                    <div className="tablet:col-span-2">
+                      <label className="mb-3 block text-[12px] uppercase tracking-[0.32em] text-[#b48a45]">
+                        Commentaire
+                      </label>
+                      <textarea
+                        name="commentary"
+                        value={reservationData.commentary}
                         onChange={handleInputChange}
-                        type="text"
+                        rows={5}
+                        className="w-full resize-none border border-[#111111]/10 bg-white px-5 py-4 text-[16px] font-light text-[#111111] outline-none transition focus:border-[#b48a45]"
+                        placeholder="Une demande particulière ?"
                       />
-                      <Field
-                        label="Nom *"
-                        name="customerLastName"
-                        value={reservationData.customerLastName}
-                        onChange={handleInputChange}
-                        type="text"
-                      />
-                      <Field
-                        label="Email"
-                        name="customerEmail"
-                        value={reservationData.customerEmail}
-                        onChange={handleInputChange}
-                        type="email"
-                      />
-                      <Field
-                        label="Téléphone *"
-                        name="customerPhone"
-                        value={reservationData.customerPhone}
-                        onChange={handleInputChange}
-                        type="tel"
-                      />
-                      {/* TABLE OPTIONNELLE */}
-                      {/* {manage ? ( <div className="md:col-span-2"> <label className="mb-3 block text-[12px] uppercase tracking-[0.32em] text-[#b48a45]"> Table </label> <div className="relative"> <select name="table" value={reservationData.table} onChange={handleInputChange} className="h-[56px] w-full appearance-none border border-[#111111]/10 bg-white px-5 pr-12 text-[16px] font-light text-[#111111] outline-none transition focus:border-[#b48a45]" > {!isEditing && <option value="auto">Automatique</option>} {availableTables.map((t) => ( <option key={t._id} value={t._id}> {t.name ? t.name : `Table ${t.seats} places`} </option> ))} </select> <ChevronDown size={18} strokeWidth={1.4} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#111111]" /> </div> </div> ) : ( <div className="md:col-span-2"> <Field label="Table" name="table" value={reservationData.table} onChange={handleInputChange} type="text" placeholder="Nom de la table (optionnel)" /> </div> )} */}
-                      <div className="md:col-span-2">
-                        <label className="mb-3 block text-[12px] uppercase tracking-[0.32em] text-[#b48a45]">
-                          Commentaire
-                        </label>
-                        <textarea
-                          name="commentary"
-                          value={reservationData.commentary}
-                          onChange={handleInputChange}
-                          rows={5}
-                          className="w-full resize-none border border-[#111111]/10 bg-white px-5 py-4 text-[16px] font-light text-[#111111] outline-none transition focus:border-[#b48a45]"
-                          placeholder="Une demande particulière ?"
-                        />
-                      </div>
-                    </div>
-                    {error && (
-                      <div className="mt-6 border border-red-200 bg-red-50 px-4 py-3 text-[15px] text-red-700">
-                        {error}
-                      </div>
-                    )}
-                    <div className="mt-8 flex justify-end">
-                      <button
-                        type="submit"
-                        disabled={
-                          !reservationData.reservationTime ||
-                          isLoading ||
-                          isSubmitting
-                        }
-                        className="flex h-[56px] min-w-[220px] items-center justify-center bg-[#bb924b] px-6 text-[13px] font-medium uppercase tracking-[0.28em] text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        {isSubmitting ? (
-                          <span className="flex items-center gap-2">
-                            <Loader2 size={18} className="animate-spin" />
-                            Envoi...
-                          </span>
-                        ) : (
-                          <>
-                            <span className="mr-2 text-[10px] opacity-80">
-                              ◆
-                            </span>
-                            Confirmer
-                            <span className="ml-2 text-[10px] opacity-80">
-                              ◆
-                            </span>
-                          </>
-                        )}
-                      </button>
                     </div>
                   </div>
+                  {error && (
+                    <div className="mt-6 border border-red-200 bg-red-50 px-4 py-3 text-[15px] text-red-700">
+                      {error}
+                    </div>
+                  )}
+                  <div className="mt-8 flex justify-end">
+                    <button
+                      type="submit"
+                      disabled={
+                        !reservationData.reservationTime ||
+                        isLoading ||
+                        isSubmitting
+                      }
+                      className="flex h-[56px] min-w-[220px] items-center justify-center bg-[#bb924b] px-6 text-[13px] font-medium uppercase tracking-[0.28em] text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {isSubmitting ? (
+                        <span className="flex items-center gap-2">
+                          <Loader2 size={18} className="animate-spin" />
+                          Envoi...
+                        </span>
+                      ) : (
+                        <>
+                          <span className="mr-2 text-[10px] opacity-80">◆</span>
+                          Confirmer
+                          <span className="ml-2 text-[10px] opacity-80">◆</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </form>
+              </form>
+            ) : (
+              <p className="flex gap-2 w-full h-[400px] items-center justify-center">
+                Chargement <Loader2 size={18} className="animate-spin" />
+              </p>
+            )}
           </div>
         </div>
-        <style jsx global>{`
-          .reservation-calendar.react-calendar {
-            width: 100%;
-            border: 0;
-            background: transparent;
-            font-family: inherit;
-          }
-          .reservation-calendar .react-calendar__navigation {
-            display: flex;
-            align-items: center;
-            margin-bottom: 18px;
-            gap: 8px;
-          }
-          .reservation-calendar .react-calendar__navigation button {
-            min-width: 44px;
-            height: 44px;
-            border: 1px solid rgba(17, 17, 17, 0.08);
-            background: rgba(255, 255, 255, 0.9);
-            color: #111111;
-            font-size: 15px;
-            transition: 0.2s ease;
-          }
-          .reservation-calendar .react-calendar__navigation button:hover {
-            border-color: #b48a45;
-            color: #b48a45;
-          }
-          .reservation-calendar .react-calendar__navigation__label {
-            flex-grow: 1 !important;
-            font-size: 18px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-          }
-          .reservation-calendar .react-calendar__month-view__weekdays {
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 0.22em;
-            color: rgba(17, 17, 17, 0.45);
-          }
-          .reservation-calendar .react-calendar__month-view__weekdays__weekday {
-            padding: 8px 0;
-            text-align: center;
-          }
-          .reservation-calendar
-            .react-calendar__month-view__weekdays__weekday
-            abbr {
-            text-decoration: none;
-          }
-          .reservation-calendar .react-calendar__tile {
-            height: 56px;
-            border: 1px solid transparent;
-            background: transparent;
-            color: #111111;
-            font-size: 15px;
-            transition: 0.2s ease;
-          }
-          .reservation-calendar .react-calendar__tile:hover {
-            border-color: rgba(180, 138, 69, 0.3);
-            background: rgba(180, 138, 69, 0.08);
-          }
-          .reservation-calendar .react-calendar__tile--active {
-            background: #bb924b !important;
-            color: white !important;
-          }
-          .reservation-calendar .react-calendar__tile--now {
-            background: rgba(180, 138, 69, 0.1);
-            border-color: rgba(180, 138, 69, 0.22);
-          }
-          .reservation-calendar .react-calendar__tile:disabled {
-            opacity: 0.28;
-            background: transparent;
-            color: #111111;
-          }
-        `}</style>
       </section>
     </>
   );
