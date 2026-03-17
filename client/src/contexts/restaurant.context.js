@@ -10,35 +10,35 @@ export default function RestaurantContext() {
 
   const [dataLoading, setDataLoading] = useState(false);
 
-  function fetchRestaurantData() {
-    setDataLoading(true);
+  // function fetchRestaurantData() {
+  //   setDataLoading(true);
 
-    axios
-      .get(
-        `${process.env.NEXT_PUBLIC_API_URL}/restaurants/${process.env.NEXT_PUBLIC_RESTAURANT_ID}`
-      )
-      .then((response) => {
-        setRestaurantData(response.data.restaurant);
+  //   axios
+  //     .get(
+  //       `${process.env.NEXT_PUBLIC_API_URL}/restaurants/${process.env.NEXT_PUBLIC_RESTAURANT_ID}`
+  //     )
+  //     .then((response) => {
+  //       setRestaurantData(response.data.restaurant);
 
-        setDataLoading(false);
-      })
-      .catch((error) => {
-        console.error(
-          "Erreur lors de la récupération des données du restaurant:",
-          error
-        );
-        setDataLoading(false);
-      });
-  }
+  //       setDataLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error(
+  //         "Erreur lors de la récupération des données du restaurant:",
+  //         error
+  //       );
+  //       setDataLoading(false);
+  //     });
+  // }
 
-  useEffect(() => {
-    fetchRestaurantData();
-  }, []);
+  // useEffect(() => {
+  //   fetchRestaurantData();
+  // }, []);
 
   return {
     restaurantData,
     setRestaurantData,
-    dataLoading,
-    fetchRestaurantData,
+    // dataLoading,
+    // fetchRestaurantData,
   };
 }
