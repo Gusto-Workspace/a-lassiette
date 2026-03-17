@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-export default function ResumeReservationsComponent({ apiBaseUrl }) {
-  const router = useRouter();
-  const { reservationId } = router.query;
-
+export default function ResumeReservationsComponent({
+  apiBaseUrl,
+  reservationId,
+}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -51,7 +51,7 @@ export default function ResumeReservationsComponent({ apiBaseUrl }) {
     }
 
     resume();
-  }, [router.isReady, reservationId, apiBaseUrl]);
+  }, [reservationId, apiBaseUrl]);
 
   if (loading) {
     return (

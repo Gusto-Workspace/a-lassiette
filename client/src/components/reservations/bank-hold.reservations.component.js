@@ -164,12 +164,10 @@ function BankHoldForm({
 }
 
 export default function BankHoldReservationsComponent({
+  reservationId,
   apiBaseUrl,
   stripePublishableKey,
 }) {
-  const router = useRouter();
-  const { reservationId } = router.query;
-
   const [prepareData, setPrepareData] = useState(null);
   const [error, setError] = useState(null);
   const [infoRedirectMessage, setInfoRedirectMessage] = useState(null);
@@ -181,10 +179,12 @@ export default function BankHoldReservationsComponent({
   }, [stripePublishableKey]);
 
   useEffect(() => {
-    if (!router.isReady || !reservationId) return;
-
     async function prepare() {
       try {
+        if (!reservationId) {
+          throw new Error("Réservation introuvable.");
+        }
+
         const res = await fetch(
           `${apiBaseUrl}/reservations/${reservationId}/bank-hold/prepare`,
           {
@@ -228,7 +228,7 @@ export default function BankHoldReservationsComponent({
     }
 
     prepare();
-  }, [router.isReady, reservationId, apiBaseUrl]);
+  }, [apiBaseUrl, reservationId]);
 
   useEffect(() => {
     if (!infoRedirectMessage) return;

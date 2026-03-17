@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 
 // I18N
 import { useTranslation } from "next-i18next";
@@ -14,7 +14,7 @@ export default function BannerComponent(props) {
   const sectionRef = useRef(null);
   const bgRef = useRef(null);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!sectionRef.current || !bgRef.current) return;
 
     const ctx = gsap.context(() => {
