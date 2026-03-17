@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function ExperienceHomeComponent() {
   return (
-    <section className="w-full bg-[#f3f3f3] pt-[140px] text-[#111111]">
+    <section className="w-full bg-[#ffffff] pt-[140px] text-[#111111]">
       <div className="mx-auto px-[90px] max-w-[1600px]">
         {/* CONTENT */}
         <div className="relative flex items-start justify-center">

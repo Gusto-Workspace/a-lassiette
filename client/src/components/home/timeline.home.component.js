@@ -142,7 +142,7 @@ export default function TimelineHomeComponent() {
   return (
     <section
       ref={sectionRef}
-      className="w-full overflow-hidden bg-[#f3f3f3] py-[140px]"
+      className="w-full overflow-hidden bg-[#ffffff] py-[140px]"
     >
       <div className="relative overflow-x-auto custom-scrollbar overflow-y-hidden scrollbar-none">
         <div className="w-max min-w-max px-[90px]">

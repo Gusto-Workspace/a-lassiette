@@ -56,12 +56,16 @@ export default function TestimonialsHomeComponent() {
   const item = testimonials[current];
 
   const quoteExitClass =
-    direction === "right" ? "-translate-x-10 opacity-0" : "translate-x-10 opacity-0";
+    direction === "right"
+      ? "-translate-x-10 opacity-0"
+      : "translate-x-10 opacity-0";
   const quoteEnterClass =
-    direction === "right" ? "translate-x-10 opacity-0" : "-translate-x-10 opacity-0";
+    direction === "right"
+      ? "translate-x-10 opacity-0"
+      : "-translate-x-10 opacity-0";
 
   return (
-    <section className="w-full bg-[#f3f3f3] px-[90px] pb-[140px] text-[#111111]">
+    <section className="w-full bg-[#fffff] px-[90px] pb-[140px] text-[#111111]">
       <div className="mx-auto max-w-[1600px]">
         <div className="mx-auto max-w-[1380px]">
           <div className="relative flex items-center justify-center">
@@ -91,7 +95,7 @@ export default function TestimonialsHomeComponent() {
               <div className="relative min-h-[220px]">
                 {/* QUOTE */}
                 <h2
-                  className={`yeseva-one-regular text-[28px] uppercase leading-[1.18] tracking-[-0.045em] text-[#111111] transition-all duration-[380ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  className={`yeseva-one-regular text-[28px] uppercase leading-[1.18] text-[#111111] transition-all duration-[380ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
                     phase === "exit"
                       ? quoteExitClass
                       : phase === "enter"
@@ -138,6 +142,15 @@ export default function TestimonialsHomeComponent() {
               <ArrowRight size={34} strokeWidth={1.2} />
             </button>
           </div>
+        </div>
+
+        <div className="mt-24 h-[140px] relative w-full">
+          <Image
+            src="/img/testimonials/badges.png"
+            alt="badges"
+            fill
+            className="object-contain"
+          />
         </div>
       </div>
     </section>
