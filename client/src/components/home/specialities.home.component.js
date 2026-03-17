@@ -42,7 +42,7 @@ export default function SpecialtiesHomeComponent() {
                 Notre cuisine
               </p>
 
-              <h3 className="text-[26px] uppercase leading-[1.08] tracking-[-0.04em] yeseva-one-regular">
+              <h3 className="text-[32px] text-balance uppercase leading-[1.08] tracking-[-0.04em] yeseva-one-regular">
                 Une expérience gourmande à partager à chaque instant
               </h3>
 

@@ -7,13 +7,14 @@ import { i18n } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 // COMPONENTS
-import HeroSectionHomeComponent from "@/components/home/hero-section.home.component";
+import HeroHomeComponent from "@/components/home/hero.home.component";
 import NavComponent from "@/components/_shared/nav/nav.component";
 import FooterComponent from "@/components/_shared/footer/footer.component";
 import SpecialtiesHomeComponent from "@/components/home/specialities.home.component";
 import VideoBannerHomeComponent from "@/components/home/video-banner.home.component";
 import TimelineHomeComponent from "@/components/home/timeline.home.component";
 import MenuInspiredHomeComponent from "@/components/home/menu-inspired.home.component";
+import ExperienceHomeComponent from "@/components/home/experience.home.component";
 
 export default function HomePage(props) {
   const title = "A l'Assiette";
@@ -46,11 +47,12 @@ export default function HomePage(props) {
         {/* <NavComponent/> */}
 
         <div>
-          <HeroSectionHomeComponent />
+          <HeroHomeComponent />
           <SpecialtiesHomeComponent />
           <VideoBannerHomeComponent/>
           <TimelineHomeComponent/>
           <MenuInspiredHomeComponent/>
+          <ExperienceHomeComponent/>
           <FooterComponent />
         </div>
       </div>
