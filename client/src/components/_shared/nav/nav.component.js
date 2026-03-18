@@ -103,7 +103,7 @@ export default function NavComponent({
           </Link>
 
           {/* Liens desktop en haut à droite */}
-          <div className="hidden tablet:flex items-center gap-10">
+          <div className="hidden tablet:flex items-center gap-4 talb:etgap-10">
             {menuItems.map((item) => (
               <Link
                 key={item.href}
