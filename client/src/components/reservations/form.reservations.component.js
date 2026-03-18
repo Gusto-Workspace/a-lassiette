@@ -611,11 +611,12 @@ export default function FormReservationComponent({
                   <div className="mt-8 flex justify-start tablet:justify-end">
                     <button
                       type="submit"
-                      disabled={
-                        !reservationData.reservationTime ||
-                        isLoading ||
-                        isSubmitting
-                      }
+                      disabled={true}
+                      // disabled={
+                      //   !reservationData.reservationTime ||
+                      //   isLoading ||
+                      //   isSubmitting
+                      // }
                       className="flex h-[52px] w-full items-center justify-center bg-[#bb924b] px-5 text-[12px] font-medium uppercase tracking-[0.22em] text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 tablet:h-[56px] tablet:w-auto tablet:min-w-[220px] tablet:px-6 tablet:text-[13px] tablet:tracking-[0.28em]"
                     >
                       {isSubmitting ? (
