@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 const lunchMenuLeft = [
   {
@@ -65,6 +66,8 @@ function MenuCard({ title, price, items }) {
 }
 
 export default function MenuInspiredHomeComponent(props) {
+  const router = useRouter();
+  
   return (
     <section className="w-full bg-[#eeebe6] text-[#111111] px-[90px] py-[140px]">
       <div className="mx-auto max-w-[1600px]">
@@ -136,6 +139,7 @@ export default function MenuInspiredHomeComponent(props) {
                 <button
                   type="button"
                   className="flex h-[52px] w-[220px] items-center justify-center bg-[#bb924b] text-[14px] font-medium uppercase tracking-[0.28em] text-white hover:opacity-90 transition"
+                  onClick={() => router.push("/menus")}
                 >
                   <span className="mr-2 text-[10px] opacity-80">◆</span>
                   Voir la carte

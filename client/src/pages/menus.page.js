@@ -11,7 +11,7 @@ import BannerComponent from "@/components/_shared/banner/banner.component";
 import ListMenusComponent from "@/components/menus/list.menus.component";
 
 export default function MenusPage(props) {
-   const heroRef = useRef(null);
+  const heroRef = useRef(null);
   const [showScrolledNav, setShowScrolledNav] = useState(false);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function MenusPage(props) {
   return (
     <>
       <Head>
-        <title>Contact - A l'Assiette</title>
+        <title>Carte & Menus - A l'Assiette</title>
       </Head>
 
       <div className="relative">
@@ -52,16 +52,15 @@ export default function MenusPage(props) {
         />
 
         <div ref={heroRef}>
-         <BannerComponent
+          <BannerComponent
             title="Carte & Menus"
             imgUrl="contact/1.jpg"
             opacity={true}
           />
         </div>
 
-        <ListMenusComponent/>
+        <ListMenusComponent />
 
-       
         <FooterComponent />
       </div>
     </>

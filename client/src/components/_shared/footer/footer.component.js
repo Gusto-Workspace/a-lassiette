@@ -37,7 +37,7 @@ export default function FooterHomeComponent() {
               Instagram
             </a>
             <a
-              href="#"
+              href="/contact"
               className="text-[15px] font-medium uppercase tracking-[0.34em] text-[#b48a45] transition hover:opacity-70"
             >
               Contact
