@@ -1,4 +1,4 @@
-import { MapPin, Phone, Mail, Clock3 } from "lucide-react";
+import { MapPin, Phone, Mail } from "lucide-react";
 
 export default function MapContactComponent() {
   const infos = [
@@ -22,44 +22,48 @@ export default function MapContactComponent() {
   ];
 
   return (
-    <section className="bg-white px-6 py-20 desktop:px-12">
-      <div className="mx-auto max-w-[1200px] grid gap-12 desktop:grid-cols-2 desktop:items-start">
+    <section className="bg-white px-5 py-16 tablet:px-8 tablet:py-20 desktop:px-[90px] desktop:py-[110px]">
+      <div className="mx-auto grid max-w-[1380px] gap-8 desktop:grid-cols-2 desktop:items-stretch desktop:gap-10">
         {/* INFOS CONTACT */}
-        <div className="border border-[#b48a45]/20 bg-white/60 p-8 backdrop-blur-[2px] desktop:p-12">
+        <div className="border border-[#b48a45]/20 bg-white/60 p-5 backdrop-blur-[2px] tablet:p-8 desktop:p-12">
           <div className="flex items-center gap-3">
-            <div className="h-px w-12 bg-[#b48a45]" />
-            <p className="text-[13px] font-medium uppercase tracking-[0.32em] text-[#b48a45]">
+            <div className="h-px w-10 bg-[#b48a45] tablet:w-12" />
+            <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-[#b48a45] tablet:text-[13px] tablet:tracking-[0.32em]">
               Nous joindre
             </p>
           </div>
 
-          <div className="mt-10 space-y-4">
+          <div className="mt-8 space-y-6 tablet:mt-10 tablet:space-y-4">
             {infos.map((item) => {
               const Icon = item.icon;
 
               return (
                 <div
                   key={item.label}
-                  className="flex items-start gap-4 pb-8 last:border-b-0 last:pb-0"
+                  className="flex items-start gap-4 pb-6 last:border-b-0 last:pb-0 tablet:pb-8"
                 >
-                  <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#b48a45]/25 text-[#b48a45]">
-                    <Icon size={19} strokeWidth={1.5} />
+                  <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#b48a45]/25 text-[#b48a45] tablet:h-11 tablet:w-11">
+                    <Icon
+                      size={18}
+                      strokeWidth={1.5}
+                      className="tablet:h-[19px] tablet:w-[19px]"
+                    />
                   </div>
 
-                  <div>
-                    <p className="text-[13px] uppercase tracking-[0.28em] text-[#b48a45]">
+                  <div className="min-w-0">
+                    <p className="text-[11px] uppercase tracking-[0.22em] text-[#b48a45] tablet:text-[13px] tablet:tracking-[0.28em]">
                       {item.label}
                     </p>
 
                     {item.href ? (
                       <a
                         href={item.href}
-                        className="mt-3 inline-block text-[19px] font-light leading-[1.7] text-black/75 transition hover:text-[#b48a45]"
+                        className="mt-3 inline-block break-words text-[16px] font-light leading-[1.7] text-black/75 transition hover:text-[#b48a45] tablet:text-[19px]"
                       >
                         {item.value}
                       </a>
                     ) : (
-                      <p className="mt-3 text-[19px] font-light leading-[1.7] text-black/75">
+                      <p className="mt-3 break-words text-[16px] font-light leading-[1.7] text-black/75 tablet:text-[19px]">
                         {item.value}
                       </p>
                     )}
@@ -71,7 +75,7 @@ export default function MapContactComponent() {
         </div>
 
         {/* MAP */}
-        <div className="relative h-full w-full overflow-hidden rounded-[6px] border border-black/5 shadow-sm">
+        <div className="relative h-[320px] w-full overflow-hidden rounded-[6px] border border-black/5 shadow-sm tablet:h-[420px] desktop:h-full desktop:min-h-[520px]">
           <iframe
             title="map"
             src="https://www.google.com/maps?q=a l'assiette brive&output=embed"

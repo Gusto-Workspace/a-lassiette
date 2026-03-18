@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 
 const menuItems = [
+  { label: "Accueil", href: "/" },
   { label: "Carte & Menus", href: "/menus" },
   { label: "Réserver", href: "/reservations" },
   { label: "Contact", href: "/contact" },
@@ -41,7 +42,7 @@ export default function NavComponent({
 
       {/* Drawer mobile */}
       <aside
-        className={`fixed right-0 top-0 z-[60] flex h-screen w-[92%] max-w-[420px] flex-col bg-white px-8 pb-10 pt-8 shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] tablet:hidden ${
+        className={`fixed right-0 top-0 z-[60] flex h-screen w-[92%] max-w-[420px] flex-col bg-[#022401] px-8 pb-10 pt-8 shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] tablet:hidden ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -56,21 +57,21 @@ export default function NavComponent({
             type="button"
             aria-label="Fermer le menu"
             onClick={() => setMenuOpen(false)}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 text-[#111]"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 text-white"
           >
             <X size={22} strokeWidth={1.6} />
           </button>
         </div>
 
-        <nav className="flex flex-1 flex-col justify-center gap-7">
+        <nav className="flex flex-1 flex-col justify-center gap-24">
           {menuItems.map((item, index) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => setMenuOpen(false)}
-              className="group flex items-center gap-4 text-[30px] leading-none text-[#111] transition-opacity duration-300 hover:opacity-60"
+              className="group flex items-center gap-4 text-[30px] leading-none text-white transition-opacity duration-300 hover:opacity-60"
             >
-              <span className="text-[12px] uppercase tracking-[0.28em] text-black/35">
+              <span className="text-[12px] uppercase tracking-[0.28em] text-white/35">
                 0{index + 1}
               </span>
               <span className="yeseva-one-regular">{item.label}</span>

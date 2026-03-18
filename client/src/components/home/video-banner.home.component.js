@@ -11,7 +11,7 @@ export default function VideoBannerHomeComponent() {
         <button
           type="button"
           onClick={() => setIsOpen(true)}
-          className="group relative block h-[650px] w-full overflow-hidden"
+          className="group relative block h-[350px] tablet:h-[650px] w-full overflow-hidden"
           aria-label="Lire la vidéo"
         >
           <Image

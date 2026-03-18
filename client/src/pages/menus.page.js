@@ -54,7 +54,7 @@ export default function MenusPage(props) {
         <div ref={heroRef}>
           <BannerComponent
             title="Carte & Menus"
-            imgUrl="contact/1.jpg"
+            imgUrl="menu-inspired/2.jpg"
             opacity={true}
           />
         </div>

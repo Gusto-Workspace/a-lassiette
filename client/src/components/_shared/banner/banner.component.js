@@ -61,7 +61,7 @@ export default function BannerComponent(props) {
         }`}
       />
 
-      <h1 className="text-4xl desktop:text-6xl uppercase z-10 yeseva-one-regular">
+      <h1 className="text-4xl desktop:text-6xl uppercase z-10 yeseva-one-regular text-balance">
         {t(props.title)}
       </h1>
     </div>

@@ -10,7 +10,14 @@ import { GlobalContext } from "@/contexts/global.context";
 import { useForm } from "react-hook-form";
 
 // LUCIDE
-import { Loader2, Check, Mail, Phone, User, MessageSquare } from "lucide-react";
+import {
+  Loader2,
+  Check,
+  Mail,
+  Phone,
+  User,
+  MessageSquare,
+} from "lucide-react";
 
 export default function FormContactCompnent() {
   const { t } = useTranslation("contact");
@@ -52,22 +59,24 @@ export default function FormContactCompnent() {
     // } finally {
     //   setIsSubmitting(false);
     // }
+
+    setIsSubmitting(false);
   }
 
   return (
-    <section className="w-full bg-[#eeebe6] text-[#111111] ">
-      <div className="border border-[#b48a45]/20 bg-white/60 p-8 backdrop-blur-[2px] desktop:p-12 w-full h-full">
+    <section className="w-full bg-[#eeebe6] text-[#111111]">
+      <div className="h-full w-full border border-[#b48a45]/20 bg-white/60 p-5 backdrop-blur-[2px] tablet:p-8 desktop:p-12">
         {isSubmitted ? (
-          <div className="flex min-h-[520px] flex-col items-center justify-center text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-[#b48a45]/25 text-[#b48a45]">
-              <Check size={28} strokeWidth={1.7} />
+          <div className="flex min-h-[420px] flex-col items-center justify-center text-center tablet:min-h-[520px]">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#b48a45]/25 text-[#b48a45] tablet:h-16 tablet:w-16">
+              <Check size={26} strokeWidth={1.7} className="tablet:h-7 tablet:w-7" />
             </div>
 
-            <h3 className="yeseva-one-regular mt-8 text-[30px] uppercase leading-[1.1] desktop:text-[42px]">
+            <h3 className="yeseva-one-regular mt-6 text-[24px] uppercase leading-[1.1] tablet:mt-8 tablet:text-[30px] desktop:text-[42px]">
               Message envoyé
             </h3>
 
-            <p className="mt-5 max-w-[520px] text-[17px] font-light leading-[1.85] text-black/60">
+            <p className="mt-4 max-w-[520px] text-[15px] font-light leading-[1.8] text-black/60 tablet:mt-5 tablet:text-[16px] desktop:text-[17px]">
               Merci pour votre message. Nous reviendrons vers vous dès que
               possible.
             </p>
@@ -75,16 +84,16 @@ export default function FormContactCompnent() {
             <button
               type="button"
               onClick={() => setIsSubmitted(false)}
-              className="mt-10 flex h-[52px] min-w-[230px] items-center justify-center bg-[#bb924b] px-8 text-[14px] font-medium uppercase tracking-[0.28em] text-white transition hover:opacity-90"
+              className="mt-8 flex h-[50px] min-w-[210px] items-center justify-center bg-[#bb924b] px-6 text-[12px] font-medium uppercase tracking-[0.22em] text-white transition hover:opacity-90 tablet:mt-10 tablet:h-[52px] tablet:min-w-[230px] tablet:px-8 tablet:text-[14px] tablet:tracking-[0.28em]"
             >
               Envoyer un autre message
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid gap-6 desktop:grid-cols-2">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 tablet:space-y-6">
+            <div className="grid gap-5 tablet:gap-6 desktop:grid-cols-2">
               <div>
-                <label className="mb-3 block text-[13px] uppercase tracking-[0.28em] text-[#b48a45]">
+                <label className="mb-3 block text-[11px] uppercase tracking-[0.22em] text-[#b48a45] tablet:text-[13px] tablet:tracking-[0.28em]">
                   Nom complet *
                 </label>
 
@@ -98,7 +107,7 @@ export default function FormContactCompnent() {
                   <input
                     type="text"
                     placeholder="Votre nom"
-                    className="h-[58px] w-full border border-black/10 bg-white px-12 text-[16px] font-light text-black outline-none transition placeholder:text-black/30 focus:border-[#b48a45]/50"
+                    className="h-[54px] w-full border border-black/10 bg-white px-11 text-[15px] font-light text-black outline-none transition placeholder:text-black/30 focus:border-[#b48a45]/50 tablet:h-[58px] tablet:px-12 tablet:text-[16px]"
                     {...register("fullName", {
                       required: "Veuillez renseigner votre nom.",
                     })}
@@ -106,14 +115,14 @@ export default function FormContactCompnent() {
                 </div>
 
                 {errors.fullName && (
-                  <p className="mt-2 text-[14px] text-[#a14646]">
+                  <p className="mt-2 text-[13px] text-[#a14646] tablet:text-[14px]">
                     {errors.fullName.message}
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="mb-3 block text-[13px] uppercase tracking-[0.28em] text-[#b48a45]">
+                <label className="mb-3 block text-[11px] uppercase tracking-[0.22em] text-[#b48a45] tablet:text-[13px] tablet:tracking-[0.28em]">
                   Email *
                 </label>
 
@@ -127,7 +136,7 @@ export default function FormContactCompnent() {
                   <input
                     type="email"
                     placeholder="Votre email"
-                    className="h-[58px] w-full border border-black/10 bg-white px-12 text-[16px] font-light text-black outline-none transition placeholder:text-black/30 focus:border-[#b48a45]/50"
+                    className="h-[54px] w-full border border-black/10 bg-white px-11 text-[15px] font-light text-black outline-none transition placeholder:text-black/30 focus:border-[#b48a45]/50 tablet:h-[58px] tablet:px-12 tablet:text-[16px]"
                     {...register("email", {
                       required: "Veuillez renseigner votre email.",
                       pattern: {
@@ -139,16 +148,16 @@ export default function FormContactCompnent() {
                 </div>
 
                 {errors.email && (
-                  <p className="mt-2 text-[14px] text-[#a14646]">
+                  <p className="mt-2 text-[13px] text-[#a14646] tablet:text-[14px]">
                     {errors.email.message}
                   </p>
                 )}
               </div>
             </div>
 
-            <div className="grid gap-6 desktop:grid-cols-2">
+            <div className="grid gap-5 tablet:gap-6 desktop:grid-cols-2">
               <div>
-                <label className="mb-3 block text-[13px] uppercase tracking-[0.28em] text-[#b48a45]">
+                <label className="mb-3 block text-[11px] uppercase tracking-[0.22em] text-[#b48a45] tablet:text-[13px] tablet:tracking-[0.28em]">
                   Téléphone
                 </label>
 
@@ -162,28 +171,28 @@ export default function FormContactCompnent() {
                   <input
                     type="text"
                     placeholder="Votre téléphone"
-                    className="h-[58px] w-full border border-black/10 bg-white px-12 text-[16px] font-light text-black outline-none transition placeholder:text-black/30 focus:border-[#b48a45]/50"
+                    className="h-[54px] w-full border border-black/10 bg-white px-11 text-[15px] font-light text-black outline-none transition placeholder:text-black/30 focus:border-[#b48a45]/50 tablet:h-[58px] tablet:px-12 tablet:text-[16px]"
                     {...register("phone")}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="mb-3 block text-[13px] uppercase tracking-[0.28em] text-[#b48a45]">
+                <label className="mb-3 block text-[11px] uppercase tracking-[0.22em] text-[#b48a45] tablet:text-[13px] tablet:tracking-[0.28em]">
                   Sujet *
                 </label>
 
                 <input
                   type="text"
                   placeholder="Objet de votre message"
-                  className="h-[58px] w-full border border-black/10 bg-white px-5 text-[16px] font-light text-black outline-none transition placeholder:text-black/30 focus:border-[#b48a45]/50"
+                  className="h-[54px] w-full border border-black/10 bg-white px-4 text-[15px] font-light text-black outline-none transition placeholder:text-black/30 focus:border-[#b48a45]/50 tablet:h-[58px] tablet:px-5 tablet:text-[16px]"
                   {...register("subject", {
                     required: "Veuillez renseigner un sujet.",
                   })}
                 />
 
                 {errors.subject && (
-                  <p className="mt-2 text-[14px] text-[#a14646]">
+                  <p className="mt-2 text-[13px] text-[#a14646] tablet:text-[14px]">
                     {errors.subject.message}
                   </p>
                 )}
@@ -191,7 +200,7 @@ export default function FormContactCompnent() {
             </div>
 
             <div>
-              <label className="mb-3 block text-[13px] uppercase tracking-[0.28em] text-[#b48a45]">
+              <label className="mb-3 block text-[11px] uppercase tracking-[0.22em] text-[#b48a45] tablet:text-[13px] tablet:tracking-[0.28em]">
                 Message *
               </label>
 
@@ -205,7 +214,7 @@ export default function FormContactCompnent() {
                 <textarea
                   rows={8}
                   placeholder="Votre message..."
-                  className="w-full resize-none border border-black/10 bg-white px-12 py-4 text-[16px] font-light leading-[1.8] text-black outline-none transition placeholder:text-black/30 focus:border-[#b48a45]/50"
+                  className="w-full resize-none border border-black/10 bg-white px-11 py-4 text-[15px] font-light leading-[1.8] text-black outline-none transition placeholder:text-black/30 focus:border-[#b48a45]/50 tablet:px-12 tablet:text-[16px]"
                   {...register("message", {
                     required: "Veuillez écrire votre message.",
                   })}
@@ -213,14 +222,14 @@ export default function FormContactCompnent() {
               </div>
 
               {errors.message && (
-                <p className="mt-2 text-[14px] text-[#a14646]">
+                <p className="mt-2 text-[13px] text-[#a14646] tablet:text-[14px]">
                   {errors.message.message}
                 </p>
               )}
             </div>
 
-            <div className="flex flex-col items-start gap-4 pt-2">
-              <p className="max-w-[520px] text-[14px] font-light leading-[1.8] text-black/45">
+            <div className="flex flex-col items-start gap-4 pt-1 tablet:pt-2">
+              <p className="max-w-[520px] text-[13px] font-light leading-[1.75] text-black/45 tablet:text-[14px] tablet:leading-[1.8]">
                 En envoyant ce formulaire, vous acceptez d’être recontacté dans
                 le cadre de votre demande.
               </p>
@@ -228,7 +237,7 @@ export default function FormContactCompnent() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex h-[54px] min-w-[230px] items-center justify-center gap-3 bg-[#bb924b] px-8 text-[14px] font-medium uppercase tracking-[0.28em] text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
+                className="flex h-[50px] min-w-[210px] items-center justify-center gap-3 bg-[#bb924b] px-6 text-[12px] font-medium uppercase tracking-[0.22em] text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70 tablet:h-[54px] tablet:min-w-[230px] tablet:px-8 tablet:text-[14px] tablet:tracking-[0.28em]"
               >
                 {isSubmitting ? (
                   <>

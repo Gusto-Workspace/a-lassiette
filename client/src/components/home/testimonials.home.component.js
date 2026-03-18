@@ -59,13 +59,9 @@ export default function TestimonialsHomeComponent() {
     direction === "right"
       ? "-translate-x-10 opacity-0"
       : "translate-x-10 opacity-0";
-  const quoteEnterClass =
-    direction === "right"
-      ? "translate-x-10 opacity-0"
-      : "-translate-x-10 opacity-0";
 
   return (
-    <section className="w-full bg-[#fffff] px-[90px] pb-[140px] text-[#111111]">
+    <section className="w-full bg-white px-5 pb-20 text-[#111111] tablet:px-8 tablet:pb-24 desktop:px-[90px] desktop:pb-[110px] ultraWild:pb-[140px]">
       <div className="mx-auto max-w-[1600px]">
         <div className="mx-auto max-w-[1380px]">
           <div className="relative flex items-center justify-center">
@@ -75,27 +71,31 @@ export default function TestimonialsHomeComponent() {
               aria-label="Avis précédent"
               onClick={prevSlide}
               disabled={isAnimating}
-              className="absolute left-0 top-1/2 -translate-y-1/2 text-[#b48a45] transition hover:opacity-70 disabled:pointer-events-none disabled:opacity-40"
+              className="absolute left-0 top-1/2 z-20 -translate-y-1/2 text-[#b48a45] transition hover:opacity-70 disabled:pointer-events-none disabled:opacity-40 tablet:left-0 desktop:left-0"
             >
-              <ArrowLeft size={34} strokeWidth={1.2} />
+              <ArrowLeft
+                size={26}
+                strokeWidth={1.2}
+                className="tablet:h-8 tablet:w-8 desktop:h-[34px] desktop:w-[34px]"
+              />
             </button>
 
             {/* CENTER CONTENT */}
-            <div className="mx-auto max-w-[980px] text-center">
-              <div className="mb-8 flex justify-center">
+            <div className="mx-auto w-full max-w-[980px] px-10 text-center tablet:px-14 desktop:px-20 ultraWild:px-0">
+              <div className="mb-6 flex justify-center tablet:mb-8">
                 <Image
                   src="/img/testimonials/quote.png"
                   alt="Quote"
                   width={75}
                   height={75}
-                  className="object-cover"
+                  className="object-cover "
                 />
               </div>
 
-              <div className="relative min-h-[220px]">
+              <div className="relative min-h-[260px] tablet:min-h-[240px] desktop:min-h-[220px]">
                 {/* QUOTE */}
                 <h2
-                  className={`yeseva-one-regular text-[28px] uppercase leading-[1.18] text-[#111111] transition-all duration-[380ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  className={`yeseva-one-regular text-[22px] uppercase leading-[1.22] text-[#111111] transition-all duration-[380ms] ease-[cubic-bezier(0.22,1,0.36,1)] tablet:text-[24px] desktop:text-[28px] ${
                     phase === "exit"
                       ? quoteExitClass
                       : phase === "enter"
@@ -107,9 +107,9 @@ export default function TestimonialsHomeComponent() {
                 </h2>
 
                 {/* AUTHOR + ROLE */}
-                <div className="mt-12">
+                <div className="mt-10 tablet:mt-12">
                   <p
-                    className={`text-[14px] font-medium uppercase tracking-[0.34em] text-[#b48a45] transition-all duration-[380ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    className={`text-[12px] font-medium uppercase tracking-[0.24em] text-[#b48a45] transition-all duration-[380ms] ease-[cubic-bezier(0.22,1,0.36,1)] tablet:text-[13px] tablet:tracking-[0.3em] desktop:text-[14px] desktop:tracking-[0.34em] ${
                       phase === "exit"
                         ? "translate-y-3 opacity-0"
                         : "translate-y-0 opacity-100 delay-[180ms]"
@@ -119,7 +119,7 @@ export default function TestimonialsHomeComponent() {
                   </p>
 
                   <p
-                    className={`mt-4 text-[20px] font-light text-black/65 transition-all duration-[380ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    className={`mt-3 text-[16px] font-light leading-[1.5] text-black/65 transition-all duration-[380ms] ease-[cubic-bezier(0.22,1,0.36,1)] tablet:mt-4 tablet:text-[18px] desktop:text-[20px] ${
                       phase === "exit"
                         ? "translate-y-3 opacity-0"
                         : "translate-y-0 opacity-100 delay-[280ms]"
@@ -137,14 +137,18 @@ export default function TestimonialsHomeComponent() {
               aria-label="Avis suivant"
               onClick={nextSlide}
               disabled={isAnimating}
-              className="absolute right-0 top-1/2 -translate-y-1/2 text-[#b48a45] transition hover:opacity-70 disabled:pointer-events-none disabled:opacity-40"
+              className="absolute right-0 top-1/2 z-20 -translate-y-1/2 text-[#b48a45] transition hover:opacity-70 disabled:pointer-events-none disabled:opacity-40 tablet:right-0 desktop:right-0"
             >
-              <ArrowRight size={34} strokeWidth={1.2} />
+              <ArrowRight
+                size={26}
+                strokeWidth={1.2}
+                className="tablet:h-8 tablet:w-8 desktop:h-[34px] desktop:w-[34px]"
+              />
             </button>
           </div>
         </div>
 
-        <div className="mt-24 h-[140px] relative w-full">
+        <div className="relative mt-14 h-[72px] w-full tablet:mt-20 tablet:h-[95px] desktop:mt-24 desktop:h-[120px] ultraWild:h-[140px]">
           <Image
             src="/img/testimonials/badges.png"
             alt="badges"

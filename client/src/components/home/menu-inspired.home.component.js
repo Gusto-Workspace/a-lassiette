@@ -29,21 +29,21 @@ const lunchMenuRight = [
 
 function MenuCard({ title, price, items }) {
   return (
-    <div className="border-b border-[#c7b79a]/35 pb-8 last:border-b-0 last:pb-0">
-      <div className="flex items-end justify-between gap-6">
-        <h4 className="text-[24px] uppercase leading-none tracking-[0.08em] text-[#111111] yeseva-one-regular">
+    <div className="text-center desktop:text-left border-b border-[#c7b79a]/35 pb-7 last:border-b-0 last:pb-0 tablet:pb-8">
+      <div className="flex flex-col gap-3 tablet:flex-row tablet:items-end tablet:justify-between tablet:gap-6">
+        <h4 className="yeseva-one-regular text-[22px] uppercase leading-none tracking-[0.05em] text-[#111111] tablet:text-[24px] tablet:tracking-[0.08em]">
           {title}
         </h4>
 
-        <div className="flex min-w-fit items-center gap-4">
-          <div className="hidden h-px w-[110px] bg-[radial-gradient(circle,_#b48a45_1.2px,_transparent_1.2px)] bg-[length:12px_2px] bg-repeat-x md:block" />
-          <span className="text-[20px] font-semibold tracking-[0.08em] text-[#b48a45]">
+        <div className="flex justify-center desktop:justify-normal min-w-fit items-center gap-3 tablet:gap-4">
+          <div className="hidden h-px w-[80px] bg-[radial-gradient(circle,_#b48a45_1.2px,_transparent_1.2px)] bg-[length:12px_2px] bg-repeat-x tablet:block desktop:w-[110px]" />
+          <span className="text-[18px] font-semibold tracking-[0.08em] text-[#b48a45] tablet:text-[20px]">
             {price}
           </span>
         </div>
       </div>
 
-      <div className="mt-5 space-y-3">
+      <div className="mt-4 space-y-2.5 tablet:mt-5 tablet:space-y-3">
         {items.map((item, index) => {
           const isSeparator = item.toLowerCase() === "ou";
 
@@ -52,8 +52,8 @@ function MenuCard({ title, price, items }) {
               key={`${title}-${index}`}
               className={
                 isSeparator
-                  ? "text-[16px] uppercase tracking-[0.28em] text-[#b48a45]"
-                  : "text-[19px] font-light leading-[1.65] text-black/60"
+                  ? "text-[14px] uppercase tracking-[0.24em] text-[#b48a45] tablet:text-[16px] tablet:tracking-[0.28em]"
+                  : "text-[17px] font-light leading-[1.65] text-black/60 tablet:text-[19px]"
               }
             >
               {item}
@@ -67,29 +67,31 @@ function MenuCard({ title, price, items }) {
 
 export default function MenuInspiredHomeComponent(props) {
   const router = useRouter();
-  
+
   return (
-    <section className="w-full bg-[#eeebe6] text-[#111111] px-[90px] py-[140px]">
+    <section className="w-full bg-[#eeebe6] px-5 py-20 text-[#111111] tablet:px-8 tablet:py-24 desktop:px-[90px] desktop:py-[140px]">
       <div className="mx-auto max-w-[1600px]">
         {/* TITLE */}
         <div className="mx-auto max-w-[1000px] text-center">
-          <p className="mb-5 text-[14px] font-light uppercase tracking-[0.42em] text-[#b48a45] md:text-[16px]">
+          <p className="mb-4 text-[12px] font-light uppercase tracking-[0.28em] text-[#b48a45] tablet:mb-5 tablet:text-[14px] tablet:tracking-[0.36em] desktop:text-[16px] desktop:tracking-[0.42em]">
             {!props.menusPage ? "Carte et menus" : "Menus"}
           </p>
 
-          <h2 className="text-[40px] uppercase leading-[1.04] tracking-[-0.04em] md:text-[54px] yeseva-one-regular">
+          <h2 className="text-balance yeseva-one-regular text-[34px] uppercase leading-[1.06] tracking-[-0.04em] tablet:text-[44px] desktop:text-[54px] desktop:leading-[1.04]">
             Notre formule du midi
           </h2>
 
-          <h3 className="yeseva-one-regular mt-2">du lundi au vendredi</h3>
+          <h3 className="yeseva-one-regular mt-2 text-[22px] tablet:text-[24px] desktop:text-[26px]">
+            du lundi au vendredi
+          </h3>
         </div>
 
         {/* CONTENT */}
-        <div className="mt-[70px] grid items-center grid-cols-[470px_minmax(0,1fr)] gap-[80px]">
+        <div className="mt-14 grid grid-cols-1 gap-14 tablet:mt-16 tablet:gap-16 desktop:mt-[70px] desktop:grid-cols-[420px_minmax(0,1fr)] desktop:items-center desktop:gap-[80px] ultraWild:grid-cols-[470px_minmax(0,1fr)]">
           {/* LEFT IMAGE */}
-          <div className="relative mx-auto w-full max-w-[470px]">
-            <div className="relative overflow-hidden border border-[#b48a45] p-4 rounded-t-[240px]">
-              <div className="relative overflow-hidden rounded-t-[240px] h-[570px]">
+          <div className="relative mx-auto w-full max-w-[360px] tablet:max-w-[430px] desktop:max-w-[470px]">
+            <div className="relative overflow-hidden rounded-t-[180px] border border-[#b48a45] p-3 tablet:rounded-t-[220px] tablet:p-4 desktop:rounded-t-[240px]">
+              <div className="relative h-[420px] overflow-hidden rounded-t-[180px] tablet:h-[500px] tablet:rounded-t-[220px] desktop:h-[570px] desktop:rounded-t-[240px]">
                 <Image
                   src="/img/menu-inspired/1.webp"
                   alt="Cuisine et dressage à l'assiette"
@@ -100,8 +102,8 @@ export default function MenuInspiredHomeComponent(props) {
             </div>
 
             {/* BADGE */}
-            <div className="absolute bottom-[-22px] left-1/2 z-10 flex h-[88px] w-[88px] -translate-x-1/2 items-center justify-center rounded-full border border-[#d4bf96] bg-[#b48a45] text-center text-[10px] uppercase tracking-[0.18em] text-white">
-              <span className="-mt-2">
+            <div className="absolute bottom-[-20px] left-1/2 z-10 flex h-[76px] w-[76px] -translate-x-1/2 items-center justify-center rounded-full border border-[#d4bf96] bg-[#b48a45] text-center text-[9px] uppercase tracking-[0.14em] text-white tablet:bottom-[-22px] tablet:h-[88px] tablet:w-[88px] tablet:text-[10px] tablet:tracking-[0.18em]">
+              <span className="-mt-1 tablet:-mt-2">
                 À
                 <br />
                 l’Assiette
@@ -110,9 +112,7 @@ export default function MenuInspiredHomeComponent(props) {
           </div>
 
           {/* RIGHT MENUS */}
-          <div className="grid gap-8">
-            {/* LEFT COLUMN */}
-
+          <div className="grid gap-7 tablet:gap-8">
             {lunchMenuLeft.map((menu) => (
               <MenuCard
                 key={menu.title}
@@ -121,8 +121,6 @@ export default function MenuInspiredHomeComponent(props) {
                 items={menu.items}
               />
             ))}
-
-            {/* RIGHT COLUMN */}
 
             {lunchMenuRight.map((menu) => (
               <MenuCard
@@ -133,12 +131,11 @@ export default function MenuInspiredHomeComponent(props) {
               />
             ))}
 
-            {/* BUTTON */}
             {!props.menusPage && (
-              <div className="flex justify-center">
+              <div className="flex justify-center desktop:justify-start">
                 <button
                   type="button"
-                  className="flex h-[52px] w-[220px] items-center justify-center bg-[#bb924b] text-[14px] font-medium uppercase tracking-[0.28em] text-white hover:opacity-90 transition"
+                  className="flex h-[52px] w-full max-w-[260px] items-center justify-center bg-[#bb924b] text-[12px] font-medium uppercase tracking-[0.22em] text-white transition hover:opacity-90 tablet:text-[14px] tablet:tracking-[0.28em] desktop:w-[220px]"
                   onClick={() => router.push("/menus")}
                 >
                   <span className="mr-2 text-[10px] opacity-80">◆</span>

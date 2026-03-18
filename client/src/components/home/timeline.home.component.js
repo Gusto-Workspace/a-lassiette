@@ -47,88 +47,185 @@ export default function TimelineHomeComponent() {
       gsap.registerPlugin(ScrollTrigger);
 
       ctx = gsap.context(() => {
-        const cards = gsap.utils.toArray(".timeline-card");
-        const dots = gsap.utils.toArray(".timeline-dot");
-        const badges = gsap.utils.toArray(".timeline-badge");
-        const line = sectionRef.current.querySelector(
-          ".timeline-line-progress",
-        );
+        const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
 
-        gsap.set(cards, {
-          opacity: 0,
-          y: (index) => (index % 2 === 0 ? 50 : -50),
-        });
-
-        gsap.set(dots, {
-          scale: 0,
-          rotate: 45,
-        });
-
-        gsap.set(badges, {
-          opacity: 0,
-          scale: 0.8,
-        });
-
-        gsap.set(line, {
-          scaleX: 0,
-          transformOrigin: "left center",
-        });
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 90%",
-            end: "bottom 90%",
-            scrub: 1.1,
-          },
-        });
-
-        tl.to(
-          line,
-          {
-            scaleX: 1,
-            ease: "none",
-          },
-          0,
-        );
-
-        dots.forEach((dot, index) => {
-          tl.to(
-            dot,
-            {
-              scale: 1,
-              duration: 0.2,
-              ease: "power2.out",
-            },
-            index * 0.18,
+        if (isDesktop) {
+          // ✅ réglages desktop inchangés
+          const cards = gsap.utils.toArray(".timeline-card");
+          const dots = gsap.utils.toArray(".timeline-dot");
+          const badges = gsap.utils.toArray(".timeline-badge");
+          const line = sectionRef.current.querySelector(
+            ".timeline-line-progress-x",
           );
-        });
 
-        cards.forEach((card, index) => {
-          tl.to(
-            card,
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.3,
-              ease: "power3.out",
-            },
-            index * 0.18 + 0.04,
-          );
-        });
+          gsap.set(cards, {
+            opacity: 0,
+            y: (index) => (index % 2 === 0 ? 50 : -50),
+          });
 
-        badges.forEach((badge, index) => {
-          tl.to(
-            badge,
-            {
-              opacity: 0.35,
-              scale: 1,
-              duration: 0.24,
-              ease: "power2.out",
+          gsap.set(dots, {
+            scale: 0,
+            rotate: 45,
+          });
+
+          gsap.set(badges, {
+            opacity: 0,
+            scale: 0.8,
+          });
+
+          if (line) {
+            gsap.set(line, {
+              scaleX: 0,
+              transformOrigin: "left center",
+            });
+          }
+
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top 88%",
+              end: "bottom 100%",
+              scrub: 1.1,
             },
-            index * 0.18 + 0.08,
+          });
+
+          if (line) {
+            tl.to(
+              line,
+              {
+                scaleX: 1,
+                ease: "none",
+              },
+              0,
+            );
+          }
+
+          dots.forEach((dot, index) => {
+            tl.to(
+              dot,
+              {
+                scale: 1,
+                duration: 0.2,
+                ease: "power2.out",
+              },
+              index * 0.18,
+            );
+          });
+
+          cards.forEach((card, index) => {
+            tl.to(
+              card,
+              {
+                opacity: 1,
+                y: 0,
+                duration: 0.3,
+                ease: "power3.out",
+              },
+              index * 0.18 + 0.04,
+            );
+          });
+
+          badges.forEach((badge, index) => {
+            tl.to(
+              badge,
+              {
+                opacity: 0.35,
+                scale: 1,
+                duration: 0.24,
+                ease: "power2.out",
+              },
+              index * 0.18 + 0.08,
+            );
+          });
+        } else {
+          // ✅ mobile / tablet
+          const cards = gsap.utils.toArray(".timeline-card");
+          const dots = gsap.utils.toArray(".timeline-dot");
+          const badges = gsap.utils.toArray(".timeline-badge");
+          const line = sectionRef.current.querySelector(
+            ".timeline-line-progress-y",
           );
-        });
+
+          gsap.set(cards, {
+            opacity: 0,
+            y: 36,
+          });
+
+          gsap.set(dots, {
+            scale: 0,
+            rotate: 45,
+          });
+
+          gsap.set(badges, {
+            opacity: 0,
+            scale: 0.8,
+          });
+
+          if (line) {
+            gsap.set(line, {
+              scaleY: 0,
+              transformOrigin: "center top",
+            });
+          }
+
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top 50%",
+              end: "bottom 100%",
+              scrub: 1.1,
+            },
+          });
+
+          if (line) {
+            tl.to(
+              line,
+              {
+                scaleY: 1,
+                ease: "none",
+              },
+              0,
+            );
+          }
+
+          dots.forEach((dot, index) => {
+            tl.to(
+              dot,
+              {
+                scale: 1,
+                duration: 0.2,
+                ease: "power2.out",
+              },
+              index * 0.18,
+            );
+          });
+
+          cards.forEach((card, index) => {
+            tl.to(
+              card,
+              {
+                opacity: 1,
+                y: 0,
+                duration: 0.3,
+                ease: "power3.out",
+              },
+              index * 0.18 + 0.04,
+            );
+          });
+
+          badges.forEach((badge, index) => {
+            tl.to(
+              badge,
+              {
+                opacity: 0.35,
+                scale: 1,
+                duration: 0.24,
+                ease: "power2.out",
+              },
+              index * 0.18 + 0.08,
+            );
+          });
+        }
       }, sectionRef);
     };
 
@@ -142,13 +239,45 @@ export default function TimelineHomeComponent() {
   return (
     <section
       ref={sectionRef}
-      className="w-full overflow-hidden bg-[#ffffff] py-[140px]"
+      className="w-full overflow-hidden bg-[#ffffff] py-20 tablet:py-24 desktop:py-[140px]"
     >
-      <div className="relative overflow-x-auto custom-scrollbar overflow-y-hidden scrollbar-none">
+      {/* MOBILE / TABLET */}
+      <div className="relative px-5 tablet:px-8 desktop:hidden">
+        <div className="absolute left-[17px] top-0 h-full w-px bg-[#b48a45]/20 tablet:left-[21px]" />
+        <div className="timeline-line-progress-y absolute left-[17px] top-0 h-full w-px bg-[#b48a45] tablet:left-[21px]" />
+        <div className="relative flex flex-col gap-10">
+          {items.map((item, index) => (
+            <div key={index} className="relative pl-12 tablet:pl-16">
+              <div className="absolute left-0 -translate-x-[8px] top-[22px] z-10 flex h-3 w-3 items-center justify-center tablet:left-[15px]">
+                <div className="timeline-dot h-[12px] w-[12px] rotate-45 bg-[#b48a45]" />
+              </div>
+              <div className="timeline-card">
+                <p className="mb-3 text-[12px] tracking-[0.28em] text-[#b48a45] tablet:text-[13px] tablet:tracking-[0.32em]">
+                  {item.label}
+                </p>
+
+                <h3 className="yeseva-one-regular text-[24px] uppercase leading-[1.05] tracking-[-0.03em] text-[#171717] tablet:text-[28px]">
+                  {item.title}
+                </h3>
+
+                <p className="mt-4 text-[15px] leading-[1.8] text-black/60 tablet:text-[16px]">
+                  {item.text}
+                </p>
+              </div>
+              <div className="timeline-badge mt-6 flex justify-start opacity-30">
+                <Badge type={item.badge} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* DESKTOP */}
+      <div className="relative hidden overflow-x-auto overflow-y-hidden custom-scrollbar scrollbar-none desktop:block">
         <div className="w-max min-w-max px-[90px]">
           <div className="relative">
             <div className="absolute left-0 top-1/2 h-[1px] w-full -translate-y-1/2 bg-[#b48a45]/20" />
-            <div className="timeline-line-progress absolute left-0 top-1/2 h-[1px] w-full -translate-y-1/2 bg-[#b48a45]" />
+            <div className="timeline-line-progress-x absolute left-0 top-1/2 h-[1px] w-full -translate-y-1/2 bg-[#b48a45]" />
 
             <div className="relative grid grid-cols-5">
               {items.map((item, index) => {
@@ -167,7 +296,7 @@ export default function TimelineHomeComponent() {
                             {item.label}
                           </p>
 
-                          <h3 className="yeseva-one-regular text-[28px] uppercase leading-[1.05] tracking-[-0.03em] text-[#171717] xl:text-[30px]">
+                          <h3 className="yeseva-one-regular text-[28px] uppercase leading-[1.05] tracking-[-0.03em] text-[#171717] ultraWild:text-[30px]">
                             {item.title}
                           </h3>
 
@@ -195,7 +324,7 @@ export default function TimelineHomeComponent() {
                             {item.label}
                           </p>
 
-                          <h3 className="yeseva-one-regular text-[28px] uppercase leading-[1.05] tracking-[-0.03em] text-[#171717] xl:text-[30px]">
+                          <h3 className="yeseva-one-regular text-[28px] uppercase leading-[1.05] tracking-[-0.03em] text-[#171717] ultraWild:text-[30px]">
                             {item.title}
                           </h3>
 
@@ -221,7 +350,8 @@ export default function TimelineHomeComponent() {
 }
 
 function Badge({ type = "seal" }) {
-  const cls = "h-[92px] w-[92px] text-[#c8b27a]";
+  const cls =
+    "h-[74px] w-[74px] text-[#c8b27a] tablet:h-[84px] tablet:w-[84px] desktop:h-[92px] desktop:w-[92px]";
 
   switch (type) {
     case "diamond":

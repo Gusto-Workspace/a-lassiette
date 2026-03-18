@@ -3,7 +3,6 @@ import { format } from "date-fns";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { Loader2, ChevronDown } from "lucide-react";
-
 export default function FormReservationComponent({
   apiBaseUrl,
   restaurant,
@@ -38,17 +37,13 @@ export default function FormReservationComponent({
   const PENDING_BANK_HOLD_STORAGE_KEY = "gm_pending_bank_hold";
   const [pendingBankHoldReservation, setPendingBankHoldReservation] =
     useState(null);
-
   const [showPendingBankHoldModal, setShowPendingBankHoldModal] =
     useState(false);
-
   const [isCancelingPendingBankHold, setIsCancelingPendingBankHold] =
     useState(false);
-
   useEffect(() => {
     setReservationData((prev) => ({ ...prev, table: manage ? "auto" : "" }));
   }, [manage]);
-
   useEffect(() => {
     async function restorePendingBankHold() {
       try {
@@ -221,12 +216,10 @@ export default function FormReservationComponent({
     reservationsList,
     openingHours,
   ]);
-
   function formatTimeDisplay(time) {
     const [h, m] = time.split(":");
     return `${h}h${m}`;
   }
-
   function handleInputChange(e) {
     const { name, value } = e.target;
     setReservationData((prev) => ({
@@ -380,21 +373,21 @@ export default function FormReservationComponent({
     <>
       {showPendingBankHoldModal && pendingBankHoldReservation && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/50 px-4">
-          <div className="w-full max-w-[620px] rounded-[28px] bg-[#f8f5ef] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.18)] sm:p-8">
-            <h3 className="yeseva-one-regular text-[30px] uppercase leading-[1.04] tracking-[-0.03em] text-[#111111]">
+          <div className="w-full max-w-[620px] rounded-[22px] bg-[#f8f5ef] p-5 shadow-[0_30px_80px_rgba(0,0,0,0.18)] tablet:rounded-[28px] tablet:p-8">
+            <h3 className="yeseva-one-regular text-[24px] uppercase leading-[1.04] tracking-[-0.03em] text-[#111111] tablet:text-[30px]">
               Réservation en attente
             </h3>
-            <p className="mt-4 text-[17px] font-light leading-[1.8] text-black/65">
+            <p className="mt-4 text-[15px] font-light leading-[1.8] text-black/65 tablet:text-[17px]">
               {pendingBankHoldReservation.customerFirstName
                 ? `${pendingBankHoldReservation.customerFirstName}, `
                 : ""}
               vous avez une réservation en attente de validation d’empreinte
               bancaire.
             </p>
-            <div className="mt-6 rounded-[22px] border border-[#b48a45]/20 bg-white/70 p-5">
-              <div className="grid gap-3 text-[15px] text-black/70 sm:grid-cols-3">
+            <div className="mt-6 rounded-[18px] border border-[#b48a45]/20 bg-white/70 p-4 tablet:rounded-[22px] tablet:p-5">
+              <div className="grid gap-4 text-[14px] text-black/70 tablet:text-[15px] desktop:grid-cols-3">
                 <p>
-                  <span className="block text-[12px] uppercase tracking-[0.28em] text-[#b48a45]">
+                  <span className="block text-[11px] uppercase tracking-[0.22em] text-[#b48a45] tablet:text-[12px] tablet:tracking-[0.28em]">
                     Date
                   </span>
                   {format(
@@ -403,25 +396,25 @@ export default function FormReservationComponent({
                   )}
                 </p>
                 <p>
-                  <span className="block text-[12px] uppercase tracking-[0.28em] text-[#b48a45]">
+                  <span className="block text-[11px] uppercase tracking-[0.22em] text-[#b48a45] tablet:text-[12px] tablet:tracking-[0.28em]">
                     Heure
                   </span>
                   {pendingBankHoldReservation.reservationTime}
                 </p>
                 <p>
-                  <span className="block text-[12px] uppercase tracking-[0.28em] text-[#b48a45]">
+                  <span className="block text-[11px] uppercase tracking-[0.22em] text-[#b48a45] tablet:text-[12px] tablet:tracking-[0.28em]">
                     Personnes
                   </span>
                   {pendingBankHoldReservation.numberOfGuests}
                 </p>
               </div>
             </div>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-end">
+            <div className="mt-8 flex flex-col gap-3 tablet:flex-row tablet:justify-end">
               <button
                 type="button"
                 onClick={handleCancelPendingBankHold}
                 disabled={isCancelingPendingBankHold}
-                className="flex h-[52px] items-center justify-center border border-[#111111]/10 px-6 text-[13px] font-medium uppercase tracking-[0.22em] text-[#111111] transition hover:opacity-80 disabled:opacity-50"
+                className="flex h-[50px] items-center justify-center border border-[#111111]/10 px-5 text-[12px] font-medium uppercase tracking-[0.18em] text-[#111111] transition hover:opacity-80 disabled:opacity-50 tablet:h-[52px] tablet:px-6 tablet:text-[13px] tablet:tracking-[0.22em]"
               >
                 {isCancelingPendingBankHold
                   ? "Annulation..."
@@ -430,7 +423,7 @@ export default function FormReservationComponent({
               <button
                 type="button"
                 onClick={handleResumePendingBankHold}
-                className="flex h-[52px] items-center justify-center bg-[#bb924b] px-6 text-[13px] font-medium uppercase tracking-[0.22em] text-white transition hover:opacity-90"
+                className="flex h-[50px] items-center justify-center bg-[#bb924b] px-5 text-[12px] font-medium uppercase tracking-[0.18em] text-white transition hover:opacity-90 tablet:h-[52px] tablet:px-6 tablet:text-[13px] tablet:tracking-[0.22em]"
               >
                 <span className="mr-2 text-[10px] opacity-80">◆</span> Finaliser
                 <span className="ml-2 text-[10px] opacity-80">◆</span>
@@ -439,18 +432,17 @@ export default function FormReservationComponent({
           </div>
         </div>
       )}
-
-      <section className="w-full bg-[#eeebe6] px-[90px] py-[90px] text-[#111111]">
+      <section className="w-full bg-[#eeebe6] px-5 py-20 text-[#111111] tablet:px-8 tablet:py-24 desktop:px-[90px] desktop:py-[90px]">
         <div className="mx-auto max-w-[1600px]">
           <div className="mx-auto max-w-[1380px]">
             <div className="mx-auto max-w-[980px] text-center">
-              <p className="mb-5 text-[14px] font-light uppercase tracking-[0.42em] text-[#b48a45] tablet:text-[16px]">
+              <p className="mb-4 text-[12px] font-light uppercase tracking-[0.28em] text-[#b48a45] tablet:mb-5 tablet:text-[14px] tablet:tracking-[0.42em] desktop:text-[16px]">
                 Réservation
               </p>
-              <h2 className="yeseva-one-regular text-[38px] uppercase leading-[1.04] tracking-[-0.04em] text-[#111111]">
+              <h2 className="yeseva-one-regular text-balance text-[28px] uppercase leading-[1.04] tracking-[-0.04em] text-[#111111] tablet:text-[34px] desktop:text-[38px]">
                 Nous avons hâte de vous voir
               </h2>
-              <p className="text-balance mx-auto mt-6 max-w-[760px] text-[18px] font-light leading-[1.85] text-black/60">
+              <p className="mx-auto mt-5 max-w-[760px] text-[15px] font-light leading-[1.8] text-black/60 tablet:mt-6 tablet:text-[16px] tablet:leading-[1.85] desktop:text-[18px]">
                 Choisissez votre date, votre horaire et renseignez vos
                 informations pour finaliser votre réservation.
               </p>
@@ -458,11 +450,11 @@ export default function FormReservationComponent({
             {!dataLoading ? (
               <form
                 onSubmit={handleSubmit}
-                className="mt-14 flex flex-col gap-10 tablet:gap-6"
+                className="mt-10 flex flex-col gap-8 tablet:mt-12 tablet:gap-10 desktop:mt-14"
               >
                 {/* PERSONNES */}
-                <div className="relative w-[calc(50%-12px)]">
-                  <label className="mb-3 block text-[12px] uppercase tracking-[0.32em] text-[#b48a45]">
+                <div className="w-full tablet:w-[320px] desktop:w-[calc(50%-12px)]">
+                  <label className="mb-3 block text-[11px] uppercase tracking-[0.24em] text-[#b48a45] tablet:text-[12px] tablet:tracking-[0.32em]">
                     Personnes
                   </label>
                   <div className="relative">
@@ -470,7 +462,7 @@ export default function FormReservationComponent({
                       name="numberOfGuests"
                       value={reservationData.numberOfGuests}
                       onChange={handleInputChange}
-                      className="h-[56px] w-full appearance-none border border-[#111111]/10 bg-white/50 px-5 pr-12 text-[17px] font-light text-[#111111] outline-none transition focus:border-[#b48a45]"
+                      className="h-[52px] w-full appearance-none border border-[#111111]/10 bg-white/50 px-4 pr-11 text-[15px] font-light text-[#111111] outline-none transition focus:border-[#b48a45] tablet:h-[56px] tablet:px-5 tablet:pr-12 tablet:text-[17px]"
                     >
                       {peopleOptions.map((value) => (
                         <option key={value} value={value}>
@@ -485,20 +477,18 @@ export default function FormReservationComponent({
                     />
                   </div>
                 </div>
-
-                <div className="flex flex-col gap-10 tablet:flex-row tablet:gap-6">
+                <div className="flex flex-col gap-8 tablet:gap-6 desktop:flex-row">
                   {/* CALENDAR */}
-                  <div className="border border-[#b48a45]/20 bg-white/50 p-5 sm:p-7 tablet:w-1/2">
+                  <div className="border border-[#b48a45]/20 bg-white/50 p-4 tablet:w-full tablet:p-6 desktop:w-1/2 desktop:p-7">
                     <div className="mb-5">
-                      <p className="text-[12px] uppercase tracking-[0.32em] text-[#b48a45]">
+                      <p className="text-[11px] uppercase tracking-[0.24em] text-[#b48a45] tablet:text-[12px] tablet:tracking-[0.32em]">
                         Calendrier
                       </p>
-                      <h3 className="yeseva-one-regular mt-3 text-[30px] uppercase leading-[1.06] tracking-[-0.03em] text-[#111111]">
+                      <h3 className="yeseva-one-regular mt-3 text-[22px] uppercase leading-[1.06] tracking-[-0.03em] text-[#111111] tablet:text-[28px] desktop:text-[30px]">
                         Choisissez votre date
                       </h3>
                     </div>
-
-                    <div className="reservation-calendar-wrapper">
+                    <div className="reservation-calendar-wrapper overflow-hidden">
                       <Calendar
                         onChange={handleDateChange}
                         value={reservationData.reservationDate}
@@ -510,30 +500,26 @@ export default function FormReservationComponent({
                       />
                     </div>
                   </div>
-
                   {/* TIMES */}
-                  <div className="relative border border-[#b48a45]/20 bg-white/50 p-5 sm:p-7 tablet:w-1/2">
-                    <div className="mb-5 flex items-end justify-between gap-4">
+                  <div className="relative border border-[#b48a45]/20 bg-white/50 p-4 tablet:w-full tablet:p-6 desktop:w-1/2 desktop:p-7">
+                    <div className="mb-5 flex items-start justify-between gap-4">
                       <div>
-                        <p className="text-[12px] uppercase tracking-[0.32em] text-[#b48a45]">
+                        <p className="text-[11px] uppercase tracking-[0.24em] text-[#b48a45] tablet:text-[12px] tablet:tracking-[0.32em]">
                           Disponibilités
                         </p>
-
-                        <h3 className="yeseva-one-regular mt-3 text-[30px] uppercase leading-[1.06] tracking-[-0.03em] text-[#111111]">
+                        <h3 className="yeseva-one-regular mt-3 text-[22px] uppercase leading-[1.06] tracking-[-0.03em] text-[#111111] tablet:text-[28px] desktop:text-[30px]">
                           Sélectionnez un horaire
                         </h3>
                       </div>
-
                       {isLoading && (
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 text-[14px] text-black/50">
+                        <div className="absolute left-1/2 top-[80%] tablet:top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 text-[13px] text-black/50 tablet:text-[14px]">
                           <Loader2 size={16} className="animate-spin" />
                           Chargement...
                         </div>
                       )}
                     </div>
-
                     {!isLoading && availableTimes.length > 0 ? (
-                      <div className="grid grid-cols-2 desktop:grid-cols-4 flex-wrap gap-2">
+                      <div className="grid grid-cols-2 gap-2 tablet:grid-cols-3 desktop:grid-cols-4">
                         {availableTimes.map((time) => {
                           const isActive =
                             reservationData.reservationTime === time;
@@ -548,7 +534,7 @@ export default function FormReservationComponent({
                                 }))
                               }
                               disabled={!reservationData.numberOfGuests}
-                              className={`min-w-[50px] border px-4 py-3 text-[15px] font-light transition ${isActive ? "border-[#bb924b] bg-[#bb924b] text-white" : "border-[#111111]/10 bg-white text-[#111111] hover:border-[#b48a45] hover:text-[#b48a45]"}`}
+                              className={`min-w-0 border px-3 py-3 text-[14px] font-light transition tablet:px-4 tablet:text-[15px] ${isActive ? "border-[#bb924b] bg-[#bb924b] text-white" : "border-[#111111]/10 bg-white text-[#111111] hover:border-[#b48a45] hover:text-[#b48a45]"}`}
                             >
                               {formatTimeDisplay(time)}
                             </button>
@@ -557,21 +543,20 @@ export default function FormReservationComponent({
                       </div>
                     ) : (
                       !isLoading && (
-                        <p className="text-[17px] font-light leading-[1.8] text-black/55">
+                        <p className="text-[15px] font-light leading-[1.8] text-black/55 tablet:text-[17px]">
                           Aucun créneau disponible pour cette date.
                         </p>
                       )
                     )}
                   </div>
                 </div>
-
                 {/* FORM */}
-                <div className="border border-[#b48a45]/20 bg-white/50 p-5 sm:p-7">
-                  <div className="mb-8">
-                    <p className="text-[12px] uppercase tracking-[0.32em] text-[#b48a45]">
+                <div className="border border-[#b48a45]/20 bg-white/50 p-4 tablet:p-6 desktop:p-7">
+                  <div className="mb-7 tablet:mb-8">
+                    <p className="text-[11px] uppercase tracking-[0.24em] text-[#b48a45] tablet:text-[12px] tablet:tracking-[0.32em]">
                       Vos informations
                     </p>
-                    <h3 className="yeseva-one-regular mt-3 text-[30px] uppercase leading-[1.06] tracking-[-0.03em] text-[#111111]">
+                    <h3 className="yeseva-one-regular mt-3 text-[22px] uppercase leading-[1.06] tracking-[-0.03em] text-[#111111] tablet:text-[28px] desktop:text-[30px]">
                       Finalisez la réservation
                     </h3>
                   </div>
@@ -605,7 +590,7 @@ export default function FormReservationComponent({
                       type="tel"
                     />
                     <div className="tablet:col-span-2">
-                      <label className="mb-3 block text-[12px] uppercase tracking-[0.32em] text-[#b48a45]">
+                      <label className="mb-3 block text-[11px] uppercase tracking-[0.24em] text-[#b48a45] tablet:text-[12px] tablet:tracking-[0.32em]">
                         Commentaire
                       </label>
                       <textarea
@@ -613,17 +598,17 @@ export default function FormReservationComponent({
                         value={reservationData.commentary}
                         onChange={handleInputChange}
                         rows={5}
-                        className="w-full resize-none border border-[#111111]/10 bg-white px-5 py-4 text-[16px] font-light text-[#111111] outline-none transition focus:border-[#b48a45]"
+                        className="w-full resize-none border border-[#111111]/10 bg-white px-4 py-4 text-[15px] font-light text-[#111111] outline-none transition focus:border-[#b48a45] tablet:px-5 tablet:text-[16px]"
                         placeholder="Une demande particulière ?"
                       />
                     </div>
                   </div>
                   {error && (
-                    <div className="mt-6 border border-red-200 bg-red-50 px-4 py-3 text-[15px] text-red-700">
+                    <div className="mt-6 border border-red-200 bg-red-50 px-4 py-3 text-[14px] text-red-700 tablet:text-[15px]">
                       {error}
                     </div>
                   )}
-                  <div className="mt-8 flex justify-end">
+                  <div className="mt-8 flex justify-start tablet:justify-end">
                     <button
                       type="submit"
                       disabled={
@@ -631,7 +616,7 @@ export default function FormReservationComponent({
                         isLoading ||
                         isSubmitting
                       }
-                      className="flex h-[56px] min-w-[220px] items-center justify-center bg-[#bb924b] px-6 text-[13px] font-medium uppercase tracking-[0.28em] text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex h-[52px] w-full items-center justify-center bg-[#bb924b] px-5 text-[12px] font-medium uppercase tracking-[0.22em] text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 tablet:h-[56px] tablet:w-auto tablet:min-w-[220px] tablet:px-6 tablet:text-[13px] tablet:tracking-[0.28em]"
                     >
                       {isSubmitting ? (
                         <span className="flex items-center gap-2">
@@ -650,7 +635,7 @@ export default function FormReservationComponent({
                 </div>
               </form>
             ) : (
-              <p className="flex gap-2 w-full h-[400px] items-center justify-center">
+              <p className="flex h-[320px] w-full items-center justify-center gap-2 tablet:h-[400px]">
                 Chargement <Loader2 size={18} className="animate-spin" />
               </p>
             )}
@@ -660,7 +645,6 @@ export default function FormReservationComponent({
     </>
   );
 }
-
 function Field({
   label,
   name,
@@ -671,7 +655,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="mb-3 block text-[12px] uppercase tracking-[0.32em] text-[#b48a45]">
+      <label className="mb-3 block text-[11px] uppercase tracking-[0.24em] text-[#b48a45] tablet:text-[12px] tablet:tracking-[0.32em]">
         {label}
       </label>
       <input
@@ -680,7 +664,7 @@ function Field({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="h-[56px] w-full border border-[#111111]/10 bg-white px-5 text-[16px] font-light text-[#111111] outline-none transition focus:border-[#b48a45]"
+        className="h-[52px] w-full border border-[#111111]/10 bg-white px-4 text-[15px] font-light text-[#111111] outline-none transition focus:border-[#b48a45] tablet:h-[56px] tablet:px-5 tablet:text-[16px]"
       />
     </div>
   );

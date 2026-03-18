@@ -59,7 +59,7 @@ export default function ReservationsPage() {
         <div ref={heroRef}>
           <BannerComponent
             title="Réserver une table"
-            imgUrl="reservations/1.jpg"
+            imgUrl="reservations/2.jpg"
             opacity={true}
           />
         </div>
