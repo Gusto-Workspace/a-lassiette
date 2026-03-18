@@ -67,7 +67,7 @@ export default function HomePage() {
         <SpecialtiesHomeComponent />
         <VideoBannerHomeComponent />
         <TimelineHomeComponent />
-        <MenuInspiredHomeComponent />
+        <MenuInspiredHomeComponent menusPage={false}/>
         <ExperienceHomeComponent />
         <TestimonialsHomeComponent />
         <ContactHomeComponent />

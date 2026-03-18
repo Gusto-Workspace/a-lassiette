@@ -64,14 +64,14 @@ function MenuCard({ title, price, items }) {
   );
 }
 
-export default function MenuInspiredHomeComponent() {
+export default function MenuInspiredHomeComponent(props) {
   return (
     <section className="w-full bg-[#eeebe6] text-[#111111] px-[90px] py-[140px]">
       <div className="mx-auto max-w-[1600px]">
         {/* TITLE */}
         <div className="mx-auto max-w-[1000px] text-center">
           <p className="mb-5 text-[14px] font-light uppercase tracking-[0.42em] text-[#b48a45] md:text-[16px]">
-            Carte et menu
+            {!props.menusPage ? "Carte et menus" : "Menus"}
           </p>
 
           <h2 className="text-[40px] uppercase leading-[1.04] tracking-[-0.04em] md:text-[54px] yeseva-one-regular">
@@ -131,16 +131,18 @@ export default function MenuInspiredHomeComponent() {
             ))}
 
             {/* BUTTON */}
-            <div className="flex justify-center">
-              <button
-                type="button"
-                className="flex h-[52px] w-[220px] items-center justify-center bg-[#bb924b] text-[14px] font-medium uppercase tracking-[0.28em] text-white hover:opacity-90 transition"
-              >
-                <span className="mr-2 text-[10px] opacity-80">◆</span>
-                Voir la carte
-                <span className="ml-2 text-[10px] opacity-80">◆</span>
-              </button>
-            </div>
+            {!props.menusPage && (
+              <div className="flex justify-center">
+                <button
+                  type="button"
+                  className="flex h-[52px] w-[220px] items-center justify-center bg-[#bb924b] text-[14px] font-medium uppercase tracking-[0.28em] text-white hover:opacity-90 transition"
+                >
+                  <span className="mr-2 text-[10px] opacity-80">◆</span>
+                  Voir la carte
+                  <span className="ml-2 text-[10px] opacity-80">◆</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

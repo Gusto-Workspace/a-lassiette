@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 
 const menuItems = [
-  { label: "Carte & Menu", href: "/menu" },
+  { label: "Carte & Menus", href: "/menus" },
   { label: "Réserver", href: "/reservations" },
   { label: "Contact", href: "/contact" },
 ];

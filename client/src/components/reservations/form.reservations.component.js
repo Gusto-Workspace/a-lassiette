@@ -440,7 +440,7 @@ export default function FormReservationComponent({
         </div>
       )}
 
-      <section className="w-full bg-[#eeebe6] px-[90px] py-[90px] text-[#111111] sm:px-8 lg:px-[90px] lg:py-[120px]">
+      <section className="w-full bg-[#eeebe6] px-[90px] py-[90px] text-[#111111]">
         <div className="mx-auto max-w-[1600px]">
           <div className="mx-auto max-w-[1380px]">
             <div className="mx-auto max-w-[980px] text-center">
@@ -512,18 +512,20 @@ export default function FormReservationComponent({
                   </div>
 
                   {/* TIMES */}
-                  <div className="border border-[#b48a45]/20 bg-white/50 p-5 sm:p-7 tablet:w-1/2">
+                  <div className="relative border border-[#b48a45]/20 bg-white/50 p-5 sm:p-7 tablet:w-1/2">
                     <div className="mb-5 flex items-end justify-between gap-4">
                       <div>
                         <p className="text-[12px] uppercase tracking-[0.32em] text-[#b48a45]">
                           Disponibilités
                         </p>
+
                         <h3 className="yeseva-one-regular mt-3 text-[30px] uppercase leading-[1.06] tracking-[-0.03em] text-[#111111]">
                           Sélectionnez un horaire
                         </h3>
                       </div>
+
                       {isLoading && (
-                        <div className="flex items-center gap-2 text-[14px] text-black/50">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 text-[14px] text-black/50">
                           <Loader2 size={16} className="animate-spin" />
                           Chargement...
                         </div>

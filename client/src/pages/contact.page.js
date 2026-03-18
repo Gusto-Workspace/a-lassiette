@@ -9,7 +9,6 @@ import NavComponent from "@/components/_shared/nav/nav.component";
 import FooterComponent from "@/components/_shared/footer/footer.component";
 import MapContactComponent from "@/components/contact/map.contact.component";
 import InfosContactComponent from "@/components/contact/infos.contact.component";
-import FormContactComponent from "@/components/contact/form.contact.component";
 import BannerComponent from "@/components/_shared/banner/banner.component";
 
 export default function ContactPage() {
