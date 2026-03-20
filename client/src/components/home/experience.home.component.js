@@ -8,7 +8,7 @@ export default function ExperienceHomeComponent() {
           {/* BIG RIGHT IMAGE */}
           <div className="absolute right-0 top-0 h-[300px] w-[68%] overflow-hidden tablet:h-[400px] desktop:h-[500px] ultraWild:h-[620px]">
             <Image
-              src="/img/specialities/2.jpg"
+              src="/img/experience/1.jpg"
               alt="dish"
               fill
               className="object-cover"
@@ -18,7 +18,7 @@ export default function ExperienceHomeComponent() {
           {/* LEFT OVERLAY IMAGE */}
           <div className="absolute bottom-0 left-0 z-20 h-[220px] w-[62%] overflow-hidden bg-[#f3f3f3] tablet:h-[300px] desktop:-bottom-[15px] desktop:left-auto desktop:right-[240px] desktop:h-[360px] desktop:w-[55%] ultraWild:bottom-[40px] ultraWild:right-[240px] ultraWild:h-[430px] ultraWild:w-[430px]">
             <Image
-              src="/img/specialities/1.jpg"
+              src="/img/experience/2.webp"
               alt="Table view"
               fill
               className="object-cover"
@@ -72,7 +72,7 @@ export default function ExperienceHomeComponent() {
                 {/* BIG RIGHT IMAGE */}
                 <div className="absolute right-0 top-0 h-[300px] w-[68%] overflow-hidden tablet:h-[400px] desktop:h-[500px] ultraWild:h-[620px]">
                   <Image
-                    src="/img/specialities/2.jpg"
+                    src="/img/experience/1.jpg"
                     alt="dish"
                     fill
                     className="object-cover"
@@ -82,7 +82,7 @@ export default function ExperienceHomeComponent() {
                 {/* LEFT OVERLAY IMAGE */}
                 <div className="absolute bottom-0 left-0 z-20 h-[220px] w-[62%] overflow-hidden bg-[#f3f3f3] tablet:h-[300px] desktop:-bottom-[15px] desktop:left-auto desktop:right-[240px] desktop:h-[360px] desktop:w-[55%] ultraWild:bottom-[40px] ultraWild:right-[240px] ultraWild:h-[430px] ultraWild:w-[430px]">
                   <Image
-                    src="/img/specialities/1.jpg"
+                    src="/img/experience/2.webp"
                     alt="Table view"
                     fill
                     className="object-cover"

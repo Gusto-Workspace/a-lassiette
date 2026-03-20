@@ -286,7 +286,7 @@ export default function TimelineHomeComponent() {
                 return (
                   <div
                     key={index}
-                    className="relative flex min-h-[520px] w-[380px] flex-col items-center"
+                    className="relative flex min-h-[550px] w-[380px] flex-col items-center"
                   >
                     {/* TOP */}
                     <div className="flex h-1/2 w-full items-end justify-center pb-[72px]">
