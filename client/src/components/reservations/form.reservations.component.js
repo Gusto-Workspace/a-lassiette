@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -24,8 +24,10 @@ export default function FormReservationComponent({
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [reservationsList, setReservationsList] = useState([]);
+  const [reservationsListLoading, setReservationsListLoading] =
+    useState(false);
   const parameters = restaurant?.reservations?.parameters || {};
-  const reservationsList = restaurant?.reservations?.list || [];
   const openingHours = restaurant?.opening_hours || [];
   const manage = !!parameters.manage_disponibilities;
   const [idempotencyKey] = useState(() => {
@@ -41,9 +43,43 @@ export default function FormReservationComponent({
     useState(false);
   const [isCancelingPendingBankHold, setIsCancelingPendingBankHold] =
     useState(false);
+  const fetchReservationsList = useCallback(async () => {
+    if (!apiBaseUrl || !restaurant?._id) {
+      setReservationsList([]);
+      return [];
+    }
+    try {
+      setReservationsListLoading(true);
+      const res = await fetch(
+        `${apiBaseUrl}/restaurants/${restaurant._id}/reservations`,
+      );
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(
+          data?.message || "Impossible de charger les réservations.",
+        );
+      }
+      const nextReservations = Array.isArray(data?.reservations)
+        ? data.reservations
+        : [];
+      setReservationsList(nextReservations);
+      return nextReservations;
+    } catch (error) {
+      console.error("[fetchReservationsList]", error);
+      setReservationsList([]);
+      return [];
+    } finally {
+      setReservationsListLoading(false);
+    }
+  }, [apiBaseUrl, restaurant?._id]);
   useEffect(() => {
     setReservationData((prev) => ({ ...prev, table: manage ? "auto" : "" }));
   }, [manage]);
+
+  useEffect(() => {
+    fetchReservationsList();
+  }, [fetchReservationsList]);
+
   useEffect(() => {
     async function restorePendingBankHold() {
       try {
@@ -125,6 +161,7 @@ export default function FormReservationComponent({
   useEffect(() => {
     if (!restaurant?.reservations || !reservationData.reservationDate) return;
     setIsLoading(true);
+    if (reservationsListLoading) return;
     const selectedDay = reservationData.reservationDate.getDay();
     const dayIndex = selectedDay === 0 ? 6 : selectedDay - 1;
     const dayHours = parameters.same_hours_as_restaurant
@@ -214,6 +251,7 @@ export default function FormReservationComponent({
     parameters.reservation_duration,
     parameters.reservation_duration_minutes,
     reservationsList,
+    reservationsListLoading,
     openingHours,
   ]);
   function formatTimeDisplay(time) {
@@ -265,6 +303,7 @@ export default function FormReservationComponent({
       localStorage.removeItem(PENDING_BANK_HOLD_STORAGE_KEY);
       setPendingBankHoldReservation(null);
       setShowPendingBankHoldModal(false);
+      await fetchReservationsList();
     } catch (err) {
       setError(
         err?.message || "Impossible d’annuler la réservation en attente.",
@@ -349,7 +388,8 @@ export default function FormReservationComponent({
         window.location.href = data.redirectUrl;
         return;
       }
-      onBooked?.(data.restaurant);
+      await fetchReservationsList();
+      onBooked?.(data.restaurant || restaurant);
       setReservationData((prev) => ({
         ...prev,
         reservationTime: "",
