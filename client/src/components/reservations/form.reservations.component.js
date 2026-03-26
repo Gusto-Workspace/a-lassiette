@@ -27,8 +27,10 @@ export default function FormReservationComponent({
   const [reservationsList, setReservationsList] = useState([]);
   const [reservationsListLoading, setReservationsListLoading] =
     useState(false);
-  const parameters = restaurant?.reservations?.parameters || {};
+  const parameters =
+    restaurant?.reservationsSettings || restaurant?.reservations?.parameters || {};
   const openingHours = restaurant?.opening_hours || [];
+  const tablesCatalog = Array.isArray(parameters.tables) ? parameters.tables : [];
   const manage = !!parameters.manage_disponibilities;
   const [idempotencyKey] = useState(() => {
     if (typeof crypto !== "undefined" && crypto.randomUUID) {
@@ -143,6 +145,67 @@ export default function FormReservationComponent({
       date.getFullYear() === today.getFullYear()
     );
   }
+  function getServiceBucketFromTime(reservationTime) {
+    const [hh = "0"] = String(reservationTime || "00:00").split(":");
+    return Number(hh) < 16 ? "lunch" : "dinner";
+  }
+  function getOccupancyMinutesFront(parameters, reservationTime) {
+    const bucket = getServiceBucketFromTime(reservationTime);
+    const value =
+      bucket === "lunch"
+        ? parameters?.table_occupancy_lunch_minutes
+        : parameters?.table_occupancy_dinner_minutes;
+    const parsed = Number(value || 0);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+  }
+  function minutesFromHHmm(timeStr) {
+    const [hour, minute] = String(timeStr || "00:00").split(":").map(Number);
+    return (Number(hour) || 0) * 60 + (Number(minute) || 0);
+  }
+  function isBlockingReservationFront(reservation) {
+    if (!reservation) return false;
+    if (
+      !["AwaitingBankHold", "Pending", "Confirmed", "Active", "Late"].includes(
+        reservation.status,
+      )
+    ) {
+      return false;
+    }
+    if (reservation.status === "AwaitingBankHold") {
+      const bankHoldEnabled = Boolean(reservation?.bankHold?.enabled);
+      const bankHoldExpiresAt = reservation?.bankHold?.expiresAt
+        ? new Date(reservation.bankHold.expiresAt).getTime()
+        : null;
+      if (
+        bankHoldEnabled &&
+        Number.isFinite(bankHoldExpiresAt) &&
+        bankHoldExpiresAt <= Date.now()
+      ) {
+        return false;
+      }
+      return true;
+    }
+    if (reservation.status !== "Pending") return true;
+    const bankHoldEnabled = Boolean(reservation?.bankHold?.enabled);
+    const bankHoldExpiresAt = reservation?.bankHold?.expiresAt
+      ? new Date(reservation.bankHold.expiresAt).getTime()
+      : null;
+    if (
+      bankHoldEnabled &&
+      Number.isFinite(bankHoldExpiresAt) &&
+      bankHoldExpiresAt <= Date.now()
+    ) {
+      return false;
+    }
+    if (!reservation.pendingExpiresAt) return true;
+    return new Date(reservation.pendingExpiresAt).getTime() > Date.now();
+  }
+  function requiredTableSizeFromGuestsFront(value) {
+    const guests = Number(value || 0);
+    if (guests <= 0) return 0;
+    if (guests === 1) return 1;
+    return guests % 2 === 0 ? guests : guests + 1;
+  }
   function generateTimeOptions(openTime, closeTime, interval) {
     const times = [];
     const [openHour, openMinute] = openTime.split(":").map(Number);
@@ -159,7 +222,7 @@ export default function FormReservationComponent({
     return times;
   }
   useEffect(() => {
-    if (!restaurant?.reservations || !reservationData.reservationDate) return;
+    if (!restaurant?._id || !reservationData.reservationDate) return;
     setIsLoading(true);
     if (reservationsListLoading) return;
     const selectedDay = reservationData.reservationDate.getDay();
@@ -190,55 +253,84 @@ export default function FormReservationComponent({
       });
     }
     if (manage && reservationData.numberOfGuests) {
-      const num = Number(reservationData.numberOfGuests);
-      const required = num % 2 === 0 ? num : num + 1;
+      const required = requiredTableSizeFromGuestsFront(
+        reservationData.numberOfGuests,
+      );
       const formattedSelectedDate = format(
         reservationData.reservationDate,
         "yyyy-MM-dd",
       );
-      if (parameters.reservation_duration) {
-        const duration = Number(parameters.reservation_duration_minutes);
-        all = all.filter((time) => {
-          const [hour, minute] = time.split(":").map(Number);
-          const candidateStart = hour * 60 + minute;
-          const candidateEnd = candidateStart + duration;
-          const conflicts = reservationsList.filter((r) => {
-            const rDate = new Date(r.reservationDate);
-            const formattedRDate = format(rDate, "yyyy-MM-dd");
-            if (formattedRDate !== formattedSelectedDate) return false;
-            if (!["Confirmed", "Late", "Active"].includes(r.status)) {
-              return false;
-            }
-            if (!r.table || Number(r.table.seats) !== required) return false;
-            const [rHour, rMinute] = r.reservationTime.split(":").map(Number);
-            const rStart = rHour * 60 + rMinute;
-            const rEnd = rStart + duration;
-            return candidateStart < rEnd && candidateEnd > rStart;
-          });
-          const totalTables = (parameters.tables || []).filter(
-            (t) =>
-              Number(t.seats) === required && t?.onlineBookable !== false,
-          ).length;
-          return conflicts.length < totalTables;
+
+      if (required > 0) {
+        const eligibleTables = tablesCatalog.filter(
+          (table) =>
+            Number(table?.seats || 0) === required &&
+            table?.onlineBookable !== false,
+        );
+
+        const dayReservations = reservationsList.filter((reservation) => {
+          const reservationDate = new Date(reservation.reservationDate);
+          const formattedReservationDate = format(
+            reservationDate,
+            "yyyy-MM-dd",
+          );
+
+          return (
+            formattedReservationDate === formattedSelectedDate &&
+            isBlockingReservationFront(reservation)
+          );
         });
-      } else {
+
         all = all.filter((time) => {
-          const conflicts = reservationsList.filter((r) => {
-            const rDate = new Date(r.reservationDate);
-            const formattedRDate = format(rDate, "yyyy-MM-dd");
-            if (formattedRDate !== formattedSelectedDate) return false;
-            if (r.reservationTime !== time) return false;
-            if (!["Confirmed", "Late", "Active"].includes(r.status)) {
-              return false;
+          if (!eligibleTables.length) return false;
+
+          const candidateStart = minutesFromHHmm(time);
+          const candidateDuration = getOccupancyMinutesFront(parameters, time);
+          const candidateEnd = candidateStart + candidateDuration;
+
+          const conflicts = dayReservations.filter((reservation) => {
+            if (!reservation?.table) return false;
+
+            const reservationTableId = reservation?.table?._id
+              ? String(reservation.table._id)
+              : null;
+            const reservationTableName = String(
+              reservation?.table?.name || "",
+            );
+
+            const matchesEligibleTable = eligibleTables.some((table) => {
+              const tableId = table?._id ? String(table._id) : null;
+
+              if (tableId && reservationTableId) {
+                return tableId === reservationTableId;
+              }
+
+              return String(table?.name || "") === reservationTableName;
+            });
+
+            if (!matchesEligibleTable) return false;
+
+            const reservationTime = String(
+              reservation.reservationTime || "",
+            ).slice(0, 5);
+            const reservationStart = minutesFromHHmm(reservationTime);
+            const reservationDuration = getOccupancyMinutesFront(
+              parameters,
+              reservationTime,
+            );
+            const reservationEnd = reservationStart + reservationDuration;
+
+            if (candidateDuration > 0 && reservationDuration > 0) {
+              return (
+                candidateStart < reservationEnd &&
+                candidateEnd > reservationStart
+              );
             }
-            if (!r.table || Number(r.table.seats) !== required) return false;
-            return true;
+
+            return reservationTime === String(time).slice(0, 5);
           });
-          const totalTables = (parameters.tables || []).filter(
-            (t) =>
-              Number(t.seats) === required && t?.onlineBookable !== false,
-          ).length;
-          return conflicts.length < totalTables;
+
+          return conflicts.length < eligibleTables.length;
         });
       }
     }
@@ -250,11 +342,14 @@ export default function FormReservationComponent({
     reservationData.numberOfGuests,
     parameters.interval,
     parameters.manage_disponibilities,
-    parameters.reservation_duration,
-    parameters.reservation_duration_minutes,
+    parameters.reservation_hours,
+    parameters.same_hours_as_restaurant,
+    parameters.table_occupancy_lunch_minutes,
+    parameters.table_occupancy_dinner_minutes,
     reservationsList,
     reservationsListLoading,
     openingHours,
+    tablesCatalog,
   ]);
   function formatTimeDisplay(time) {
     const [h, m] = time.split(":");
