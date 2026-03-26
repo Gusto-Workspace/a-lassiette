@@ -16,7 +16,7 @@ export default function HeroSectionHomeComponent() {
   }, []);
 
   return (
-    <section className="relative min-h-[760px] w-full overflow-hidden bg-[#022401] text-white tablet:min-h-[860px] desktop:h-screen desktop:min-h-[900px]">
+    <section className="relative min-h-[760px] w-full overflow-hidden bg-[#022401] text-white tablet:min-h-[860px] desktop:h-screen desktop:min-h-[930px]">
       <div className="relative h-full min-h-[760px] w-full tablet:min-h-[860px] desktop:min-h-[900px]">
         {/* IMAGE */}
         <div className="absolute inset-0 overflow-hidden desktop:left-[30%] desktop:top-[102px] desktop:h-[695px] desktop:w-full ultraWild:left-[30%]">
@@ -86,7 +86,7 @@ export default function HeroSectionHomeComponent() {
 
           <button
             type="button"
-            className="flex h-[52px] w-full items-center justify-between border border-white/20 px-5 text-left text-[16px] font-light text-white/90 tablet:px-6 tablet:text-[17px] desktop:w-[232px] desktop:text-[18px]"
+            className="flex h-[52px] min-w-[180px] w-full items-center justify-between border border-white/20 px-5 text-left text-[16px] font-light text-white/90 tablet:px-6 tablet:text-[17px] desktop:w-[232px] desktop:text-[18px]"
           >
             <span>1 Personne</span>
             <ChevronDown size={18} strokeWidth={1.4} />
