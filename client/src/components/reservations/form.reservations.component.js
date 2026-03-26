@@ -151,7 +151,7 @@ export default function FormReservationComponent({
     const end = closeHour * 60 + closeMinute;
     const step = parseInt(String(interval), 10);
     if (isNaN(step) || step <= 0) return times;
-    for (let minutes = start; minutes <= end - step; minutes += step) {
+    for (let minutes = start; minutes <= end; minutes += step) {
       const hour = String(Math.floor(minutes / 60)).padStart(2, "0");
       const minute = String(minutes % 60).padStart(2, "0");
       times.push(`${hour}:${minute}`);
