@@ -216,7 +216,8 @@ export default function FormReservationComponent({
             return candidateStart < rEnd && candidateEnd > rStart;
           });
           const totalTables = (parameters.tables || []).filter(
-            (t) => Number(t.seats) === required,
+            (t) =>
+              Number(t.seats) === required && t?.onlineBookable !== false,
           ).length;
           return conflicts.length < totalTables;
         });
@@ -234,7 +235,8 @@ export default function FormReservationComponent({
             return true;
           });
           const totalTables = (parameters.tables || []).filter(
-            (t) => Number(t.seats) === required,
+            (t) =>
+              Number(t.seats) === required && t?.onlineBookable !== false,
           ).length;
           return conflicts.length < totalTables;
         });
