@@ -6,17 +6,17 @@ export default function ExperienceHomeComponent() {
       <div className="block pb-[90px] desktop:hidden relative mx-auto w-full max-w-[430px] tablet:max-w-[620px] desktop:mx-0 desktop:w-[58%] desktop:max-w-none ultraWild:w-[60%]">
         <div className="relative h-[420px] w-full tablet:h-[520px] desktop:h-[560px] ultraWild:h-[620px]">
           {/* BIG RIGHT IMAGE */}
-          <div className="absolute right-0 top-0 h-[300px] w-[68%] overflow-hidden tablet:h-[400px] desktop:h-[500px] ultraWild:h-[620px]">
+          {/* <div className="absolute right-0 top-0 h-[300px] w-[68%] overflow-hidden tablet:h-[400px] desktop:h-[500px] ultraWild:h-[620px]">
             <Image
               src="/img/experience/1.jpg"
               alt="dish"
               fill
               className="object-cover"
             />
-          </div>
+          </div> */}
 
           {/* LEFT OVERLAY IMAGE */}
-          <div className="absolute bottom-0 left-0 z-20 h-[220px] w-[62%] overflow-hidden bg-[#f3f3f3] tablet:h-[300px] desktop:-bottom-[15px] desktop:left-auto desktop:right-[240px] desktop:h-[360px] desktop:w-[55%] ultraWild:bottom-[40px] ultraWild:right-[240px] ultraWild:h-[430px] ultraWild:w-[430px]">
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 z-20 h-[420px] w-[80%] overflow-hidden bg-[#f3f3f3] tablet:h-[300px] ">
             <Image
               src="/img/experience/2.webp"
               alt="Table view"

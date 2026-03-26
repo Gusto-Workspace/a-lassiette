@@ -231,14 +231,14 @@ export default function FullMenuHomeComponent() {
       <div className="relative w-full mt-[90px]">
         <div className="block h-[650px] w-full overflow-hidden">
           <Image
-            src="/img/video-banner/1.webp"
+            src="/img/hero/2.jpg"
             alt="Présentation du restaurant"
             fill
             className="object-cover"
             priority={false}
           />
 
-          <div className="absolute inset-0 bg-black/20" />
+          <div className="absolute inset-0 bg-black/40" />
         </div>
       </div>
 
