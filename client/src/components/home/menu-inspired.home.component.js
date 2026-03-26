@@ -93,7 +93,7 @@ export default function MenuInspiredHomeComponent(props) {
             <div className="relative overflow-hidden rounded-t-[180px] border border-[#b48a45] p-3 tablet:rounded-t-[220px] tablet:p-4 desktop:rounded-t-[240px]">
               <div className="relative h-[420px] overflow-hidden rounded-t-[180px] tablet:h-[500px] tablet:rounded-t-[220px] desktop:h-[570px] desktop:rounded-t-[240px]">
                 <Image
-                  src="/img/menu-inspired/1.webp"
+                  src="/img/menu-inspired/1.png"
                   alt="Cuisine et dressage à l'assiette"
                   fill
                   className="object-cover"

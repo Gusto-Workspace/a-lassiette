@@ -70,9 +70,9 @@ export default function ExperienceHomeComponent() {
             <div className="hidden desktop:block relative mx-auto w-full max-w-[430px] tablet:max-w-[620px] desktop:mx-0 desktop:w-[58%] desktop:max-w-none ultraWild:w-[60%]">
               <div className="relative h-[420px] w-full tablet:h-[520px] desktop:h-[560px] ultraWild:h-[620px]">
                 {/* BIG RIGHT IMAGE */}
-                <div className="absolute right-0 top-0 h-[300px] w-[68%] overflow-hidden tablet:h-[400px] desktop:h-[500px] ultraWild:h-[620px]">
+                <div className="absolute right-0 top-0 h-[300px] w-[58%] overflow-hidden tablet:h-[400px] desktop:h-[500px] ultraWild:h-[620px]">
                   <Image
-                    src="/img/experience/1.jpg"
+                    src="/img/experience/2.webp"
                     alt="dish"
                     fill
                     className="object-cover"
@@ -80,14 +80,14 @@ export default function ExperienceHomeComponent() {
                 </div>
 
                 {/* LEFT OVERLAY IMAGE */}
-                <div className="absolute bottom-0 left-0 z-20 h-[220px] w-[62%] overflow-hidden bg-[#f3f3f3] tablet:h-[300px] desktop:-bottom-[15px] desktop:left-auto desktop:right-[240px] desktop:h-[360px] desktop:w-[55%] ultraWild:bottom-[40px] ultraWild:right-[240px] ultraWild:h-[430px] ultraWild:w-[430px]">
+                {/* <div className="absolute bottom-0 left-0 z-20 h-[220px] w-[62%] overflow-hidden bg-[#f3f3f3] tablet:h-[300px] desktop:-bottom-[15px] desktop:left-auto desktop:right-[240px] desktop:h-[360px] desktop:w-[55%] ultraWild:bottom-[40px] ultraWild:right-[240px] ultraWild:h-[430px] ultraWild:w-[430px]">
                   <Image
                     src="/img/experience/2.webp"
                     alt="Table view"
                     fill
                     className="object-cover"
                   />
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -109,7 +109,7 @@ export default function ExperienceHomeComponent() {
         {/* SMALL OVERLAY IMAGE */}
         <div className="absolute left-0 top-[180px] z-20 h-[260px] w-[52vw] overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.12)] tablet:top-[220px] tablet:h-[360px] tablet:w-[42vw] desktop:-top-[40px] desktop:h-[520px] desktop:w-[34vw] ultraWild:-top-[60px] ultraWild:h-[620px] ultraWild:w-[35vw]">
           <Image
-            src="/img/experience/3.jpg"
+            src="/img/experience/terrasse.png"
             alt="Cocktail signature"
             fill
             className="object-cover"

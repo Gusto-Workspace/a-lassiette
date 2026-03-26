@@ -15,14 +15,14 @@ export default function VideoBannerHomeComponent() {
           aria-label="Lire la vidéo"
         >
           <Image
-            src="/img/video-banner/1.webp"
+            src="/img/video-banner/1.png"
             alt="Présentation du restaurant"
             fill
             className="object-cover transition duration-700 group-hover:scale-[1.03]"
             priority={false}
           />
 
-          <div className="absolute inset-0 bg-black/20 transition duration-500 group-hover:bg-black/30" />
+          <div className="absolute inset-0 bg-black/40 transition duration-500 group-hover:bg-black/30" />
 
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="flex h-[116px] w-[116px] items-center justify-center rounded-full border border-white/90 bg-white/5 backdrop-blur-[2px] transition duration-300 group-hover:scale-105">

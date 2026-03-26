@@ -47,7 +47,6 @@ export default function HeroSectionHomeComponent() {
           }
         >
           <ArrowLeft size={28} strokeWidth={1.2} />
-          <span className="-ml-3 h-px w-[34px] bg-[#b48a45]" />
         </button>
 
         {/* RIGHT ARROW */}
@@ -57,7 +56,6 @@ export default function HeroSectionHomeComponent() {
           className="absolute right-[58px] top-[452px] z-20 hidden items-center text-[#b48a45] desktop:flex"
           onClick={() => setCurrent((prev) => (prev + 1) % images.length)}
         >
-          <span className="-mr-3 h-px w-[34px] bg-[#b48a45]" />
           <ArrowRight size={28} strokeWidth={1.2} />
         </button>
 
