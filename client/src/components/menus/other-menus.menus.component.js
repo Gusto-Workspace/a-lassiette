@@ -72,10 +72,7 @@ export default function OtherMenusComponent({ restaurantData }) {
             const priceLabel = getMenuPriceLabel(menu);
             const isLastOddCard =
               menus.length % 2 === 1 && index === menus.length - 1;
-            const blocksLayoutClass =
-              menu?.type === "custom"
-                ? "mt-7 flex flex-col gap-4 tablet:mt-8"
-                : "mt-7 grid gap-5 tablet:mt-8 tablet:grid-cols-2";
+            const blocksLayoutClass = "mt-7 flex flex-col gap-4 tablet:mt-8";
 
             return (
               <article
