@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 
 // I18N
@@ -10,6 +9,7 @@ import FooterComponent from "@/components/_shared/footer/footer.component";
 import MapContactComponent from "@/components/contact/map.contact.component";
 import InfosContactComponent from "@/components/contact/infos.contact.component";
 import BannerComponent from "@/components/_shared/banner/banner.component";
+import SeoHeadComponent from "@/components/_shared/seo/seo-head.component";
 
 export default function ContactPage() {
   const heroRef = useRef(null);
@@ -35,9 +35,12 @@ export default function ContactPage() {
 
   return (
     <>
-      <Head>
-        <title>Contact - A l'Assiette</title>
-      </Head>
+      <SeoHeadComponent
+        title="Contact - À l'Assiette"
+        description="Contactez À l’Assiette à Brive-la-Gaillarde pour une réservation, une demande d’information ou un message."
+        path="/contact"
+        image="/img/contact/1.jpg"
+      />
 
       <div className="relative">
         <NavComponent

@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { useContext, useEffect, useRef, useState } from "react";
 
 // I18N
@@ -12,6 +11,7 @@ import NavComponent from "@/components/_shared/nav/nav.component";
 import FooterComponent from "@/components/_shared/footer/footer.component";
 import BannerComponent from "@/components/_shared/banner/banner.component";
 import FormReservationsComponent from "@/components/reservations/form.reservations.component";
+import SeoHeadComponent from "@/components/_shared/seo/seo-head.component";
 
 export default function ReservationsPage() {
   const { restaurantContext } = useContext(GlobalContext);
@@ -39,9 +39,12 @@ export default function ReservationsPage() {
 
   return (
     <>
-      <Head>
-        <title>Réserver - A l'Assiette</title>
-      </Head>
+      <SeoHeadComponent
+        title="Réserver une table - À l'Assiette"
+        description="Réservez votre table en ligne chez À l’Assiette à Brive-la-Gaillarde et choisissez votre date, votre horaire et votre nombre de convives."
+        path="/reservations"
+        image="/img/reservations/2.jpg"
+      />
 
       <div className="relative">
         <NavComponent

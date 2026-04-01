@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { useContext, useEffect, useRef, useState } from "react";
 
 // I18N
@@ -9,6 +8,7 @@ import NavComponent from "@/components/_shared/nav/nav.component";
 import FooterComponent from "@/components/_shared/footer/footer.component";
 import BannerComponent from "@/components/_shared/banner/banner.component";
 import ListMenusComponent from "@/components/menus/list.menus.component";
+import SeoHeadComponent from "@/components/_shared/seo/seo-head.component";
 
 // CONTEXT
 import { GlobalContext } from "@/contexts/global.context";
@@ -38,9 +38,12 @@ export default function MenusPage(props) {
 
   return (
     <>
-      <Head>
-        <title>Carte & Menus - A l'Assiette</title>
-      </Head>
+      <SeoHeadComponent
+        title="Carte & Menus - À l'Assiette"
+        description="Découvrez la carte et les menus d’À l’Assiette à Brive-la-Gaillarde, entre cuisine de saison et esprit brasserie."
+        path="/menus"
+        image="/img/menu-inspired/2.jpg"
+      />
 
       <div className="relative">
         <NavComponent

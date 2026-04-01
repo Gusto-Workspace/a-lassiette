@@ -1,12 +1,16 @@
-import Head from "next/head";
 import ResumeReservationsComponent from "@/components/reservations/resume.reservations.component";
+import SeoHeadComponent from "@/components/_shared/seo/seo-head.component";
 
 export default function ReservationResumePage({ reservationId }) {
   return (
     <>
-      <Head>
-        <title>Réservation - A l'Assiette</title>
-      </Head>
+      <SeoHeadComponent
+        title="Suivi de réservation - À l'Assiette"
+        description="Consultez le suivi de votre réservation À l’Assiette."
+        path={reservationId ? `/reservations/${reservationId}` : "/reservations"}
+        image="/img/reservations/2.jpg"
+        noIndex={true}
+      />
 
       <ResumeReservationsComponent
         reservationId={reservationId}

@@ -1,12 +1,20 @@
-import Head from "next/head";
 import BankHoldReservationsComponent from "@/components/reservations/bank-hold.reservations.component";
+import SeoHeadComponent from "@/components/_shared/seo/seo-head.component";
 
 export default function ReservationBankHoldPage({ reservationId }) {
   return (
     <>
-      <Head>
-        <title>Validation carte - A l'Assiette</title>
-      </Head>
+      <SeoHeadComponent
+        title="Validation carte - À l'Assiette"
+        description="Validez l’empreinte bancaire liée à votre réservation À l’Assiette."
+        path={
+          reservationId
+            ? `/reservations/${reservationId}/bank-hold`
+            : "/reservations"
+        }
+        image="/img/reservations/2.jpg"
+        noIndex={true}
+      />
 
       <BankHoldReservationsComponent
         reservationId={reservationId}

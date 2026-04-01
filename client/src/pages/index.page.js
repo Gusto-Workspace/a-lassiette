@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 
 // I18N
@@ -15,9 +14,9 @@ import MenuInspiredHomeComponent from "@/components/home/menu-inspired.home.comp
 import ExperienceHomeComponent from "@/components/home/experience.home.component";
 import TestimonialsHomeComponent from "@/components/home/testimonials.home.component";
 import ContactHomeComponent from "@/components/home/contact.home.component";
+import SeoHeadComponent from "@/components/_shared/seo/seo-head.component";
 
 export default function HomePage() {
-  const title = "A l'Assiette";
   const heroRef = useRef(null);
 
   const [showScrolledNav, setShowScrolledNav] = useState(false);
@@ -43,9 +42,12 @@ export default function HomePage() {
 
   return (
     <>
-      <Head>
-        <title>{title}</title>
-      </Head>
+      <SeoHeadComponent
+        title="À l'Assiette | Brasserie à Brive-la-Gaillarde"
+        description="À l’Assiette, brasserie conviviale à Brive-la-Gaillarde : cuisine de saison, carte généreuse et réservation en ligne."
+        path="/"
+        image="/img/hero/1.jpg"
+      />
 
       <div className="relative">
         <NavComponent

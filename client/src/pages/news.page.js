@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { useEffect, useRef, useState, useContext } from "react";
 
 // I18N
@@ -9,13 +8,13 @@ import NavComponent from "@/components/_shared/nav/nav.component";
 import FooterComponent from "@/components/_shared/footer/footer.component";
 import BannerComponent from "@/components/_shared/banner/banner.component";
 import ListNewsComponent from "@/components/news/list.news.component";
+import SeoHeadComponent from "@/components/_shared/seo/seo-head.component";
 
 // CONTEXT
 import { GlobalContext } from "@/contexts/global.context";
 
 export default function NewsPage() {
   const { restaurantContext } = useContext(GlobalContext);
-  const title = "Actualités - A L'Assiette Brive";
   const heroRef = useRef(null);
   const [showScrolledNav, setShowScrolledNav] = useState(false);
 
@@ -39,9 +38,12 @@ export default function NewsPage() {
 
   return (
     <>
-      <Head>
-        <title>{title}</title>
-      </Head>
+      <SeoHeadComponent
+        title="Actualités - À l'Assiette"
+        description="Retrouvez les actualités, nouveautés et temps forts du restaurant À l’Assiette à Brive-la-Gaillarde."
+        path="/news"
+        image="/img/news/1.jpg"
+      />
 
       <div className="relative">
         <NavComponent
