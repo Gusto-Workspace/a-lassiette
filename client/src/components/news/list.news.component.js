@@ -2,26 +2,12 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { formatNewsDate, getVisibleNews } from "../../_assets/utils/news.utils";
 
+const richTextBaseClass =
+  "[&_p]:mt-4 [&_p:first-child]:mt-0 [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mt-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mt-2 [&_li>p]:mt-0 [&_strong]:font-medium [&_em]:italic [&_u]:underline [&_u]:underline-offset-2 [&_s]:line-through [&_strike]:line-through [&_a]:text-[#b48a45] [&_a]:underline [&_a]:underline-offset-4 [&_blockquote]:mt-5 [&_blockquote]:border-l-2 [&_blockquote]:border-[#b48a45]/45 [&_blockquote]:pl-4 [&_blockquote]:italic [&_hr]:my-6 [&_hr]:border-[#c7b79a]/35";
+const cardRichTextClass =
+  `mt-5 h-[138px] overflow-hidden text-[16px] font-light leading-[1.8] text-black/58 tablet:h-[146px] tablet:text-[17px] ${richTextBaseClass} [&_h1]:mt-4 [&_h1:first-child]:mt-0 [&_h1]:text-[24px] [&_h1]:leading-[1.1] [&_h1]:text-[#111111] [&_h1]:yeseva-one-regular [&_h2]:mt-4 [&_h2:first-child]:mt-0 [&_h2]:text-[21px] [&_h2]:leading-[1.12] [&_h2]:text-[#111111] [&_h2]:yeseva-one-regular [&_h3]:mt-4 [&_h3:first-child]:mt-0 [&_h3]:text-[18px] [&_h3]:leading-[1.16] [&_h3]:text-[#111111] [&_h3]:yeseva-one-regular`;
 const modalRichTextClass =
-  "mt-6 text-[16px] font-light leading-[1.85] text-black/60 tablet:text-[18px] [&_p]:mt-4 [&_p:first-child]:mt-0 [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mt-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mt-2 [&_strong]:font-medium [&_em]:italic";
-
-function getNewsExcerpt(value, maxLength = 145) {
-  const plainText = String(value || "")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&nbsp;/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  if (!plainText) {
-    return "";
-  }
-
-  if (plainText.length <= maxLength) {
-    return plainText;
-  }
-
-  return `${plainText.slice(0, maxLength).trim()}…`;
-}
+  `mt-6 text-[16px] font-light leading-[1.85] text-black/60 tablet:text-[18px] ${richTextBaseClass} [&_h1]:mt-7 [&_h1:first-child]:mt-0 [&_h1]:text-[32px] [&_h1]:leading-[1.06] [&_h1]:text-[#111111] [&_h1]:yeseva-one-regular tablet:[&_h1]:text-[40px] [&_h2]:mt-7 [&_h2:first-child]:mt-0 [&_h2]:text-[26px] [&_h2]:leading-[1.08] [&_h2]:text-[#111111] [&_h2]:yeseva-one-regular tablet:[&_h2]:text-[32px] [&_h3]:mt-6 [&_h3:first-child]:mt-0 [&_h3]:text-[21px] [&_h3]:leading-[1.12] [&_h3]:text-[#111111] [&_h3]:yeseva-one-regular tablet:[&_h3]:text-[25px]`;
 
 function NewsImage({ item, className = "" }) {
   if (item?.image) {
@@ -80,7 +66,6 @@ function LoadingSection() {
 
 function NewsCard({ item, onOpen }) {
   const dateLabel = formatNewsDate(item?.published_at);
-  const excerpt = getNewsExcerpt(item?.description);
 
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-[30px] border border-[#c7b79a]/35 bg-[#f6f1e8] shadow-[0_20px_55px_rgba(45,31,7,0.07)] transition-shadow duration-300 hover:shadow-[0_24px_65px_rgba(45,31,7,0.11)]">
@@ -102,10 +87,11 @@ function NewsCard({ item, onOpen }) {
             ) : null}
           </div>
 
-          {excerpt ? (
-            <p className="mt-5 text-[16px] font-light leading-[1.8] text-black/58 tablet:text-[17px]">
-              {excerpt}
-            </p>
+          {item?.description ? (
+            <div
+              className={cardRichTextClass}
+              dangerouslySetInnerHTML={{ __html: item.description }}
+            />
           ) : null}
         </div>
 
