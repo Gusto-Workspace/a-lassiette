@@ -2,143 +2,39 @@ import Image from "next/image";
 import MenuInspiredHomeComponent from "../home/menu-inspired.home.component";
 import { ChevronDown } from "lucide-react";
 
-const menuCategories = [
-  {
-    title: "Parce qu'il faut bien démarrer",
-    items: [
-      { name: "Pâté en croûte", price: "9,00 €" },
-      { name: "Œufs mimosa", price: "9,00 €" },
-      { name: "Velouté du moment", price: "9,00 €" },
-      {
-        name: "Foie gras de Canard mi cuit, confit d’oignons, toasts grillés",
-        price: "18,00 €",
-      },
-      {
-        name: "Harengs fumés traditionnels, pommes de terre tièdes, vinaigrette",
-        price: "16,00 €",
-      },
-      {
-        name: "Pieds de cochon panés, sauce à la Moutarde de Violette de Brive",
-        price: "15,00 €",
-      },
-      { name: "Sélection de charcuteries", price: "14,00 €" },
-      {
-        name: "Escargots poêlés, champignons, magret séché, sauce à l'echalotte",
-        price: "15,00 €",
-      },
-    ],
-  },
-  {
-    title: "Les Assiettes fraîcheurs",
-    items: [
-      {
-        name: "Salade César, filet de poulet frit, croutons, Grana Padano, œufs durs",
-        price: "15,00 €",
-      },
-      {
-        name: "Salade Périgourdine, gésiers, magret fumé, foie gras, noix",
-        price: "20,00 €",
-      },
-      {
-        name: "Tartare de bœuf maison préparé, frites, salade",
-        price: "23,00 €",
-      },
-    ],
-  },
-  {
-    title: "De la Mâche, des Mijotes, des Grillades",
-    items: [
-      { name: "Agneau confit, mogettes et jus aux herbes", price: "22,00 €" },
-      {
-        name: "Pluma de porc, nouilles chinoises, laque aigre douce",
-        price: "20,00 €",
-      },
-      {
-        name: "Noix d’entrecôte, sauce au bleu, frites, salade",
-        price: "24,00 €",
-      },
-      {
-        name: "Burger de l’Assiette, bœuf, oignons, cantal, sauce cocktail, frites",
-        price: "16,00 €",
-      },
-      {
-        name: "Andouillette AAAAA, sauce moutarde à l’ancienne, frites",
-        price: "18,00 €",
-      },
-      {
-        name: "Confit de Canard, galette de pommes de terre, salade",
-        price: "20,00 €",
-      },
-      {
-        name: "Ris de veau, sauce aux trompettes de la mort, troffies au parfum des sous-bois",
-        price: "30,00 €",
-      },
-      {
-        name: "Marée de poisson et crustacés, wok de légumes, smoothie crevettes",
-        price: "21,00 €",
-      },
-      {
-        name: "Joue de bœuf au foie gras, sauce vigneronne, mousseline de patate douce et carottes",
-        price: "29,00 €",
-      },
-    ],
-  },
-  {
-    title: "Fromages",
-    items: [
-      {
-        name: "Le Rocamadour chaud ou froid, salade aux noix",
-        price: "6,00 €",
-      },
-      {
-        name: "Assortiment de fromages de notre région, salade aux noix",
-        price: "8,00 €",
-      },
-      {
-        name: "Faisselle, coulis de rhubarbe ou sucre",
-        price: "6,00 €",
-      },
-    ],
-  },
-  {
-    title: "Parce que, c'est la fin de la faim !",
-    items: [
-      { name: "Pâtisserie du jour", price: "7,00 €" },
-      { name: "Crème brûlée aux noix", price: "8,00 €" },
-      {
-        name: "Brioche perdue, glace vanille, sauce caramel",
-        price: "9,00 €",
-      },
-      { name: "Tiramisu traditionnel", price: "8,00 €" },
-      {
-        name: "Carpaccio d’ananas, douceur glacée passion",
-        price: "8,00 €",
-      },
-      { name: "Crumble aux pommes, coulis caramel", price: "8,00 €" },
-      { name: "Mousse au chocolat", price: "8,00 €" },
-      { name: "Café gourmand", price: "8,00 €" },
-      { name: "Généreuse profiterole", price: "9,00 €" },
-    ],
-  },
-  {
-    title: "Glaces",
-    items: [
-      {
-        name: "Coupe colonel",
-        description: "sorbet citron et vodka",
-        price: "9,00 €",
-      },
-      {
-        name: "Coupe café liégeois ou chocolat liégeois",
-        price: "9,00 €",
-      },
-      { name: "Dame blanche", price: "9,00 €" },
-      { name: "Glace 1 boule", price: "3,00 €" },
-      { name: "Glace 2 boules", price: "4,50 €" },
-      { name: "Glace 3 boules", price: "6,50 €" },
-    ],
-  },
-];
+function formatPrice(value) {
+  const numericValue = Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return value || "";
+  }
+
+  return `${numericValue.toFixed(2).replace(".", ",")} €`;
+}
+
+function getVisibleMenuCategories(restaurantData) {
+  return (restaurantData?.dish_categories || [])
+    .filter(
+      (category) =>
+        category?.visible &&
+        Array.isArray(category?.dishes) &&
+        category.dishes.some((dish) => dish?.showOnWebsite),
+    )
+    .map((category) => ({
+      id: category?._id || category?.name,
+      title: category?.name || "",
+      description: category?.description || "",
+      items: (category?.dishes || [])
+        .filter((dish) => dish?.showOnWebsite)
+        .map((dish) => ({
+          id: dish?._id || dish?.name,
+          name: dish?.name || "",
+          description: dish?.description || "",
+          price: formatPrice(dish?.price),
+        })),
+    }))
+    .filter((category) => category.title && category.items.length > 0);
+}
 
 function MenuItem({ name, price, description }) {
   return (
@@ -158,7 +54,7 @@ function MenuItem({ name, price, description }) {
       </div>
 
       {description ? (
-        <p className="mt-2 pr-6 text-[17px] font-light leading-[1.7] text-black/55">
+        <p className="mt-2 pr-6 text-[17px] font-light leading-[1.7] text-black/55 whitespace-pre-line">
           {description}
         </p>
       ) : null}
@@ -176,7 +72,7 @@ function CategoryBlock({ title, items }) {
       <div className="grid grid-cols-1 gap-x-16 gap-y-6 tablet:grid-cols-2">
         {items.map((item) => (
           <MenuItem
-            key={`${title}-${item.name}`}
+            key={item.id || `${title}-${item.name}`}
             name={item.name}
             price={item.price}
             description={item.description}
@@ -187,7 +83,9 @@ function CategoryBlock({ title, items }) {
   );
 }
 
-export default function FullMenuHomeComponent() {
+export default function FullMenuHomeComponent({ restaurantData }) {
+  const menuCategories = getVisibleMenuCategories(restaurantData);
+
   return (
     <section className="w-full bg-[#eeebe6] pt-[90px] text-[#111111]">
       <div className=" text-[#111111] mx-auto max-w-[1600px] px-6 tablet:px-[50px] desktop:px-[90px]">
@@ -211,7 +109,7 @@ export default function FullMenuHomeComponent() {
         <div className="mt-16 space-y-16">
           {menuCategories.map((category) => (
             <CategoryBlock
-              key={category.title}
+              key={category.id || category.title}
               title={category.title}
               items={category.items}
             />

@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 // I18N
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -10,7 +10,11 @@ import FooterComponent from "@/components/_shared/footer/footer.component";
 import BannerComponent from "@/components/_shared/banner/banner.component";
 import ListMenusComponent from "@/components/menus/list.menus.component";
 
+// CONTEXT
+import { GlobalContext } from "@/contexts/global.context";
+
 export default function MenusPage(props) {
+    const { restaurantContext } = useContext(GlobalContext);
   const heroRef = useRef(null);
   const [showScrolledNav, setShowScrolledNav] = useState(false);
 
@@ -59,7 +63,7 @@ export default function MenusPage(props) {
           />
         </div>
 
-        <ListMenusComponent />
+        <ListMenusComponent restaurantData={restaurantContext.restaurantData} />
 
         <FooterComponent />
       </div>
