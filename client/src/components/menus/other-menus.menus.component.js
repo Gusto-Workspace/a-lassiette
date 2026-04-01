@@ -20,13 +20,15 @@ function MenuLine({ value }) {
   );
 }
 
-function MenuBlock({ block }) {
+function MenuBlock({ block, hideTitle = false }) {
   return (
     <div className="rounded-[28px] border border-[#c7b79a]/30 bg-white/70 px-5 py-5 tablet:px-6 tablet:py-6">
       <div className="flex flex-col gap-3 tablet:flex-row tablet:items-start tablet:justify-center">
-        <h4 className="yeseva-one-regular text-[22px] leading-[1.08] text-[#111111] tablet:text-[24px]">
-          {block.title}
-        </h4>
+        {!hideTitle ? (
+          <h4 className="yeseva-one-regular text-[22px] leading-[1.08] text-[#111111] tablet:text-[24px]">
+            {block.title}
+          </h4>
+        ) : null}
 
         {block.price ? (
           <span className="inline-flex w-fit items-center rounded-full border border-[#d4bf96] bg-[#b48a45]/10 px-4 py-1 text-[12px] font-semibold uppercase tracking-[0.18em] text-[#b48a45]">
@@ -104,7 +106,11 @@ export default function OtherMenusComponent({ restaurantData }) {
                 {menuBlocks.length ? (
                   <div className={blocksLayoutClass}>
                     {menuBlocks.map((block) => (
-                      <MenuBlock key={block.id} block={block} />
+                      <MenuBlock
+                        key={block.id}
+                        block={block}
+                        hideTitle={menu?.type === "custom"}
+                      />
                     ))}
                   </div>
                 ) : null}

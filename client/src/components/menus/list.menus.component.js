@@ -63,12 +63,18 @@ function MenuItem({ name, price, description }) {
   );
 }
 
-function CategoryBlock({ title, items }) {
+function CategoryBlock({ title, description, items }) {
   return (
     <div className="pb-4 tablet:pb-12">
       <h3 className="w-full mb-12 text-center text-[28px] uppercase leading-[1.08] tracking-[-0.04em] text-[#111111] yeseva-one-regular tablet:text-[34px]">
         {title}
       </h3>
+
+      {description ? (
+        <p className="-mt-7 mb-10 text-center text-[16px] font-light leading-[1.75] text-black/55 tablet:-mt-8 tablet:mb-12 tablet:text-[17px] desktop:text-[18px]">
+          {description}
+        </p>
+      ) : null}
 
       <div className="grid grid-cols-1 gap-x-16 gap-y-6 tablet:grid-cols-2">
         {items.map((item) => (
@@ -112,6 +118,7 @@ export default function FullMenuHomeComponent({ restaurantData }) {
             <CategoryBlock
               key={category.id || category.title}
               title={category.title}
+              description={category.description}
               items={category.items}
             />
           ))}
