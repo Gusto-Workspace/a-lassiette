@@ -38,7 +38,7 @@ function MenuBlock({ block, hideTitle = false }) {
       </div>
 
       {block.lines?.length ? (
-        <div className="mt-5 space-y-2.5">
+        <div className="space-y-2.5">
           {block.lines.map((line, index) => (
             <MenuLine key={`${block.id}-${index}`} value={line} />
           ))}
