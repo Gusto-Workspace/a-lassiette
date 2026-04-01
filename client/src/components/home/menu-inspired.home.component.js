@@ -1,51 +1,35 @@
 import Image from "next/image";
+import { useContext } from "react";
 import { useRouter } from "next/router";
+import { GlobalContext } from "@/contexts/global.context";
+import {
+  buildMenuBlocks,
+  getMenuTitle,
+  getPrimaryMenu,
+  isMenuSeparatorLabel,
+} from "../../_assets/utils/menu-display.utils";
 
-const lunchMenuLeft = [
-  {
-    title: "Entrée + Plat",
-    price: "17,00 EUR",
-    items: [
-      "Œuf Bio Mimosa, condiments acidulés",
-      "Ou",
-      "Velouté du moment Ou Pâté en croûte de canard",
-      "Plat du jour (voir ardoise)",
-    ],
-  },
-];
-
-const lunchMenuRight = [
-  {
-    title: "Plat + Dessert",
-    price: "17,00 EUR",
-    items: [
-      "Plat du jour (voir ardoise)",
-      "Pâtisserie du jour",
-      "Ou",
-      "Faisselle, coulis de rhubarbe",
-    ],
-  },
-];
-
-function MenuCard({ title, price, items }) {
+function MenuCard({ title, price, items = [] }) {
   return (
-    <div className="text-center desktop:text-left border-b border-[#c7b79a]/35 pb-7 last:border-b-0 last:pb-0 tablet:pb-8">
-      <div className="flex flex-col gap-3 tablet:flex-row tablet:items-end tablet:justify-between tablet:gap-6">
-        <h4 className="yeseva-one-regular text-[22px] uppercase leading-none tracking-[0.05em] text-[#111111] tablet:text-[24px] tablet:tracking-[0.08em]">
+    <div className="border-b border-[#c7b79a]/35 pb-7 text-center last:border-b-0 last:pb-0 tablet:pb-8 min-[1180px]:text-left">
+      <div className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-[minmax(0,1fr)_auto] min-[900px]:items-center min-[900px]:gap-5">
+        <h4 className="yeseva-one-regular min-w-0 text-[22px] uppercase leading-none tracking-[0.04em] text-[#111111] tablet:text-[24px] min-[900px]:whitespace-nowrap tablet:tracking-[0.06em]">
           {title}
         </h4>
 
-        <div className="flex justify-center desktop:justify-normal min-w-fit items-center gap-3 tablet:gap-4">
-          <div className="hidden h-px w-[80px] bg-[radial-gradient(circle,_#b48a45_1.2px,_transparent_1.2px)] bg-[length:12px_2px] bg-repeat-x tablet:block desktop:w-[110px]" />
-          <span className="text-[18px] font-semibold tracking-[0.08em] text-[#b48a45] tablet:text-[20px]">
-            {price}
-          </span>
-        </div>
+        {price ? (
+          <div className="flex min-w-0 items-center justify-center gap-3 min-[900px]:justify-end tablet:gap-4">
+            <div className="hidden h-px min-w-[24px] flex-1 bg-[radial-gradient(circle,_#b48a45_1.2px,_transparent_1.2px)] bg-[length:12px_2px] bg-repeat-x min-[900px]:block min-[900px]:max-w-[110px]" />
+            <span className="shrink-0 whitespace-nowrap text-[18px] font-semibold tracking-[0.08em] text-[#b48a45] tablet:text-[20px]">
+              {price}
+            </span>
+          </div>
+        ) : null}
       </div>
 
-      <div className="mt-4 space-y-2.5 tablet:mt-5 tablet:space-y-3">
+        <div className="mt-4 space-y-2.5 tablet:mt-5 tablet:space-y-3">
         {items.map((item, index) => {
-          const isSeparator = item.toLowerCase() === "ou";
+          const isSeparator = isMenuSeparatorLabel(item);
 
           return (
             <p
@@ -53,7 +37,7 @@ function MenuCard({ title, price, items }) {
               className={
                 isSeparator
                   ? "text-[14px] uppercase tracking-[0.24em] text-[#b48a45] tablet:text-[16px] tablet:tracking-[0.28em]"
-                  : "text-[17px] font-light leading-[1.65] text-black/60 tablet:text-[19px]"
+                  : "text-[17px] font-light leading-[1.65] text-black/60 tablet:text-[18px] min-[1180px]:text-[19px]"
               }
             >
               {item}
@@ -67,6 +51,17 @@ function MenuCard({ title, price, items }) {
 
 export default function MenuInspiredHomeComponent(props) {
   const router = useRouter();
+  const { restaurantContext } = useContext(GlobalContext);
+
+  const restaurantData =
+    props.restaurantData || restaurantContext?.restaurantData;
+  const featuredMenu = props.menu || getPrimaryMenu(restaurantData);
+
+  if (!featuredMenu) {
+    return null;
+  }
+
+  const featuredMenuBlocks = buildMenuBlocks(featuredMenu);
 
   return (
     <section className="w-full bg-[#eeebe6] px-5 py-20 text-[#111111] tablet:px-8 tablet:py-24 desktop:px-[90px] desktop:py-[140px]">
@@ -78,16 +73,18 @@ export default function MenuInspiredHomeComponent(props) {
           </p>
 
           <h2 className="text-balance yeseva-one-regular text-[34px] uppercase leading-[1.06] tracking-[-0.04em] tablet:text-[44px] desktop:text-[54px] desktop:leading-[1.04]">
-            Notre formule du midi
+            {getMenuTitle(featuredMenu)}
           </h2>
 
-          <h3 className="yeseva-one-regular mt-2 text-[22px] tablet:text-[24px] desktop:text-[26px]">
-            du lundi au vendredi
-          </h3>
+          {featuredMenu?.description ? (
+            <p className="yeseva-one-regular mx-auto mt-5 max-w-[760px] text-[19px] text-black whitespace-pre-line tablet:text-[24px] desktop:text-[26px]">
+              {featuredMenu.description}
+            </p>
+          ) : null}
         </div>
 
         {/* CONTENT */}
-        <div className="mt-14 grid grid-cols-1 gap-14 tablet:mt-16 tablet:gap-16 desktop:mt-[70px] desktop:grid-cols-[420px_minmax(0,1fr)] desktop:items-center desktop:gap-[80px] ultraWild:grid-cols-[470px_minmax(0,1fr)]">
+        <div className="mt-14 grid grid-cols-1 gap-14 tablet:mt-16 tablet:gap-16 desktop:mt-[70px] min-[1180px]:grid-cols-[420px_minmax(0,1fr)] min-[1180px]:items-center min-[1180px]:gap-[60px] desktop:gap-[80px] ultraWild:grid-cols-[470px_minmax(0,1fr)]">
           {/* LEFT IMAGE */}
           <div className="relative mx-auto w-full max-w-[360px] tablet:max-w-[430px] desktop:max-w-[470px]">
             <div className="relative overflow-hidden rounded-t-[180px] border border-[#b48a45] p-3 tablet:rounded-t-[220px] tablet:p-4 desktop:rounded-t-[240px]">
@@ -113,26 +110,17 @@ export default function MenuInspiredHomeComponent(props) {
 
           {/* RIGHT MENUS */}
           <div className="grid gap-7 tablet:gap-8">
-            {lunchMenuLeft.map((menu) => (
+            {featuredMenuBlocks.map((menu) => (
               <MenuCard
-                key={menu.title}
+                key={menu.id}
                 title={menu.title}
                 price={menu.price}
-                items={menu.items}
-              />
-            ))}
-
-            {lunchMenuRight.map((menu) => (
-              <MenuCard
-                key={menu.title}
-                title={menu.title}
-                price={menu.price}
-                items={menu.items}
+                items={menu.lines}
               />
             ))}
 
             {!props.menusPage && (
-              <div className="flex justify-center desktop:justify-start">
+              <div className="flex justify-center min-[1180px]:justify-start">
                 <button
                   type="button"
                   className="flex h-[52px] w-full max-w-[260px] items-center justify-center bg-[#bb924b] text-[12px] font-medium uppercase tracking-[0.22em] text-white transition hover:opacity-90 tablet:text-[14px] tablet:tracking-[0.28em] desktop:w-[220px]"

@@ -16,12 +16,34 @@ function BankHoldForm({
   flow,
   amountTotal,
 }) {
+  const router = useRouter();
   const stripe = useStripe();
   const elements = useElements();
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [redirectCountdown, setRedirectCountdown] = useState(3);
+
+  useEffect(() => {
+    if (!success) return;
+
+    setRedirectCountdown(3);
+
+    const interval = window.setInterval(() => {
+      setRedirectCountdown((prev) => {
+        if (prev <= 1) {
+          window.clearInterval(interval);
+          router.push("/reservations");
+          return 0;
+        }
+
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, [router, success]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -114,6 +136,10 @@ function BankHoldForm({
       <div className="w-full rounded-3xl border border-black/10 bg-white p-6 shadow-sm">
         <h1 className="text-2xl font-semibold">Réservation validée</h1>
         <p className="mt-4 text-black/70">{message}</p>
+        <p className="mt-3 text-sm text-black/55">
+          Retour vers la page de réservation dans{" "}
+          <span className="font-semibold">{redirectCountdown}s</span>.
+        </p>
       </div>
     );
   }

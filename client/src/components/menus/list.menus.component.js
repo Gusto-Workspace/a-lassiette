@@ -1,6 +1,7 @@
 import Image from "next/image";
 import MenuInspiredHomeComponent from "../home/menu-inspired.home.component";
-import { ChevronDown } from "lucide-react";
+import BookingBarComponent from "../reservations/booking-bar.component";
+import OtherMenusComponent from "./other-menus.menus.component";
 
 function formatPrice(value) {
   const numericValue = Number(value);
@@ -141,51 +142,19 @@ export default function FullMenuHomeComponent({ restaurantData }) {
       </div>
 
       <div className="bg-white px-5 tablet:px-[90px] pb-[60px] desktop:pb-0 relative">
-        <div className="-translate-y-[325px]">
-          <MenuInspiredHomeComponent menusPage={true} />
+        <div className="-translate-y-[325px] flex flex-col gap-14 tablet:gap-16">
+          <MenuInspiredHomeComponent
+            menusPage={true}
+            restaurantData={restaurantData}
+          />
+          <OtherMenusComponent restaurantData={restaurantData} />
         </div>
 
-        {/* BOOKING BAR */}
-        <div className="absolute bottom-6 left-5 right-5 z-30 flex flex-col gap-3 rounded-none p-0 tablet:bottom-8 tablet:left-8 tablet:right-8 tablet:gap-4 desktop:bottom-[130px] desktop:left-[10%] desktop:right-[10%] desktop:flex-row desktop:items-center desktop:gap-6 desktop:bg-transparent desktop:backdrop-blur-0">
-          <div className="mb-1 shrink-0 desktop:mb-0">
-            <h2 className="yeseva-one-regular text-center tablet:text-left text-[26px] leading-[0.95] tracking-[-0.03em] text-[#022401] tablet:text-[30px] desktop:text-[22px] desktop:leading-[0.9]">
-              Réserver une table
-            </h2>
-          </div>
-
-          <button
-            type="button"
-            className="flex h-[52px] w-full items-center justify-between border border-[#022401]/20 px-5 text-left text-[16px] font-light text-[#022401]/90 tablet:px-6 tablet:text-[17px] desktop:w-[232px] desktop:text-[18px]"
-          >
-            <span>1 Personne</span>
-            <ChevronDown size={18} strokeWidth={1.4} />
-          </button>
-
-          <button
-            type="button"
-            className="flex h-[52px] w-full items-center justify-between border border-[#022401]/20 px-5 text-left text-[16px] font-light text-[#022401]/90 tablet:px-6 tablet:text-[17px] desktop:w-[232px] desktop:text-[18px]"
-          >
-            <span>15.05.2026</span>
-            <ChevronDown size={18} strokeWidth={1.4} />
-          </button>
-
-          <button
-            type="button"
-            className="flex h-[52px] w-full items-center justify-between border border-[#022401]/20 px-5 text-left text-[16px] font-light text-[#022401]/90 tablet:px-6 tablet:text-[17px] desktop:w-[232px] desktop:text-[18px]"
-          >
-            <span>11:00</span>
-            <ChevronDown size={18} strokeWidth={1.4} />
-          </button>
-
-          <button
-            type="button"
-            className="flex h-[52px] w-full items-center justify-center bg-[#bb924b] text-[12px] px-2 font-medium uppercase tracking-[0.22em] text-white tablet:text-[13px] desktop:ml-auto desktop:w-[182px] desktop:text-[14px] desktop:tracking-[0.28em]"
-          >
-            <span className="mr-2 text-[10px] opacity-80">◆</span>
-            Valider
-            <span className="ml-2 text-[10px] opacity-80">◆</span>
-          </button>
-        </div>
+        <BookingBarComponent
+          restaurant={restaurantData}
+          theme="light"
+          className="desktop:bottom-[130px]"
+        />
       </div>
     </section>
   );

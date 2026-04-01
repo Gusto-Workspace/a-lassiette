@@ -1,11 +1,15 @@
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
-import { useState, useEffect } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useState, useEffect, useContext } from "react";
+import BookingBarComponent from "@/components/reservations/booking-bar.component";
+import { GlobalContext } from "@/contexts/global.context";
 
 const images = ["/img/hero/1.jpg", "/img/hero/2.jpg", "/img/hero/3.jpg"];
 
 export default function HeroSectionHomeComponent() {
+  const { restaurantContext } = useContext(GlobalContext);
   const [current, setCurrent] = useState(0);
+  const [introVisible, setIntroVisible] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -14,6 +18,22 @@ export default function HeroSectionHomeComponent() {
 
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      setIntroVisible(true);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  function getIntroClassNames(
+    delayClassName,
+    hiddenTransformClassName = "translate-y-7",
+    visibleTransformClassName = "translate-y-0",
+  ) {
+    return `${introVisible ? `${visibleTransformClassName} opacity-100` : `${hiddenTransformClassName} opacity-0`} transform-gpu transition-all duration-[850ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${delayClassName} motion-reduce:translate-x-0 motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none`;
+  }
 
   return (
     <section className="relative min-h-[760px] w-full overflow-hidden bg-[#022401] text-white tablet:min-h-[860px] desktop:h-screen desktop:min-h-[930px]">
@@ -61,62 +81,31 @@ export default function HeroSectionHomeComponent() {
 
         {/* TEXT BLOCK */}
         <div className="absolute left-0 top-[110px] z-20 w-full px-5 tablet:top-[130px] tablet:px-8 desktop:left-[142px] desktop:top-[272px] desktop:w-[720px] desktop:px-0">
-          <p className="mb-4 text-[11px] uppercase tracking-[0.28em] text-white tablet:mb-5 tablet:text-[13px] tablet:tracking-[0.34em] desktop:mb-7 desktop:text-[16px] desktop:tracking-[0.42em]">
+          <p
+            className={`${getIntroClassNames("delay-[80ms]", "-translate-x-8", "translate-x-0")} mb-4 text-[11px] uppercase tracking-[0.28em] text-white tablet:mb-5 tablet:text-[13px] tablet:tracking-[0.34em] desktop:mb-7 desktop:text-[16px] desktop:tracking-[0.42em]`}
+          >
             Brasserie Brive-la-Gaillarde
           </p>
 
-          <h1 className="yeseva-one-regular max-w-[320px] text-[44px] leading-[0.95] tracking-[-0.04em] text-white tablet:max-w-[520px] tablet:text-[64px] desktop:max-w-none desktop:text-[88px] desktop:leading-[0.92]">
+          <h1
+            className={`${getIntroClassNames("delay-[180ms]", "-translate-x-10", "translate-x-0")} yeseva-one-regular max-w-[320px] text-[44px] leading-[0.95] tracking-[-0.04em] text-white tablet:max-w-[520px] tablet:text-[64px] desktop:max-w-none desktop:text-[88px] desktop:leading-[0.92]`}
+          >
             A l&apos;Assiette
           </h1>
 
-          <p className="mt-5 max-w-[92%] text-[16px] font-extralight leading-[1.6] text-white/75 tablet:mt-6 tablet:max-w-[620px] tablet:text-[19px] desktop:mt-8 desktop:text-[23px] desktop:leading-[1.55] desktop:text-white/58">
+          <p
+            className={`${getIntroClassNames("delay-[280ms]", "-translate-x-12", "translate-x-0")} mt-5 max-w-[92%] text-[16px] font-extralight leading-[1.6] text-white/75 tablet:mt-6 tablet:max-w-[620px] tablet:text-[19px] desktop:mt-8 desktop:text-[23px] desktop:leading-[1.55] desktop:text-white/58`}
+          >
             Véritable havre de paix, la brasserie à l&apos;assiette vous attend
             du lundi au samedi. Située à l&apos;entrée de la zone ouest de
             Brive-la-Gaillarde, à 3 minutes de la sortie autoroutière n°51.
           </p>
         </div>
 
-        {/* BOOKING BAR */}
-        <div className="absolute bottom-6 left-5 right-5 z-30 flex flex-col gap-3 rounded-none p-0 tablet:bottom-8 tablet:left-8 tablet:right-8 tablet:gap-4 desktop:bottom-[52px] desktop:left-[10%] desktop:right-[10%] desktop:flex-row desktop:items-center desktop:gap-6 desktop:bg-transparent desktop:backdrop-blur-0">
-          <div className="mb-1 shrink-0 desktop:mb-0">
-            <h2 className="yeseva-one-regular text-[26px] leading-[0.95] tracking-[-0.03em] text-white tablet:text-[30px] desktop:text-[22px] desktop:leading-[0.9]">
-              Réserver une table
-            </h2>
-          </div>
-
-          <button
-            type="button"
-            className="flex h-[52px] min-w-[180px] w-full items-center justify-between border border-white/20 px-5 text-left text-[16px] font-light text-white/90 tablet:px-6 tablet:text-[17px] desktop:w-[232px] desktop:text-[18px]"
-          >
-            <span>1 Personne</span>
-            <ChevronDown size={18} strokeWidth={1.4} />
-          </button>
-
-          <button
-            type="button"
-            className="flex h-[52px] w-full items-center justify-between border border-white/20 px-5 text-left text-[16px] font-light text-white/90 tablet:px-6 tablet:text-[17px] desktop:w-[232px] desktop:text-[18px]"
-          >
-            <span>15.05.2026</span>
-            <ChevronDown size={18} strokeWidth={1.4} />
-          </button>
-
-          <button
-            type="button"
-            className="flex h-[52px] w-full items-center justify-between border border-white/20 px-5 text-left text-[16px] font-light text-white/90 tablet:px-6 tablet:text-[17px] desktop:w-[232px] desktop:text-[18px]"
-          >
-            <span>11:00</span>
-            <ChevronDown size={18} strokeWidth={1.4} />
-          </button>
-
-          <button
-            type="button"
-            className="flex h-[52px] w-full items-center justify-center bg-[#bb924b] text-[12px] px-2 font-medium uppercase tracking-[0.22em] text-white tablet:text-[13px] desktop:ml-auto desktop:w-[182px] desktop:text-[14px] desktop:tracking-[0.28em]"
-          >
-            <span className="mr-2 text-[10px] opacity-80">◆</span>
-            Valider
-            <span className="ml-2 text-[10px] opacity-80">◆</span>
-          </button>
-        </div>
+        <BookingBarComponent
+          restaurant={restaurantContext.restaurantData}
+          className={`${getIntroClassNames("delay-[420ms]", "translate-y-10")}`}
+        />
       </div>
     </section>
   );

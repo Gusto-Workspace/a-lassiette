@@ -10,21 +10,16 @@ import { GlobalContext } from "@/contexts/global.context";
 import { useForm } from "react-hook-form";
 
 // LUCIDE
-import {
-  Loader2,
-  Check,
-  Mail,
-  Phone,
-  User,
-  MessageSquare,
-} from "lucide-react";
+import { Loader2, Check, Mail, Phone, User, MessageSquare } from "lucide-react";
 
 export default function FormContactCompnent() {
   const { t } = useTranslation("contact");
   const { restaurantContext } = useContext(GlobalContext);
+  const restaurantData = restaurantContext?.restaurantData;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const {
     register,
@@ -35,32 +30,39 @@ export default function FormContactCompnent() {
 
   async function onSubmit(data) {
     setIsSubmitting(true);
+    setSubmitError("");
 
-    // try {
-    //   const response = await fetch("/api/contact-form-email", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       ...data,
-    //       restaurantName: restaurantContext?.name || "",
-    //     }),
-    //   });
+    try {
+      const response = await fetch("/api/contact-form-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.fullName,
+          email: data.email,
+          phone: data.phone,
+          subject: data.subject,
+          message: data.message,
+          restaurantName: restaurantData?.name || "",
+          restaurantEmail: restaurantData?.email || "",
+        }),
+      });
 
-    //   if (response.ok) {
-    //     setIsSubmitted(true);
-    //     reset();
-    //   } else {
-    //     console.error("Réponse du serveur: erreur", response);
-    //   }
-    // } catch (error) {
-    //   console.error("Erreur lors de l'envoi de la requête:", error);
-    // } finally {
-    //   setIsSubmitting(false);
-    // }
+      if (!response.ok) {
+        throw new Error("Erreur lors de l'envoi du formulaire.");
+      }
 
-    setIsSubmitting(false);
+      setIsSubmitted(true);
+      reset();
+    } catch (error) {
+      console.error("Erreur lors de l'envoi du formulaire:", error);
+      setSubmitError(
+        "Une erreur est survenue. Veuillez réessayer ou nous contacter par téléphone.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -69,7 +71,11 @@ export default function FormContactCompnent() {
         {isSubmitted ? (
           <div className="flex min-h-[420px] flex-col items-center justify-center text-center tablet:min-h-[520px]">
             <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#b48a45]/25 text-[#b48a45] tablet:h-16 tablet:w-16">
-              <Check size={26} strokeWidth={1.7} className="tablet:h-7 tablet:w-7" />
+              <Check
+                size={26}
+                strokeWidth={1.7}
+                className="tablet:h-7 tablet:w-7"
+              />
             </div>
 
             <h3 className="yeseva-one-regular mt-6 text-[24px] uppercase leading-[1.1] tablet:mt-8 tablet:text-[30px] desktop:text-[42px]">
@@ -90,7 +96,16 @@ export default function FormContactCompnent() {
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 tablet:space-y-6">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-5 tablet:space-y-6"
+          >
+            {submitError ? (
+              <div className="border border-[#a14646]/20 bg-[#a14646]/5 px-4 py-3 text-[14px] font-light leading-[1.7] text-[#8f3939] tablet:text-[15px]">
+                {submitError}
+              </div>
+            ) : null}
+
             <div className="grid gap-5 tablet:gap-6 desktop:grid-cols-2">
               <div>
                 <label className="mb-3 block text-[11px] uppercase tracking-[0.22em] text-[#b48a45] tablet:text-[13px] tablet:tracking-[0.28em]">

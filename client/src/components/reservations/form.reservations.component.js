@@ -1,14 +1,22 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
+import { useRouter } from "next/router";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { Loader2, ChevronDown } from "lucide-react";
+import {
+  formatReservationDateForApi,
+  getAvailableReservationTimes,
+  isReservationDateClosed,
+  parseReservationDateValue,
+} from "@/utils/reservations";
 export default function FormReservationComponent({
   apiBaseUrl,
   restaurant,
   onBooked,
   dataLoading,
 }) {
+  const router = useRouter();
   const [reservationData, setReservationData] = useState({
     reservationDate: new Date(),
     reservationTime: "",
@@ -24,13 +32,15 @@ export default function FormReservationComponent({
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [invalidFields, setInvalidFields] = useState({});
   const [reservationsList, setReservationsList] = useState([]);
-  const [reservationsListLoading, setReservationsListLoading] =
-    useState(false);
+  const [reservationsListLoading, setReservationsListLoading] = useState(false);
+  const [hasAppliedQueryPrefill, setHasAppliedQueryPrefill] = useState(false);
+  const [pendingPrefilledTime, setPendingPrefilledTime] = useState("");
   const parameters =
-    restaurant?.reservationsSettings || restaurant?.reservations?.parameters || {};
-  const openingHours = restaurant?.opening_hours || [];
-  const tablesCatalog = Array.isArray(parameters.tables) ? parameters.tables : [];
+    restaurant?.reservationsSettings ||
+    restaurant?.reservations?.parameters ||
+    {};
   const manage = !!parameters.manage_disponibilities;
   const [idempotencyKey] = useState(() => {
     if (typeof crypto !== "undefined" && crypto.randomUUID) {
@@ -81,6 +91,36 @@ export default function FormReservationComponent({
   useEffect(() => {
     fetchReservationsList();
   }, [fetchReservationsList]);
+
+  useEffect(() => {
+    if (!router.isReady || hasAppliedQueryPrefill) return;
+
+    const nextDate = parseReservationDateValue(router.query.reservationDate);
+    const nextTime = normalizeReservationTimeValue(
+      router.query.reservationTime,
+    );
+    const nextGuests = normalizeGuestsValue(router.query.numberOfGuests);
+
+    if (!nextDate && !nextTime && !nextGuests) {
+      setHasAppliedQueryPrefill(true);
+      return;
+    }
+
+    setReservationData((prev) => ({
+      ...prev,
+      reservationDate: nextDate || prev.reservationDate,
+      reservationTime: nextTime || "",
+      numberOfGuests: nextGuests || prev.numberOfGuests,
+    }));
+    setPendingPrefilledTime(nextTime || "");
+    setHasAppliedQueryPrefill(true);
+  }, [
+    hasAppliedQueryPrefill,
+    router.isReady,
+    router.query.numberOfGuests,
+    router.query.reservationDate,
+    router.query.reservationTime,
+  ]);
 
   useEffect(() => {
     async function restorePendingBankHold() {
@@ -137,219 +177,74 @@ export default function FormReservationComponent({
       restorePendingBankHold();
     }
   }, [apiBaseUrl, restaurant?._id]);
-  function isToday(date) {
-    const today = new Date();
-    return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
-  }
-  function getServiceBucketFromTime(reservationTime) {
-    const [hh = "0"] = String(reservationTime || "00:00").split(":");
-    return Number(hh) < 16 ? "lunch" : "dinner";
-  }
-  function getOccupancyMinutesFront(parameters, reservationTime) {
-    const bucket = getServiceBucketFromTime(reservationTime);
-    const value =
-      bucket === "lunch"
-        ? parameters?.table_occupancy_lunch_minutes
-        : parameters?.table_occupancy_dinner_minutes;
-    const parsed = Number(value || 0);
-    return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
-  }
-  function minutesFromHHmm(timeStr) {
-    const [hour, minute] = String(timeStr || "00:00").split(":").map(Number);
-    return (Number(hour) || 0) * 60 + (Number(minute) || 0);
-  }
-  function isBlockingReservationFront(reservation) {
-    if (!reservation) return false;
-    if (
-      !["AwaitingBankHold", "Pending", "Confirmed", "Active", "Late"].includes(
-        reservation.status,
-      )
-    ) {
-      return false;
-    }
-    if (reservation.status === "AwaitingBankHold") {
-      const bankHoldEnabled = Boolean(reservation?.bankHold?.enabled);
-      const bankHoldExpiresAt = reservation?.bankHold?.expiresAt
-        ? new Date(reservation.bankHold.expiresAt).getTime()
-        : null;
-      if (
-        bankHoldEnabled &&
-        Number.isFinite(bankHoldExpiresAt) &&
-        bankHoldExpiresAt <= Date.now()
-      ) {
-        return false;
-      }
-      return true;
-    }
-    if (reservation.status !== "Pending") return true;
-    const bankHoldEnabled = Boolean(reservation?.bankHold?.enabled);
-    const bankHoldExpiresAt = reservation?.bankHold?.expiresAt
-      ? new Date(reservation.bankHold.expiresAt).getTime()
-      : null;
-    if (
-      bankHoldEnabled &&
-      Number.isFinite(bankHoldExpiresAt) &&
-      bankHoldExpiresAt <= Date.now()
-    ) {
-      return false;
-    }
-    if (!reservation.pendingExpiresAt) return true;
-    return new Date(reservation.pendingExpiresAt).getTime() > Date.now();
-  }
-  function requiredTableSizeFromGuestsFront(value) {
-    const guests = Number(value || 0);
-    if (guests <= 0) return 0;
-    if (guests === 1) return 1;
-    return guests % 2 === 0 ? guests : guests + 1;
-  }
-  function generateTimeOptions(openTime, closeTime, interval) {
-    const times = [];
-    const [openHour, openMinute] = openTime.split(":").map(Number);
-    const [closeHour, closeMinute] = closeTime.split(":").map(Number);
-    const start = openHour * 60 + openMinute;
-    const end = closeHour * 60 + closeMinute;
-    const step = parseInt(String(interval), 10);
-    if (isNaN(step) || step <= 0) return times;
-    for (let minutes = start; minutes <= end; minutes += step) {
-      const hour = String(Math.floor(minutes / 60)).padStart(2, "0");
-      const minute = String(minutes % 60).padStart(2, "0");
-      times.push(`${hour}:${minute}`);
-    }
-    return times;
-  }
   useEffect(() => {
-    if (!restaurant?._id || !reservationData.reservationDate) return;
+    if (!restaurant?._id || !reservationData.reservationDate) {
+      setAvailableTimes([]);
+      setIsLoading(false);
+      return;
+    }
+    if (reservationsListLoading) {
+      setIsLoading(true);
+      return;
+    }
+
     setIsLoading(true);
-    if (reservationsListLoading) return;
-    const selectedDay = reservationData.reservationDate.getDay();
-    const dayIndex = selectedDay === 0 ? 6 : selectedDay - 1;
-    const dayHours = parameters.same_hours_as_restaurant
-      ? openingHours[dayIndex]
-      : parameters.reservation_hours?.[dayIndex];
-    if (!dayHours || dayHours.isClosed) {
-      setAvailableTimes([]);
-      setIsLoading(false);
-      return;
-    }
-    if (!Array.isArray(dayHours.hours) || dayHours.hours.length === 0) {
-      setAvailableTimes([]);
-      setIsLoading(false);
-      return;
-    }
-    const interval = parameters.interval || 30;
-    let all = dayHours.hours.flatMap(({ open, close }) =>
-      generateTimeOptions(open, close, interval),
+    setAvailableTimes(
+      getAvailableReservationTimes({
+        reservationDate: reservationData.reservationDate,
+        numberOfGuests: reservationData.numberOfGuests,
+        restaurant,
+        reservationsList,
+      }),
     );
-    if (isToday(reservationData.reservationDate)) {
-      const now = new Date();
-      const currentMinutes = now.getHours() * 60 + now.getMinutes();
-      all = all.filter((time) => {
-        const [h, m] = time.split(":").map(Number);
-        return h * 60 + m > currentMinutes;
-      });
-    }
-    if (manage && reservationData.numberOfGuests) {
-      const required = requiredTableSizeFromGuestsFront(
-        reservationData.numberOfGuests,
-      );
-      const formattedSelectedDate = format(
-        reservationData.reservationDate,
-        "yyyy-MM-dd",
-      );
-
-      if (required > 0) {
-        const eligibleTables = tablesCatalog.filter(
-          (table) =>
-            Number(table?.seats || 0) === required &&
-            table?.onlineBookable !== false,
-        );
-
-        const dayReservations = reservationsList.filter((reservation) => {
-          const reservationDate = new Date(reservation.reservationDate);
-          const formattedReservationDate = format(
-            reservationDate,
-            "yyyy-MM-dd",
-          );
-
-          return (
-            formattedReservationDate === formattedSelectedDate &&
-            isBlockingReservationFront(reservation)
-          );
-        });
-
-        all = all.filter((time) => {
-          if (!eligibleTables.length) return false;
-
-          const candidateStart = minutesFromHHmm(time);
-          const candidateDuration = getOccupancyMinutesFront(parameters, time);
-          const candidateEnd = candidateStart + candidateDuration;
-
-          const conflicts = dayReservations.filter((reservation) => {
-            if (!reservation?.table) return false;
-
-            const reservationTableId = reservation?.table?._id
-              ? String(reservation.table._id)
-              : null;
-            const reservationTableName = String(
-              reservation?.table?.name || "",
-            );
-
-            const matchesEligibleTable = eligibleTables.some((table) => {
-              const tableId = table?._id ? String(table._id) : null;
-
-              if (tableId && reservationTableId) {
-                return tableId === reservationTableId;
-              }
-
-              return String(table?.name || "") === reservationTableName;
-            });
-
-            if (!matchesEligibleTable) return false;
-
-            const reservationTime = String(
-              reservation.reservationTime || "",
-            ).slice(0, 5);
-            const reservationStart = minutesFromHHmm(reservationTime);
-            const reservationDuration = getOccupancyMinutesFront(
-              parameters,
-              reservationTime,
-            );
-            const reservationEnd = reservationStart + reservationDuration;
-
-            if (candidateDuration > 0 && reservationDuration > 0) {
-              return (
-                candidateStart < reservationEnd &&
-                candidateEnd > reservationStart
-              );
-            }
-
-            return reservationTime === String(time).slice(0, 5);
-          });
-
-          return conflicts.length < eligibleTables.length;
-        });
-      }
-    }
-    setAvailableTimes(all);
     setIsLoading(false);
   }, [
     restaurant,
     reservationData.reservationDate,
     reservationData.numberOfGuests,
-    parameters.interval,
-    parameters.manage_disponibilities,
-    parameters.reservation_hours,
-    parameters.same_hours_as_restaurant,
-    parameters.table_occupancy_lunch_minutes,
-    parameters.table_occupancy_dinner_minutes,
     reservationsList,
     reservationsListLoading,
-    openingHours,
-    tablesCatalog,
+  ]);
+  useEffect(() => {
+    if (
+      !pendingPrefilledTime ||
+      !restaurant?._id ||
+      dataLoading ||
+      reservationsListLoading ||
+      isLoading
+    ) {
+      return;
+    }
+
+    if (reservationData.reservationTime !== pendingPrefilledTime) {
+      setPendingPrefilledTime("");
+      return;
+    }
+    if (availableTimes.includes(pendingPrefilledTime)) {
+      setPendingPrefilledTime("");
+      return;
+    }
+
+    setReservationData((prev) => ({
+      ...prev,
+      reservationTime: "",
+    }));
+    setInvalidFields((prev) => ({
+      ...prev,
+      reservationTime: true,
+    }));
+    setError(
+      "Le créneau transmis par la booking bar n’est plus disponible. Merci d’en choisir un autre.",
+    );
+    setPendingPrefilledTime("");
+  }, [
+    availableTimes,
+    dataLoading,
+    isLoading,
+    pendingPrefilledTime,
+    reservationsListLoading,
+    restaurant?._id,
+    reservationData.reservationTime,
   ]);
   function formatTimeDisplay(time) {
     const [h, m] = time.split(":");
@@ -357,27 +252,45 @@ export default function FormReservationComponent({
   }
   function handleInputChange(e) {
     const { name, value } = e.target;
+    setError(null);
     setReservationData((prev) => ({
       ...prev,
       [name]: value,
       ...(name === "numberOfGuests" ? { reservationTime: "" } : {}),
     }));
+    setInvalidFields((prev) => {
+      if (!prev[name] && !(name === "numberOfGuests" && prev.reservationTime)) {
+        return prev;
+      }
+
+      const nextInvalidFields = { ...prev };
+      delete nextInvalidFields[name];
+
+      if (name === "numberOfGuests") {
+        delete nextInvalidFields.reservationTime;
+      }
+
+      return nextInvalidFields;
+    });
   }
   function handleDateChange(d) {
+    setError(null);
     setReservationData((prev) => ({
       ...prev,
       reservationDate: d,
       reservationTime: "",
     }));
+    setInvalidFields((prev) => {
+      if (!prev.reservationTime) return prev;
+
+      const nextInvalidFields = { ...prev };
+      delete nextInvalidFields.reservationTime;
+      return nextInvalidFields;
+    });
   }
   function disableClosedDays({ date, view }) {
     if (view !== "month") return false;
-    const selectedDay = date.getDay();
-    const dayIndex = selectedDay === 0 ? 6 : selectedDay - 1;
-    const dayHours = parameters.same_hours_as_restaurant
-      ? openingHours[dayIndex]
-      : parameters.reservation_hours?.[dayIndex];
-    return !!dayHours?.isClosed;
+    return isReservationDateClosed({ reservationDate: date, restaurant });
   }
   function handleResumePendingBankHold() {
     if (!pendingBankHoldReservation?.reservationId) return;
@@ -412,25 +325,27 @@ export default function FormReservationComponent({
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
-    if (!reservationData.reservationTime) {
-      setError("Veuillez sélectionner un horaire.");
+    const nextInvalidFields = getMissingRequiredReservationFields(
+      reservationData,
+    );
+
+    if (Object.keys(nextInvalidFields).length > 0) {
+      setInvalidFields((prev) => ({
+        ...prev,
+        ...nextInvalidFields,
+      }));
       return;
     }
-    if (!reservationData.numberOfGuests) {
-      setError("Veuillez renseigner le nombre de personnes.");
+    if (!availableTimes.includes(reservationData.reservationTime)) {
+      setInvalidFields((prev) => ({
+        ...prev,
+        reservationTime: true,
+      }));
+      setError("Veuillez sélectionner un horaire disponible.");
       return;
     }
-    if (
-      !reservationData.customerFirstName.trim() ||
-      !reservationData.customerLastName.trim()
-    ) {
-      setError("Veuillez renseigner le prénom et le nom.");
-      return;
-    }
-    if (!reservationData.customerPhone.trim()) {
-      setError("Veuillez renseigner un numéro de téléphone.");
-      return;
-    }
+
+    setInvalidFields({});
     setIsSubmitting(true);
     let tablePayload = null;
     if (manage) {
@@ -441,7 +356,9 @@ export default function FormReservationComponent({
       tablePayload = reservationData.table || null;
     }
     const payload = {
-      reservationDate: format(reservationData.reservationDate, "yyyy-MM-dd"),
+      reservationDate: formatReservationDateForApi(
+        reservationData.reservationDate,
+      ),
       reservationTime: reservationData.reservationTime,
       numberOfGuests: reservationData.numberOfGuests,
       customerFirstName: reservationData.customerFirstName.trim(),
@@ -474,9 +391,8 @@ export default function FormReservationComponent({
             reservationId: String(data.reservationId),
             restaurantId: String(restaurant._id),
             customerFirstName: reservationData.customerFirstName.trim(),
-            reservationDate: format(
+            reservationDate: formatReservationDateForApi(
               reservationData.reservationDate,
-              "yyyy-MM-dd",
             ),
             reservationTime: reservationData.reservationTime,
             numberOfGuests: reservationData.numberOfGuests,
@@ -497,6 +413,7 @@ export default function FormReservationComponent({
         commentary: "",
         table: manage ? "auto" : "",
       }));
+      setInvalidFields({});
     } catch (err) {
       setError(err.message || "Une erreur est survenue");
     } finally {
@@ -506,6 +423,23 @@ export default function FormReservationComponent({
   const peopleOptions = useMemo(() => {
     return Array.from({ length: 12 }, (_, i) => String(i + 1));
   }, []);
+  const isReservationFormComplete = useMemo(() => {
+    return (
+      Boolean(reservationData.numberOfGuests) &&
+      Boolean(reservationData.reservationTime) &&
+      Boolean(reservationData.customerFirstName.trim()) &&
+      Boolean(reservationData.customerLastName.trim()) &&
+      Boolean(reservationData.customerEmail.trim()) &&
+      Boolean(reservationData.customerPhone.trim())
+    );
+  }, [
+    reservationData.customerEmail,
+    reservationData.customerFirstName,
+    reservationData.customerLastName,
+    reservationData.customerPhone,
+    reservationData.numberOfGuests,
+    reservationData.reservationTime,
+  ]);
   return (
     <>
       {showPendingBankHoldModal && pendingBankHoldReservation && (
@@ -599,7 +533,8 @@ export default function FormReservationComponent({
                       name="numberOfGuests"
                       value={reservationData.numberOfGuests}
                       onChange={handleInputChange}
-                      className="h-[52px] w-full appearance-none border border-[#111111]/10 bg-white/50 px-4 pr-11 text-[15px] font-light text-[#111111] outline-none transition focus:border-[#b48a45] tablet:h-[56px] tablet:px-5 tablet:pr-12 tablet:text-[17px]"
+                      aria-invalid={invalidFields.numberOfGuests}
+                      className={`h-[52px] w-full appearance-none border bg-white/50 px-4 pr-11 text-[15px] font-light text-[#111111] outline-none transition tablet:h-[56px] tablet:px-5 tablet:pr-12 tablet:text-[17px] ${invalidFields.numberOfGuests ? "border-[#c55050] bg-[#fff4f1] focus:border-[#c55050]" : "border-[#111111]/10 focus:border-[#b48a45]"}`}
                     >
                       {peopleOptions.map((value) => (
                         <option key={value} value={value}>
@@ -638,7 +573,9 @@ export default function FormReservationComponent({
                     </div>
                   </div>
                   {/* TIMES */}
-                  <div className="relative border border-[#b48a45]/20 bg-white/50 p-4 tablet:w-full tablet:p-6 desktop:w-1/2 desktop:p-7">
+                  <div
+                    className={`relative border p-4 tablet:w-full tablet:p-6 desktop:w-1/2 desktop:p-7 ${invalidFields.reservationTime ? "border-[#c55050] bg-[#fff4f1]" : "border-[#b48a45]/20 bg-white/50"}`}
+                  >
                     <div className="mb-5 flex items-start justify-between gap-4">
                       <div>
                         <p className="text-[11px] uppercase tracking-[0.24em] text-[#b48a45] tablet:text-[12px] tablet:tracking-[0.32em]">
@@ -664,12 +601,20 @@ export default function FormReservationComponent({
                             <button
                               key={time}
                               type="button"
-                              onClick={() =>
+                              onClick={() => {
+                                setError(null);
+                                setInvalidFields((prev) => {
+                                  if (!prev.reservationTime) return prev;
+
+                                  const nextInvalidFields = { ...prev };
+                                  delete nextInvalidFields.reservationTime;
+                                  return nextInvalidFields;
+                                });
                                 setReservationData((prev) => ({
                                   ...prev,
                                   reservationTime: time,
-                                }))
-                              }
+                                }));
+                              }}
                               disabled={!reservationData.numberOfGuests}
                               className={`min-w-0 border px-3 py-3 text-[14px] font-light transition tablet:px-4 tablet:text-[15px] ${isActive ? "border-[#bb924b] bg-[#bb924b] text-white" : "border-[#111111]/10 bg-white text-[#111111] hover:border-[#b48a45] hover:text-[#b48a45]"}`}
                             >
@@ -704,6 +649,7 @@ export default function FormReservationComponent({
                       value={reservationData.customerFirstName}
                       onChange={handleInputChange}
                       type="text"
+                      invalid={invalidFields.customerFirstName}
                     />
                     <Field
                       label="Nom*"
@@ -711,6 +657,7 @@ export default function FormReservationComponent({
                       value={reservationData.customerLastName}
                       onChange={handleInputChange}
                       type="text"
+                      invalid={invalidFields.customerLastName}
                     />
                     <Field
                       label="Email*"
@@ -718,6 +665,7 @@ export default function FormReservationComponent({
                       value={reservationData.customerEmail}
                       onChange={handleInputChange}
                       type="email"
+                      invalid={invalidFields.customerEmail}
                     />
                     <Field
                       label="Téléphone*"
@@ -725,6 +673,7 @@ export default function FormReservationComponent({
                       value={reservationData.customerPhone}
                       onChange={handleInputChange}
                       type="tel"
+                      invalid={invalidFields.customerPhone}
                     />
                     <div className="tablet:col-span-2">
                       <label className="mb-3 block text-[11px] uppercase tracking-[0.24em] text-[#b48a45] tablet:text-[12px] tablet:tracking-[0.32em]">
@@ -748,9 +697,8 @@ export default function FormReservationComponent({
                   <div className="mt-8 flex justify-start tablet:justify-end">
                     <button
                       type="submit"
-                      // disabled={true}
                       disabled={
-                        !reservationData.reservationTime ||
+                        !isReservationFormComplete ||
                         isLoading ||
                         isSubmitting
                       }
@@ -790,6 +738,7 @@ function Field({
   onChange,
   type = "text",
   placeholder = "",
+  invalid = false,
 }) {
   return (
     <div>
@@ -801,9 +750,56 @@ function Field({
         name={name}
         value={value}
         onChange={onChange}
+        aria-invalid={invalid}
         placeholder={placeholder}
-        className="h-[52px] w-full border border-[#111111]/10 bg-white px-4 text-[15px] font-light text-[#111111] outline-none transition focus:border-[#b48a45] tablet:h-[56px] tablet:px-5 tablet:text-[16px]"
+        className={`h-[52px] w-full border bg-white px-4 text-[15px] font-light text-[#111111] outline-none transition tablet:h-[56px] tablet:px-5 tablet:text-[16px] ${invalid ? "border-[#c55050] bg-[#fff4f1] focus:border-[#c55050]" : "border-[#111111]/10 focus:border-[#b48a45]"}`}
       />
     </div>
   );
+}
+
+function getMissingRequiredReservationFields(reservationData) {
+  const nextInvalidFields = {};
+
+  if (!reservationData.numberOfGuests) {
+    nextInvalidFields.numberOfGuests = true;
+  }
+
+  if (!reservationData.reservationTime) {
+    nextInvalidFields.reservationTime = true;
+  }
+
+  if (!reservationData.customerFirstName.trim()) {
+    nextInvalidFields.customerFirstName = true;
+  }
+
+  if (!reservationData.customerLastName.trim()) {
+    nextInvalidFields.customerLastName = true;
+  }
+
+  if (!reservationData.customerEmail.trim()) {
+    nextInvalidFields.customerEmail = true;
+  }
+
+  if (!reservationData.customerPhone.trim()) {
+    nextInvalidFields.customerPhone = true;
+  }
+
+  return nextInvalidFields;
+}
+
+function getSingleQueryValue(value) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function normalizeGuestsValue(value) {
+  const normalizedValue = String(getSingleQueryValue(value) || "").trim();
+  if (!/^\d+$/.test(normalizedValue)) return "";
+  return Number(normalizedValue) > 0 ? normalizedValue : "";
+}
+
+function normalizeReservationTimeValue(value) {
+  const normalizedValue = String(getSingleQueryValue(value) || "").trim();
+  const match = normalizedValue.match(/^(\d{2}):(\d{2})/);
+  return match ? `${match[1]}:${match[2]}` : "";
 }

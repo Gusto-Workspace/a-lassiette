@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Send } from "lucide-react";
 
 export default function ContactHomeComponent() {
@@ -17,8 +18,8 @@ export default function ContactHomeComponent() {
               à vos toutes vos questions.
             </p>
 
-            <button
-              type="button"
+            <Link
+              href="/contact"
               className="mt-8 flex items-center gap-2 border-b border-[#b48a45] pb-[3px] text-[12px] font-medium uppercase tracking-[0.24em] text-[#b48a45] transition hover:opacity-70 tablet:mt-9 tablet:text-[13px] tablet:tracking-[0.28em] desktop:mt-10 desktop:text-[14px] desktop:tracking-[0.32em]"
             >
               <span>Envoyer un message</span>
@@ -27,7 +28,7 @@ export default function ContactHomeComponent() {
                 strokeWidth={1.4}
                 className="-mt-1 tablet:h-[23px] tablet:w-[23px] desktop:-mt-2 desktop:h-6 desktop:w-6"
               />
-            </button>
+            </Link>
           </div>
         </div>
       </div>

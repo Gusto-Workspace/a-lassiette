@@ -1,16 +1,14 @@
+import { useContext } from "react";
 import { Clock3 } from "lucide-react";
+import { GlobalContext } from "@/contexts/global.context";
 import FormContactCompnent from "./form.contact.component";
+import { buildContactSchedules } from "../../_assets/utils/contact.utils";
 
 export default function InfosContactComponent() {
-  const schedules = [
-    { day: "Lundi", hours: "12:00 – 14:00" },
-    { day: "Mardi", hours: "12:00 – 14:00 • 19:00 – 22:00" },
-    { day: "Mercredi", hours: "12:00 – 14:00 • 19:00 – 22:00" },
-    { day: "Jeudi", hours: "12:00 – 14:00 • 19:00 – 22:00" },
-    { day: "Vendredi", hours: "12:00 – 14:00 • 19:00 – 22:30" },
-    { day: "Samedi", hours: "12:00 – 14:00 • 19:00 – 22:30" },
-    { day: "Dimanche", hours: "Fermé" },
-  ];
+  const { restaurantContext } = useContext(GlobalContext);
+  const restaurantData = restaurantContext?.restaurantData;
+  const dataLoading = restaurantContext?.dataLoading;
+  const schedules = buildContactSchedules(restaurantData);
 
   return (
     <section className="w-full bg-[#eeebe6] px-5 py-20 text-[#111111] tablet:px-8 tablet:py-24 desktop:px-[90px] desktop:py-[110px]">
@@ -51,26 +49,36 @@ export default function InfosContactComponent() {
               </div>
 
               <div className="mt-8 tablet:mt-10">
-                {schedules.map((item) => (
-                  <div
-                    key={item.day}
-                    className="flex flex-col gap-1 border-b border-[#eeebe6]/20 py-4 last:border-b-0 tablet:flex-row tablet:items-center tablet:justify-between tablet:gap-6"
-                  >
-                    <p className="text-[16px] font-light text-[#eeebe6] tablet:text-[18px]">
-                      {item.day}
-                    </p>
+                {dataLoading
+                  ? Array.from({ length: 7 }).map((_, index) => (
+                      <div
+                        key={`schedule-skeleton-${index}`}
+                        className="flex flex-col gap-3 border-b border-[#eeebe6]/20 py-4 last:border-b-0 tablet:flex-row tablet:items-center tablet:justify-between tablet:gap-6"
+                      >
+                        <div className="h-5 w-24 animate-pulse rounded bg-white/10" />
+                        <div className="h-4 w-full max-w-[220px] animate-pulse rounded bg-white/10 tablet:h-5" />
+                      </div>
+                    ))
+                  : schedules.map((item) => (
+                      <div
+                        key={item.day}
+                        className="flex flex-col gap-1 border-b border-[#eeebe6]/20 py-4 last:border-b-0 tablet:flex-row tablet:items-center tablet:justify-between tablet:gap-6"
+                      >
+                        <p className="text-[16px] font-light text-[#eeebe6] tablet:text-[18px]">
+                          {item.day}
+                        </p>
 
-                    <p
-                      className={`text-left text-[14px] font-light tablet:text-right tablet:text-[16px] ${
-                        item.hours === "Fermé"
-                          ? "text-[#eeebe6]/40"
-                          : "text-[#eeebe6]"
-                      }`}
-                    >
-                      {item.hours}
-                    </p>
-                  </div>
-                ))}
+                        <p
+                          className={`text-left text-[14px] font-light tablet:text-right tablet:text-[16px] ${
+                            item.hours === "Fermé" || item.hours === "-"
+                              ? "text-[#eeebe6]/40"
+                              : "text-[#eeebe6]"
+                          }`}
+                        >
+                          {item.hours}
+                        </p>
+                      </div>
+                    ))}
               </div>
 
               <div className="mt-8 border-t border-[#b48a45]/15 pt-6 tablet:mt-10 tablet:pt-8">
