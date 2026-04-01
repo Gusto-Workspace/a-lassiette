@@ -97,6 +97,96 @@ export function getOccupancyMinutes(parameters, reservationTime) {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
 }
 
+export function buildReservationDateTime(reservationDate, reservationTime) {
+  const parsedDate = parseReservationDateValue(reservationDate);
+  if (!parsedDate) return null;
+
+  const [hour = "00", minute = "00"] = String(reservationTime || "00:00")
+    .split(":")
+    .map(Number);
+
+  return new Date(
+    parsedDate.getFullYear(),
+    parsedDate.getMonth(),
+    parsedDate.getDate(),
+    Number(hour) || 0,
+    Number(minute) || 0,
+    0,
+    0,
+  );
+}
+
+function isBlockedRangeOverlapping({ range, candidateStart, candidateEnd }) {
+  if (!range) return false;
+
+  const rangeStart = new Date(range.startAt).getTime();
+  const rangeEnd = new Date(range.endAt).getTime();
+
+  if (!Number.isFinite(rangeStart) || !Number.isFinite(rangeEnd)) return false;
+
+  return (
+    candidateStart.getTime() < rangeEnd && candidateEnd.getTime() > rangeStart
+  );
+}
+
+export function isDateTimeBlocked(parameters, candidateDateTime, occupancyMs) {
+  if (!(candidateDateTime instanceof Date)) return false;
+  if (Number.isNaN(candidateDateTime.getTime())) return false;
+
+  const ranges = Array.isArray(parameters?.blocked_ranges)
+    ? parameters.blocked_ranges
+    : [];
+  const candidateStart = new Date(candidateDateTime);
+  const candidateEnd = new Date(
+    candidateDateTime.getTime() + Math.max(1, Number(occupancyMs) || 0),
+  );
+
+  return ranges.some((range) =>
+    isBlockedRangeOverlapping({
+      range,
+      candidateStart,
+      candidateEnd,
+    }),
+  );
+}
+
+function getBlockedTableIdsForDateTime(
+  parameters,
+  candidateDateTime,
+  occupancyMs,
+) {
+  if (!(candidateDateTime instanceof Date)) return new Set();
+  if (Number.isNaN(candidateDateTime.getTime())) return new Set();
+
+  const ranges = Array.isArray(parameters?.table_blocked_ranges)
+    ? parameters.table_blocked_ranges
+    : [];
+  const candidateStart = new Date(candidateDateTime);
+  const candidateEnd = new Date(
+    candidateDateTime.getTime() + Math.max(1, Number(occupancyMs) || 0),
+  );
+  const blockedIds = new Set();
+
+  ranges.forEach((range) => {
+    if (
+      !isBlockedRangeOverlapping({
+        range,
+        candidateStart,
+        candidateEnd,
+      })
+    ) {
+      return;
+    }
+
+    const blockedId = String(range?.tableId || "");
+    if (blockedId) {
+      blockedIds.add(blockedId);
+    }
+  });
+
+  return blockedIds;
+}
+
 export function minutesFromHHmm(timeStr) {
   const [hour, minute] = String(timeStr || "00:00")
     .split(":")
@@ -226,6 +316,20 @@ export function getAvailableReservationTimes({
     });
   }
 
+  times = times.filter((time) => {
+    const candidateDurationMs = Math.max(
+      1,
+      getOccupancyMinutes(parameters, time) * 60 * 1000,
+    );
+    const candidateDateTime = buildReservationDateTime(parsedDate, time);
+
+    return !isDateTimeBlocked(
+      parameters,
+      candidateDateTime,
+      candidateDurationMs,
+    );
+  });
+
   if (!manage || !numberOfGuests) {
     return times;
   }
@@ -252,6 +356,20 @@ export function getAvailableReservationTimes({
     const candidateStart = minutesFromHHmm(time);
     const candidateDuration = getOccupancyMinutes(parameters, time);
     const candidateEnd = candidateStart + candidateDuration;
+    const candidateDurationMs = Math.max(1, candidateDuration * 60 * 1000);
+    const candidateDateTime = buildReservationDateTime(parsedDate, time);
+    const blockedTableIds = getBlockedTableIdsForDateTime(
+      parameters,
+      candidateDateTime,
+      candidateDurationMs,
+    );
+    const availableEligibleTables = eligibleTables.filter((table) => {
+      const tableId = String(table?._id || "");
+      if (!tableId) return true;
+      return !blockedTableIds.has(tableId);
+    });
+
+    if (!availableEligibleTables.length) return false;
 
     const conflicts = dayReservations.filter((reservation) => {
       if (!reservation?.table) return false;
@@ -261,7 +379,7 @@ export function getAvailableReservationTimes({
         : null;
       const reservationTableName = String(reservation?.table?.name || "");
 
-      const matchesEligibleTable = eligibleTables.some((table) => {
+      const matchesEligibleTable = availableEligibleTables.some((table) => {
         const tableId = table?._id ? String(table._id) : null;
 
         if (tableId && reservationTableId) {
@@ -293,6 +411,6 @@ export function getAvailableReservationTimes({
       return reservationTime === String(time).slice(0, 5);
     });
 
-    return conflicts.length < eligibleTables.length;
+    return conflicts.length < availableEligibleTables.length;
   });
 }
