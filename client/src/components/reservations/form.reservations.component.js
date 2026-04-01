@@ -29,9 +29,12 @@ export default function FormReservationComponent({
     table: "",
   });
   const [availableTimes, setAvailableTimes] = useState([]);
+  const [resolvedAvailabilitySelectionKey, setResolvedAvailabilitySelectionKey] =
+    useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
   const [invalidFields, setInvalidFields] = useState({});
   const [reservationsList, setReservationsList] = useState([]);
   const [reservationsListLoading, setReservationsListLoading] = useState(false);
@@ -178,15 +181,21 @@ export default function FormReservationComponent({
     }
   }, [apiBaseUrl, restaurant?._id]);
   useEffect(() => {
-    if (!restaurant?._id || !reservationData.reservationDate) {
+    if (!restaurant?._id || !reservationData.reservationDate || dataLoading) {
       setAvailableTimes([]);
-      setIsLoading(false);
+      setResolvedAvailabilitySelectionKey("");
+      setIsLoading(Boolean(dataLoading));
       return;
     }
     if (reservationsListLoading) {
       setIsLoading(true);
       return;
     }
+
+    const nextSelectionKey = getAvailabilitySelectionKey({
+      reservationDate: reservationData.reservationDate,
+      numberOfGuests: reservationData.numberOfGuests,
+    });
 
     setIsLoading(true);
     setAvailableTimes(
@@ -197,8 +206,10 @@ export default function FormReservationComponent({
         reservationsList,
       }),
     );
+    setResolvedAvailabilitySelectionKey(nextSelectionKey);
     setIsLoading(false);
   }, [
+    dataLoading,
     restaurant,
     reservationData.reservationDate,
     reservationData.numberOfGuests,
@@ -211,7 +222,12 @@ export default function FormReservationComponent({
       !restaurant?._id ||
       dataLoading ||
       reservationsListLoading ||
-      isLoading
+      isLoading ||
+      resolvedAvailabilitySelectionKey !==
+        getAvailabilitySelectionKey({
+          reservationDate: reservationData.reservationDate,
+          numberOfGuests: reservationData.numberOfGuests,
+        })
     ) {
       return;
     }
@@ -221,6 +237,13 @@ export default function FormReservationComponent({
       return;
     }
     if (availableTimes.includes(pendingPrefilledTime)) {
+      setInvalidFields((prev) => {
+        if (!prev.reservationTime) return prev;
+
+        const nextInvalidFields = { ...prev };
+        delete nextInvalidFields.reservationTime;
+        return nextInvalidFields;
+      });
       setPendingPrefilledTime("");
       return;
     }
@@ -243,7 +266,10 @@ export default function FormReservationComponent({
     isLoading,
     pendingPrefilledTime,
     reservationsListLoading,
+    resolvedAvailabilitySelectionKey,
     restaurant?._id,
+    reservationData.numberOfGuests,
+    reservationData.reservationDate,
     reservationData.reservationTime,
   ]);
   function formatTimeDisplay(time) {
@@ -253,6 +279,7 @@ export default function FormReservationComponent({
   function handleInputChange(e) {
     const { name, value } = e.target;
     setError(null);
+    setSuccessMessage("");
     setReservationData((prev) => ({
       ...prev,
       [name]: value,
@@ -275,6 +302,7 @@ export default function FormReservationComponent({
   }
   function handleDateChange(d) {
     setError(null);
+    setSuccessMessage("");
     setReservationData((prev) => ({
       ...prev,
       reservationDate: d,
@@ -325,6 +353,7 @@ export default function FormReservationComponent({
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
+    setSuccessMessage("");
     const nextInvalidFields = getMissingRequiredReservationFields(
       reservationData,
     );
@@ -414,6 +443,12 @@ export default function FormReservationComponent({
         table: manage ? "auto" : "",
       }));
       setInvalidFields({});
+      setSuccessMessage(
+        "Votre réservation a bien été effectuée. Nous avons bien reçu votre demande.",
+      );
+      if (router.query.reservationDate || router.query.reservationTime) {
+        await router.replace("/reservations", undefined, { shallow: true });
+      }
     } catch (err) {
       setError(err.message || "Une erreur est survenue");
     } finally {
@@ -603,6 +638,7 @@ export default function FormReservationComponent({
                               type="button"
                               onClick={() => {
                                 setError(null);
+                                setSuccessMessage("");
                                 setInvalidFields((prev) => {
                                   if (!prev.reservationTime) return prev;
 
@@ -692,6 +728,11 @@ export default function FormReservationComponent({
                   {error && (
                     <div className="mt-6 border border-red-200 bg-red-50 px-4 py-3 text-[14px] text-red-700 tablet:text-[15px]">
                       {error}
+                    </div>
+                  )}
+                  {successMessage && (
+                    <div className="mt-6 border border-[#b48a45]/20 bg-[#edf4e8] px-4 py-3 text-[14px] text-[#2f5c1a] tablet:text-[15px]">
+                      {successMessage}
                     </div>
                   )}
                   <div className="mt-8 flex justify-start tablet:justify-end">
@@ -802,4 +843,8 @@ function normalizeReservationTimeValue(value) {
   const normalizedValue = String(getSingleQueryValue(value) || "").trim();
   const match = normalizedValue.match(/^(\d{2}):(\d{2})/);
   return match ? `${match[1]}:${match[2]}` : "";
+}
+
+function getAvailabilitySelectionKey({ reservationDate, numberOfGuests }) {
+  return `${formatReservationDateForApi(reservationDate)}|${String(numberOfGuests || "").trim()}`;
 }
