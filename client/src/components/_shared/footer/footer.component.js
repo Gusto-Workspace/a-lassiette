@@ -77,23 +77,27 @@ export default function FooterHomeComponent() {
         </div>
 
         {/* BOTTOM BAR */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-2 text-center text-[13px] font-light text-white/58 tablet:mt-14 tablet:text-[14px] desktop:mt-16 desktop:flex-row desktop:items-end desktop:gap-0 desktop:text-[16px] desktop:text-left">
-          <div className="flex gap-2">
+        <div className="mt-12 flex flex-col items-center justify-between gap-12 text-center text-[13px] font-light text-white/58 tablet:mt-14 tablet:text-[14px] desktop:mt-16 desktop:flex-row desktop:items-end desktop:gap-0 desktop:text-[16px] desktop:text-left">
+          <div className="flex flex-col desktop:flex-row gap-2">
             <p>© {new Date().getFullYear()} À l’Assiette</p>
-            <p>• Tous droits réservés</p>
+            •
+            <p>Tous droits réservés</p>
+            •
             <a
               href="https://gusto-manager.com"
               target="_blank"
               rel="noreferrer"
               className="transition hover:text-white"
             >
-              • Propulsé par Gusto Manager
+              Propulsé par Gusto Manager
             </a>
           </div>
+          
           <div className="flex flex-col items-center gap-2 tablet:flex-row tablet:flex-wrap tablet:justify-center tablet:gap-4 desktop:justify-end">
             <Link href="/legales" className="transition hover:text-white">
               Mentions légales
             </Link>
+            •
             <Link href="/policy" className="transition hover:text-white">
               Politique de confidentialité
             </Link>
