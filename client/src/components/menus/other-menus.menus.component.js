@@ -3,17 +3,34 @@ import {
   getMenuPriceLabel,
   getMenuTitle,
   getSecondaryMenus,
+  isMenuBlankLine,
   isMenuSeparatorLabel,
 } from "../../_assets/utils/menu-display.utils";
 
-function MenuLine({ value }) {
+function MenuLine({ value, previousValue, isFirst = false }) {
+  const blankLine = isMenuBlankLine(value);
+  const followsBlankLine = isMenuBlankLine(previousValue);
+  const spacingClass = isFirst || followsBlankLine ? "" : "mt-2.5";
+
+  if (blankLine) {
+    return (
+      <div
+        className={isFirst ? "h-[1.1em]" : "mt-2.5 h-[1.1em]"}
+        aria-hidden="true"
+      />
+    );
+  }
+
   return (
     <p
-      className={
+      className={[
+        spacingClass,
         isMenuSeparatorLabel(value)
           ? "text-[13px] uppercase tracking-[0.24em] text-[#b48a45] tablet:text-[14px]"
-          : "text-[16px] font-light leading-[1.7] text-black/60 tablet:text-[17px]"
-      }
+          : "text-[16px] font-light leading-[1.7] text-black/60 tablet:text-[17px]",
+      ]
+        .join(" ")
+        .trim()}
     >
       {value}
     </p>
@@ -38,9 +55,14 @@ function MenuBlock({ block, hideTitle = false }) {
       </div>
 
       {block.lines?.length ? (
-        <div className="space-y-2.5">
+        <div>
           {block.lines.map((line, index) => (
-            <MenuLine key={`${block.id}-${index}`} value={line} />
+            <MenuLine
+              key={`${block.id}-${index}`}
+              value={line}
+              previousValue={index > 0 ? block.lines[index - 1] : null}
+              isFirst={index === 0}
+            />
           ))}
         </div>
       ) : null}

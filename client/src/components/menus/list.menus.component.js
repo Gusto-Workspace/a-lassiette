@@ -71,7 +71,7 @@ function CategoryBlock({ title, description, items }) {
       </h3>
 
       {description ? (
-        <p className="-mt-7 mb-10 text-center text-[16px] font-light leading-[1.75] text-black/55 tablet:-mt-8 tablet:mb-12 tablet:text-[17px] desktop:text-[18px]">
+        <p className="-mt-7 mb-10 whitespace-pre-line text-center text-[16px] font-light leading-[1.75] text-black/55 tablet:-mt-8 tablet:mb-12 tablet:text-[17px] desktop:text-[18px]">
           {description}
         </p>
       ) : null}

@@ -1,3 +1,5 @@
+const MENU_BLANK_LINE_TOKEN = "__MENU_BLANK_LINE__";
+
 function toFiniteNumber(value) {
   const numericValue = Number(value);
 
@@ -19,8 +21,12 @@ export function splitMenuText(value) {
     .split(/\r?\n/)
     .map((line) => {
       const trimmedLine = line.trim();
-      return trimmedLine || " ";
+      return trimmedLine || MENU_BLANK_LINE_TOKEN;
     });
+}
+
+export function isMenuBlankLine(value) {
+  return String(value || "") === MENU_BLANK_LINE_TOKEN;
 }
 
 export function isMenuSeparatorLabel(value) {

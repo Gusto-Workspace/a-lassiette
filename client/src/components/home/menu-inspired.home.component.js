@@ -6,6 +6,7 @@ import {
   buildMenuBlocks,
   getMenuTitle,
   getPrimaryMenu,
+  isMenuBlankLine,
   isMenuSeparatorLabel,
 } from "../../_assets/utils/menu-display.utils";
 
@@ -19,7 +20,7 @@ function MenuCard({ title, price, items = [] }) {
 
         {price ? (
           <div className="flex min-w-0 items-center justify-center gap-3 min-[900px]:justify-end tablet:gap-4">
-            <div className="hidden h-px min-w-[24px] flex-1 bg-[radial-gradient(circle,_#b48a45_1.2px,_transparent_1.2px)] bg-[length:12px_2px] bg-repeat-x min-[900px]:block min-[900px]:max-w-[110px]" />
+            <div className="hidden h-px min-w-[24px] flex-1 bg-[radial-gradient(circle,_#b48a45_1.1px,_transparent_1.1px)] bg-[length:8px_2px] bg-repeat-x min-[900px]:block min-[900px]:max-w-[180px]" />
             <span className="shrink-0 whitespace-nowrap text-[18px] font-semibold tracking-[0.08em] text-[#b48a45] tablet:text-[20px]">
               {price}
             </span>
@@ -27,18 +28,38 @@ function MenuCard({ title, price, items = [] }) {
         ) : null}
       </div>
 
-        <div className="mt-4 space-y-2.5 tablet:mt-5 tablet:space-y-3">
+      <div className="mt-4 tablet:mt-5">
         {items.map((item, index) => {
           const isSeparator = isMenuSeparatorLabel(item);
+          const isBlankLine = isMenuBlankLine(item);
+          const previousItem = index > 0 ? items[index - 1] : null;
+          const followsBlankLine = isMenuBlankLine(previousItem);
+          const spacingClass =
+            index === 0 || followsBlankLine ? "" : "mt-2.5 tablet:mt-3";
+
+          if (isBlankLine) {
+            return (
+              <div
+                key={`${title}-${index}`}
+                className={
+                  index === 0 ? "h-[1.1em]" : "mt-2.5 tablet:mt-3 h-[1.1em]"
+                }
+                aria-hidden="true"
+              />
+            );
+          }
 
           return (
             <p
               key={`${title}-${index}`}
-              className={
+              className={[
+                spacingClass,
                 isSeparator
                   ? "text-[14px] uppercase tracking-[0.24em] text-[#b48a45] tablet:text-[16px] tablet:tracking-[0.28em]"
-                  : "text-[17px] font-light leading-[1.65] text-black/60 tablet:text-[18px] min-[1180px]:text-[19px]"
-              }
+                  : "text-[17px] font-light leading-[1.65] text-black/60 tablet:text-[18px] min-[1180px]:text-[19px]",
+              ]
+                .join(" ")
+                .trim()}
             >
               {item}
             </p>
