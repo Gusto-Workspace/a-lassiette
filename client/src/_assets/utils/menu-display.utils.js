@@ -17,8 +17,10 @@ export function formatMenuPrice(value) {
 export function splitMenuText(value) {
   return String(value || "")
     .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
+    .map((line) => {
+      const trimmedLine = line.trim();
+      return trimmedLine || " ";
+    });
 }
 
 export function isMenuSeparatorLabel(value) {

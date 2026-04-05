@@ -37,7 +37,7 @@ export default function InfosContactComponent() {
 
             {/* RIGHT */}
             <div className="w-full border border-[#b48a45]/20 bg-[#022401] p-5 tablet:p-8 desktop:p-12">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center gap-3 tablet:justify-start">
                 <Clock3
                   size={18}
                   strokeWidth={1.5}
@@ -53,7 +53,7 @@ export default function InfosContactComponent() {
                   ? Array.from({ length: 7 }).map((_, index) => (
                       <div
                         key={`schedule-skeleton-${index}`}
-                        className="flex flex-col gap-3 border-b border-[#eeebe6]/20 py-4 last:border-b-0 tablet:flex-row tablet:items-center tablet:justify-between tablet:gap-6"
+                        className="flex flex-col items-center gap-3 border-b border-[#eeebe6]/20 py-4 text-center last:border-b-0 tablet:flex-row tablet:items-center tablet:justify-between tablet:gap-6 tablet:text-left"
                       >
                         <div className="h-5 w-24 animate-pulse rounded bg-white/10" />
                         <div className="h-4 w-full max-w-[220px] animate-pulse rounded bg-white/10 tablet:h-5" />
@@ -62,14 +62,14 @@ export default function InfosContactComponent() {
                   : schedules.map((item) => (
                       <div
                         key={item.day}
-                        className="flex flex-col gap-1 border-b border-[#eeebe6]/20 py-4 last:border-b-0 tablet:flex-row tablet:items-center tablet:justify-between tablet:gap-6"
+                        className="flex flex-col items-center gap-1 border-b border-[#eeebe6]/20 py-4 text-center last:border-b-0 tablet:flex-row tablet:items-center tablet:justify-between tablet:gap-6 tablet:text-left"
                       >
                         <p className="text-[16px] font-light text-[#eeebe6] tablet:text-[18px]">
                           {item.day}
                         </p>
 
                         <p
-                          className={`text-left text-[14px] font-light tablet:text-right tablet:text-[16px] ${
+                          className={`text-center text-[14px] font-light tablet:text-right tablet:text-[16px] ${
                             item.hours === "Fermé" || item.hours === "-"
                               ? "text-[#eeebe6]/40"
                               : "text-[#eeebe6]"

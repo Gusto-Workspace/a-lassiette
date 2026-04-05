@@ -125,7 +125,7 @@ function isBlockedRangeOverlapping({ range, candidateStart, candidateEnd }) {
   if (!Number.isFinite(rangeStart) || !Number.isFinite(rangeEnd)) return false;
 
   return (
-    candidateStart.getTime() < rangeEnd && candidateEnd.getTime() > rangeStart
+    candidateStart.getTime() <= rangeEnd && candidateEnd.getTime() > rangeStart
   );
 }
 
