@@ -14,7 +14,7 @@ export default function TimelineHomeComponent() {
     {
       label: "130 PLACES",
       title: "UN LIEU PENSÉ POUR RECEVOIR",
-      text: "À l’Assiette se présente comme une brasserie de 130 places assises, pensée pour accueillir aussi bien les déjeuners du quotidien que les repas plus posés.",
+      text: "Brasserie de 130 places assises, pensée pour accueillir aussi bien les déjeuners du quotidien que les repas plus posés.",
       badge: "diamond",
     },
     {
