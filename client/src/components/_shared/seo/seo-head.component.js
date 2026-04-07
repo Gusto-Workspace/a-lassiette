@@ -1,7 +1,7 @@
 import Head from "next/head";
 
 const DEFAULT_SITE_NAME = "À l'Assiette";
-const DEFAULT_SITE_URL = "https://www.alassiettebrive.com";
+const DEFAULT_SITE_URL = "https://alassiettebrive.com";
 const DEFAULT_IMAGE = "/img/hero/1.jpg";
 
 function normalizeBaseUrl(value) {
