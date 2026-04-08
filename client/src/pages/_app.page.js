@@ -1,4 +1,3 @@
-// pages/_app.js
 import "@/styles/style.scss";
 import "@/styles/tailwind.css";
 import "@/styles/custom/_index.scss";
@@ -6,6 +5,7 @@ import "@/styles/custom/_index.scss";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import axios from "axios";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { appWithTranslation } from "next-i18next";
 import { GlobalProvider } from "@/contexts/global.context";
 
@@ -40,6 +40,7 @@ function App({ Component, pageProps }) {
     <GlobalProvider>
       <TrackVisits />
       <Component {...pageProps} />
+      <SpeedInsights />
     </GlobalProvider>
   );
 }
