@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import axios from "axios";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 import { appWithTranslation } from "next-i18next";
 import { GlobalProvider } from "@/contexts/global.context";
 
@@ -41,6 +42,7 @@ function App({ Component, pageProps }) {
       <TrackVisits />
       <Component {...pageProps} />
       <SpeedInsights />
+      <Analytics />
     </GlobalProvider>
   );
 }
