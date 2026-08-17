@@ -41,7 +41,7 @@ function App({ Component, pageProps }) {
     <GlobalProvider>
       <TrackVisits />
       <Component {...pageProps} />
-      <SpeedInsights />
+      <SpeedInsights sampleRate={0.1}/>
       <Analytics />
     </GlobalProvider>
   );
