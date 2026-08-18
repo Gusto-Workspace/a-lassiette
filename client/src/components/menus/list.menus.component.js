@@ -14,27 +14,49 @@ function formatPrice(value) {
 }
 
 function getVisibleMenuCategories(restaurantData) {
+  const mapItems = (dishes = []) =>
+    dishes
+      .filter((dish) => dish?.showOnWebsite)
+      .map((dish) => ({
+        id: dish?._id || dish?.name,
+        name: dish?.name || "",
+        description: dish?.description || "",
+        price: formatPrice(dish?.price),
+      }));
+
   return (restaurantData?.dish_categories || [])
     .filter(
       (category) =>
         category?.visible &&
-        Array.isArray(category?.dishes) &&
-        category.dishes.some((dish) => dish?.showOnWebsite),
+        ((category?.dishes || []).some((dish) => dish?.showOnWebsite) ||
+          (category?.subCategories || []).some(
+            (subCategory) =>
+              subCategory?.visible !== false &&
+              (subCategory?.dishes || []).some((dish) => dish?.showOnWebsite),
+          )),
     )
     .map((category) => ({
       id: category?._id || category?.name,
       title: category?.name || "",
       description: category?.description || "",
-      items: (category?.dishes || [])
-        .filter((dish) => dish?.showOnWebsite)
-        .map((dish) => ({
-          id: dish?._id || dish?.name,
-          name: dish?.name || "",
-          description: dish?.description || "",
-          price: formatPrice(dish?.price),
+      items: mapItems(category?.dishes),
+      subCategories: (category?.subCategories || [])
+        .filter(
+          (subCategory) =>
+            subCategory?.visible !== false &&
+            (subCategory?.dishes || []).some((dish) => dish?.showOnWebsite),
+        )
+        .map((subCategory) => ({
+          id: subCategory?._id || subCategory?.name,
+          title: subCategory?.name || "",
+          items: mapItems(subCategory?.dishes),
         })),
     }))
-    .filter((category) => category.title && category.items.length > 0);
+    .filter(
+      (category) =>
+        category.title &&
+        (category.items.length > 0 || category.subCategories.length > 0),
+    );
 }
 
 function MenuItem({ name, price, description }) {
@@ -63,7 +85,7 @@ function MenuItem({ name, price, description }) {
   );
 }
 
-function CategoryBlock({ title, description, items }) {
+function CategoryBlock({ title, description, items, subCategories = [] }) {
   return (
     <div className="pb-4 tablet:pb-12">
       <h3 className="w-full mb-12 text-center text-[28px] uppercase leading-[1.08] tracking-[-0.04em] text-[#111111] yeseva-one-regular tablet:text-[34px]">
@@ -86,6 +108,24 @@ function CategoryBlock({ title, description, items }) {
           />
         ))}
       </div>
+
+      {subCategories.map((subCategory) => (
+        <section key={subCategory.id} className="mt-12 tablet:mt-14">
+          <h4 className="mb-7 text-center text-[18px] font-medium uppercase tracking-[0.2em] text-[#b48a45] tablet:text-[20px]">
+            {subCategory.title}
+          </h4>
+          <div className="grid grid-cols-1 gap-x-16 gap-y-6 tablet:grid-cols-2">
+            {subCategory.items.map((item) => (
+              <MenuItem
+                key={item.id || `${subCategory.title}-${item.name}`}
+                name={item.name}
+                price={item.price}
+                description={item.description}
+              />
+            ))}
+          </div>
+        </section>
+      ))}
     </div>
   );
 }
@@ -120,6 +160,7 @@ export default function FullMenuHomeComponent({ restaurantData }) {
               title={category.title}
               description={category.description}
               items={category.items}
+              subCategories={category.subCategories}
             />
           ))}
         </div>
