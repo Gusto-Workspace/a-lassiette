@@ -61,7 +61,7 @@ function getVisibleMenuCategories(restaurantData) {
 
 function MenuItem({ name, price, description }) {
   return (
-    <div className="pb-5 last:pb-0">
+    <div className="pb-5 last:pb-0" data-print-dish>
       <div className="flex items-start justify-between gap-4">
         <h4 className="max-w-[70%] text-[15px] font-medium uppercase tracking-[0.22em] text-[#111111] tablet:text-[16px]">
           {name}
@@ -86,55 +86,118 @@ function MenuItem({ name, price, description }) {
 }
 
 function CategoryBlock({ title, description, items, subCategories = [] }) {
+  const firstItems = items.slice(0, 2);
+  const remainingItems = items.slice(2);
+
   return (
     <div className="pb-4 tablet:pb-12">
-      <h3 className="w-full mb-12 text-center text-[28px] uppercase leading-[1.08] tracking-[-0.04em] text-[#111111] yeseva-one-regular tablet:text-[34px]">
-        {title}
-      </h3>
+      <div
+        data-print-category-first-chunk
+        data-print-category-without-dishes={items.length ? undefined : "true"}
+      >
+        <h3
+          data-print-category-title
+          className="w-full mb-12 text-center text-[28px] uppercase leading-[1.08] tracking-[-0.04em] text-[#111111] yeseva-one-regular tablet:text-[34px]"
+        >
+          {title}
+        </h3>
 
-      {description ? (
-        <p className="-mt-7 mb-10 whitespace-pre-line text-center text-[16px] font-light leading-[1.75] text-black/55 tablet:-mt-8 tablet:mb-12 tablet:text-[17px] desktop:text-[18px]">
-          {description}
-        </p>
-      ) : null}
+        {description ? (
+          <p className="-mt-7 mb-10 whitespace-pre-line text-center text-[16px] font-light leading-[1.75] text-black/55 tablet:-mt-8 tablet:mb-12 tablet:text-[17px] desktop:text-[18px]">
+            {description}
+          </p>
+        ) : null}
 
-      <div className="grid grid-cols-1 gap-x-16 gap-y-6 tablet:grid-cols-2">
-        {items.map((item) => (
-          <MenuItem
-            key={item.id || `${title}-${item.name}`}
-            name={item.name}
-            price={item.price}
-            description={item.description}
-          />
-        ))}
+        <div
+          className="grid grid-cols-1 gap-x-16 gap-y-6 tablet:grid-cols-2"
+          data-print-dish-list
+        >
+          {firstItems.map((item) => (
+            <MenuItem
+              key={item.id || `${title}-${item.name}`}
+              name={item.name}
+              price={item.price}
+              description={item.description}
+            />
+          ))}
+        </div>
       </div>
 
-      {subCategories.map((subCategory) => (
-        <section key={subCategory.id} className="mt-12 tablet:mt-14">
-          <h4 className="mb-7 text-center text-[18px] font-medium uppercase tracking-[0.2em] text-[#b48a45] tablet:text-[20px]">
-            {subCategory.title}
-          </h4>
-          <div className="grid grid-cols-1 gap-x-16 gap-y-6 tablet:grid-cols-2">
-            {subCategory.items.map((item) => (
-              <MenuItem
-                key={item.id || `${subCategory.title}-${item.name}`}
-                name={item.name}
-                price={item.price}
-                description={item.description}
-              />
-            ))}
-          </div>
-        </section>
-      ))}
+      {remainingItems.length ? (
+        <div
+          className="mt-6 grid grid-cols-1 gap-x-16 gap-y-6 tablet:grid-cols-2"
+          data-print-dish-list
+        >
+          {remainingItems.map((item) => (
+            <MenuItem
+              key={item.id || `${title}-${item.name}`}
+              name={item.name}
+              price={item.price}
+              description={item.description}
+            />
+          ))}
+        </div>
+      ) : null}
+
+      {subCategories.map((subCategory) => {
+        const firstItem = subCategory.items[0];
+        const remainingSubCategoryItems = subCategory.items.slice(1);
+
+        return (
+          <section key={subCategory.id} className="mt-12 tablet:mt-14">
+            <div data-print-subcategory-first-chunk>
+              <h4
+                data-print-subcategory-title
+                className="mb-7 text-center text-[18px] font-medium uppercase tracking-[0.2em] text-[#b48a45] tablet:text-[20px]"
+              >
+                {subCategory.title}
+              </h4>
+              {firstItem ? (
+                <div
+                  className="grid grid-cols-1 gap-x-16 gap-y-6 tablet:grid-cols-2"
+                  data-print-dish-list
+                >
+                  <MenuItem
+                    name={firstItem.name}
+                    price={firstItem.price}
+                    description={firstItem.description}
+                  />
+                </div>
+              ) : null}
+            </div>
+            {remainingSubCategoryItems.length ? (
+              <div
+                className="mt-6 grid grid-cols-1 gap-x-16 gap-y-6 tablet:grid-cols-2"
+                data-print-dish-list
+              >
+                {remainingSubCategoryItems.map((item) => (
+                  <MenuItem
+                    key={item.id || `${subCategory.title}-${item.name}`}
+                    name={item.name}
+                    price={item.price}
+                    description={item.description}
+                  />
+                ))}
+              </div>
+            ) : null}
+          </section>
+        );
+      })}
     </div>
   );
 }
 
-export default function FullMenuHomeComponent({ restaurantData }) {
+export default function FullMenuHomeComponent({
+  restaurantData,
+  printMode = false,
+}) {
   const menuCategories = getVisibleMenuCategories(restaurantData);
 
   return (
-    <section className="w-full bg-[#eeebe6] pt-[90px] text-[#111111]">
+    <section
+      className="w-full bg-[#eeebe6] pt-[90px] text-[#111111]"
+      data-print-page-surface
+    >
       <div className=" text-[#111111] mx-auto max-w-[1600px] px-6 tablet:px-[50px] desktop:px-[90px]">
         {/* TITLE */}
         <div className="mx-auto max-w-[980px] text-center">
@@ -165,44 +228,56 @@ export default function FullMenuHomeComponent({ restaurantData }) {
           ))}
         </div>
 
-        <div className="mt-12 h-[140px] relative w-full">
-          <Image
-            src="/img/testimonials/badges.png"
-            alt="badges"
-            fill
-            className="object-contain"
-          />
-        </div>
+        {!printMode ? (
+          <div className="mt-12 h-[140px] relative w-full">
+            <Image
+              src="/img/testimonials/badges.png"
+              alt="badges"
+              fill
+              className="object-contain"
+            />
+          </div>
+        ) : null}
       </div>
 
-      <div className="relative w-full mt-[90px]">
-        <div className="block h-[650px] w-full overflow-hidden">
-          <Image
-            src="/img/hero/2.jpg"
-            alt="Présentation du restaurant"
-            fill
-            className="object-cover"
-            priority={false}
-          />
+      {!printMode ? (
+        <div className="relative w-full mt-[90px]">
+          <div className="block h-[650px] w-full overflow-hidden">
+            <Image
+              src="/img/hero/2.jpg"
+              alt="Présentation du restaurant"
+              fill
+              className="object-cover"
+              priority={false}
+            />
 
-          <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 bg-black/40" />
+          </div>
         </div>
-      </div>
+      ) : null}
 
-      <div className="bg-white px-5 tablet:px-[90px] pb-[60px] desktop:pb-0 relative">
-        <div className="-translate-y-[325px] flex flex-col gap-14 tablet:gap-16">
+      <div
+        className="bg-white px-5 tablet:px-[90px] pb-[60px] desktop:pb-0 relative"
+        data-print-menu-surface
+      >
+        <div
+          className={`${printMode ? "py-12" : "-translate-y-[325px]"} flex flex-col gap-14 tablet:gap-16`}
+        >
           <MenuInspiredHomeComponent
             menusPage={true}
             restaurantData={restaurantData}
+            printMode={printMode}
           />
           <OtherMenusComponent restaurantData={restaurantData} />
         </div>
 
-        <BookingBarComponent
-          restaurant={restaurantData}
-          theme="light"
-          className="desktop:bottom-[130px]"
-        />
+        {!printMode ? (
+          <BookingBarComponent
+            restaurant={restaurantData}
+            theme="light"
+            className="desktop:bottom-[130px]"
+          />
+        ) : null}
       </div>
     </section>
   );

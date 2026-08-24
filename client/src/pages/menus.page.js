@@ -9,12 +9,16 @@ import FooterComponent from "@/components/_shared/footer/footer.component";
 import BannerComponent from "@/components/_shared/banner/banner.component";
 import ListMenusComponent from "@/components/menus/list.menus.component";
 import SeoHeadComponent from "@/components/_shared/seo/seo-head.component";
+import GustoPrintComponent, {
+  useGustoPrintMode,
+} from "@/components/_shared/gusto-print/gusto-print.component";
 
 // CONTEXT
 import { GlobalContext } from "@/contexts/global.context";
 
 export default function MenusPage(props) {
-    const { restaurantContext } = useContext(GlobalContext);
+  const { restaurantContext } = useContext(GlobalContext);
+  const { printMode, autoPrint } = useGustoPrintMode();
   const heroRef = useRef(null);
   const [showScrolledNav, setShowScrolledNav] = useState(false);
 
@@ -36,6 +40,13 @@ export default function MenusPage(props) {
     return () => observer.disconnect();
   }, []);
 
+  const menuContent = (
+    <ListMenusComponent
+      restaurantData={restaurantContext.restaurantData}
+      printMode={printMode}
+    />
+  );
+
   return (
     <>
       <SeoHeadComponent
@@ -45,31 +56,42 @@ export default function MenusPage(props) {
         image="/img/menu-inspired/2.jpg"
       />
 
-      <div className="relative">
-        <NavComponent
-          isVisible={!showScrolledNav}
-          scrolled={false}
-          logoSrc="/img/logo.png"
-        />
-
-        <NavComponent
-          isVisible={showScrolledNav}
-          scrolled={true}
-          logoSrc="/img/logo.png"
-        />
-
-        <div ref={heroRef}>
-          <BannerComponent
-            title="Carte & Menus"
-            imgUrl="menu-inspired/2.jpg"
-            opacity={true}
+      {printMode ? (
+        <GustoPrintComponent
+          autoPrint={autoPrint}
+          restaurant={restaurantContext.restaurantData}
+          dataLoading={restaurantContext.dataLoading}
+          dataError={restaurantContext.dataError}
+        >
+          {menuContent}
+        </GustoPrintComponent>
+      ) : (
+        <div className="relative">
+          <NavComponent
+            isVisible={!showScrolledNav}
+            scrolled={false}
+            logoSrc="/img/logo.png"
           />
+
+          <NavComponent
+            isVisible={showScrolledNav}
+            scrolled={true}
+            logoSrc="/img/logo.png"
+          />
+
+          <div ref={heroRef}>
+            <BannerComponent
+              title="Carte & Menus"
+              imgUrl="menu-inspired/2.jpg"
+              opacity={true}
+            />
+          </div>
+
+          {menuContent}
+
+          <FooterComponent />
         </div>
-
-        <ListMenusComponent restaurantData={restaurantContext.restaurantData} />
-
-        <FooterComponent />
-      </div>
+      )}
     </>
   );
 }

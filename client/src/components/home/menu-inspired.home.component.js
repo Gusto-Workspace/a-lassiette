@@ -12,7 +12,10 @@ import {
 
 function MenuCard({ title, price, items = [] }) {
   return (
-    <div className="border-b border-[#c7b79a]/35 pb-7 text-center last:border-b-0 last:pb-0 tablet:pb-8 min-[1180px]:text-left">
+    <div
+      className="border-b border-[#c7b79a]/35 pb-7 text-center last:border-b-0 last:pb-0 tablet:pb-8 min-[1180px]:text-left"
+      data-print-dish
+    >
       <div className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-[minmax(0,1fr)_auto] min-[900px]:items-center min-[900px]:gap-5">
         <h4 className="yeseva-one-regular min-w-0 text-[22px] uppercase leading-none tracking-[0.04em] text-[#111111] tablet:text-[24px] min-[900px]:whitespace-nowrap tablet:tracking-[0.06em]">
           {title}
@@ -85,7 +88,10 @@ export default function MenuInspiredHomeComponent(props) {
   const featuredMenuBlocks = buildMenuBlocks(featuredMenu);
 
   return (
-    <section className="w-full bg-[#eeebe6] px-5 py-20 text-[#111111] tablet:px-8 tablet:py-24 desktop:px-[90px] desktop:py-[140px]">
+    <section
+      className="w-full bg-[#eeebe6] px-5 py-20 text-[#111111] tablet:px-8 tablet:py-24 desktop:px-[90px] desktop:py-[140px]"
+      data-print-menu-section
+    >
       <div className="mx-auto max-w-[1600px]">
         {/* TITLE */}
         <div className="mx-auto max-w-[1000px] text-center">
@@ -105,29 +111,34 @@ export default function MenuInspiredHomeComponent(props) {
         </div>
 
         {/* CONTENT */}
-        <div className="mt-14 grid grid-cols-1 gap-14 tablet:mt-16 tablet:gap-16 desktop:mt-[70px] min-[1180px]:grid-cols-[420px_minmax(0,1fr)] min-[1180px]:items-center min-[1180px]:gap-[60px] desktop:gap-[80px] ultraWild:grid-cols-[470px_minmax(0,1fr)]">
+        <div
+          className={`mt-14 grid grid-cols-1 gap-14 tablet:mt-16 tablet:gap-16 desktop:mt-[70px] ${props.printMode ? "" : "min-[1180px]:grid-cols-[420px_minmax(0,1fr)] min-[1180px]:items-center min-[1180px]:gap-[60px] desktop:gap-[80px] ultraWild:grid-cols-[470px_minmax(0,1fr)]"}`}
+          data-print-menu
+        >
           {/* LEFT IMAGE */}
-          <div className="relative mx-auto w-full max-w-[360px] tablet:max-w-[430px] desktop:max-w-[470px]">
-            <div className="relative overflow-hidden rounded-t-[180px] border border-[#b48a45] p-3 tablet:rounded-t-[220px] tablet:p-4 desktop:rounded-t-[240px]">
-              <div className="relative h-[420px] overflow-hidden rounded-t-[180px] tablet:h-[500px] tablet:rounded-t-[220px] desktop:h-[570px] desktop:rounded-t-[240px]">
-                <Image
-                  src="/img/menu-inspired/1.png"
-                  alt="Cuisine et dressage à l'assiette"
-                  fill
-                  className="object-cover"
-                />
+          {!props.printMode ? (
+            <div className="relative mx-auto w-full max-w-[360px] tablet:max-w-[430px] desktop:max-w-[470px]">
+              <div className="relative overflow-hidden rounded-t-[180px] border border-[#b48a45] p-3 tablet:rounded-t-[220px] tablet:p-4 desktop:rounded-t-[240px]">
+                <div className="relative h-[420px] overflow-hidden rounded-t-[180px] tablet:h-[500px] tablet:rounded-t-[220px] desktop:h-[570px] desktop:rounded-t-[240px]">
+                  <Image
+                    src="/img/menu-inspired/1.png"
+                    alt="Cuisine et dressage à l'assiette"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+
+              {/* BADGE */}
+              <div className="absolute bottom-[-20px] left-1/2 z-10 flex h-[76px] w-[76px] -translate-x-1/2 items-center justify-center rounded-full border border-[#d4bf96] bg-[#b48a45] text-center text-[9px] uppercase tracking-[0.14em] text-white tablet:bottom-[-22px] tablet:h-[88px] tablet:w-[88px] tablet:text-[10px] tablet:tracking-[0.18em]">
+                <span className="-mt-1 tablet:-mt-2">
+                  À
+                  <br />
+                  l’Assiette
+                </span>
               </div>
             </div>
-
-            {/* BADGE */}
-            <div className="absolute bottom-[-20px] left-1/2 z-10 flex h-[76px] w-[76px] -translate-x-1/2 items-center justify-center rounded-full border border-[#d4bf96] bg-[#b48a45] text-center text-[9px] uppercase tracking-[0.14em] text-white tablet:bottom-[-22px] tablet:h-[88px] tablet:w-[88px] tablet:text-[10px] tablet:tracking-[0.18em]">
-              <span className="-mt-1 tablet:-mt-2">
-                À
-                <br />
-                l’Assiette
-              </span>
-            </div>
-          </div>
+          ) : null}
 
           {/* RIGHT MENUS */}
           <div className="grid gap-7 tablet:gap-8">

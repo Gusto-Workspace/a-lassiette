@@ -39,7 +39,10 @@ function MenuLine({ value, previousValue, isFirst = false }) {
 
 function MenuBlock({ block, hideTitle = false }) {
   return (
-    <div className="rounded-[28px] border border-[#c7b79a]/30 bg-white/70 px-5 py-5 tablet:px-6 tablet:py-6">
+    <div
+      className="rounded-[28px] border border-[#c7b79a]/30 bg-white/70 px-5 py-5 tablet:px-6 tablet:py-6"
+      data-print-dish
+    >
       <div className="flex flex-col gap-3 tablet:flex-row tablet:items-start tablet:justify-center">
         {!hideTitle ? (
           <h4 className="yeseva-one-regular text-[22px] leading-[1.08] text-[#111111] tablet:text-[24px]">
@@ -78,7 +81,10 @@ export default function OtherMenusComponent({ restaurantData }) {
   }
 
   return (
-    <section className="w-full bg-white px-5 text-[#111111] tablet:px-8 desktop:px-[90px]">
+    <section
+      className="w-full bg-white px-5 text-[#111111] tablet:px-8 desktop:px-[90px]"
+      data-print-menu-section
+    >
       <div className="mx-auto max-w-[1600px] border-t border-[#c7b79a]/35 pt-14 tablet:pt-16 desktop:pt-20">
         <div className="mx-auto max-w-[920px] text-center">
           <h2 className="yeseva-one-regular text-balance text-[34px] uppercase leading-[1.06] tracking-[-0.04em] tablet:text-[44px] desktop:text-[52px]">
@@ -90,7 +96,10 @@ export default function OtherMenusComponent({ restaurantData }) {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-8 tablet:mt-14 desktop:grid-cols-2 desktop:gap-10">
+        <div
+          className="mt-12 grid gap-8 tablet:mt-14 desktop:grid-cols-2 desktop:gap-10"
+          data-print-menu-list
+        >
           {menus.map((menu, index) => {
             const menuBlocks = buildMenuBlocks(menu);
             const priceLabel = getMenuPriceLabel(menu);
@@ -100,6 +109,7 @@ export default function OtherMenusComponent({ restaurantData }) {
 
             return (
               <article
+                data-print-menu
                 key={menu?._id || `menu-${index}`}
                 className={`rounded-[34px] text-center border border-[#c7b79a]/35 bg-[#f6f1e8] px-5 py-6 shadow-[0_24px_70px_rgba(45,31,7,0.08)] tablet:px-8 tablet:py-8 ${
                   isLastOddCard
@@ -107,21 +117,30 @@ export default function OtherMenusComponent({ restaurantData }) {
                     : ""
                 }`.trim()}
               >
-                <div className="max-w-[620px] mx-auto">
-                  <h3 className="yeseva-one-regular text-[28px] leading-[1.08] text-[#111111] tablet:text-[34px]">
+                <div
+                  className="max-w-[620px] mx-auto"
+                  data-print-title-price-row
+                >
+                  <h3
+                    className="yeseva-one-regular text-[28px] leading-[1.08] text-[#111111] tablet:text-[34px]"
+                    data-print-title
+                  >
                     {getMenuTitle(menu, index + 1)}
                   </h3>
+
+                  {priceLabel ? (
+                    <p
+                      className="mt-4 text-[13px] font-semibold uppercase tracking-[0.22em] text-[#b48a45] tablet:text-[14px]"
+                      data-print-price
+                    >
+                      {priceLabel}
+                    </p>
+                  ) : null}
                 </div>
 
                 {menu?.description ? (
                   <p className="mt-5 text-[16px] font-light leading-[1.8] text-black/60 whitespace-pre-line tablet:text-[17px]">
                     {menu.description}
-                  </p>
-                ) : null}
-
-                {priceLabel ? (
-                  <p className="mt-4 text-[13px] font-semibold uppercase tracking-[0.22em] text-[#b48a45] tablet:text-[14px]">
-                    {priceLabel}
                   </p>
                 ) : null}
 
