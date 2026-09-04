@@ -77,9 +77,26 @@
   padding-top: 24px !important;
   padding-bottom: 24px !important;
 }
+.gusto-print-mode [data-print-menu-flow] {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
 .gusto-print-mode [data-print-primary-menu-content],
 .gusto-print-mode [data-print-primary-menu-list] {
   display: contents !important;
+}
+.gusto-print-mode [data-print-primary-menu-detail-heading] {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+.gusto-print-mode [data-print-primary-menu-detail-heading] h4 {
+  max-width: 100% !important;
+  white-space: normal !important;
+}
+.gusto-print-mode [data-print-menu-detail-rule] {
+  display: none !important;
 }
 .gusto-print-mode
   [data-print-primary-menu-list]
@@ -203,6 +220,18 @@
   .gusto-print-mode [data-print-card-content] {
     padding-right: 50px !important;
     padding-left: 50px !important;
+  }
+  .gusto-print-mode [data-print-primary-menu-list],
+  .gusto-print-mode [data-print-menu-list] {
+    display: flex !important;
+    width: 100% !important;
+    flex-direction: column !important;
+  }
+  .gusto-print-mode [data-print-primary-menu-list] {
+    gap: 24px !important;
+  }
+  .gusto-print-mode [data-print-menu-list] {
+    gap: 32px !important;
   }
 }
 

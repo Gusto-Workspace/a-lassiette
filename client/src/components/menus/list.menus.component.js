@@ -266,9 +266,11 @@ export default function FullMenuHomeComponent({
       <div
         className="bg-white px-5 tablet:px-[90px] pb-[60px] desktop:pb-0 relative"
         data-print-menu-surface
+        data-print-menus-start={printMode ? "true" : undefined}
       >
         <div
           className={`${printMode ? "py-12" : "-translate-y-[325px]"} flex flex-col gap-14 tablet:gap-16`}
+          data-print-menu-flow
         >
           <MenuInspiredHomeComponent
             menusPage={true}

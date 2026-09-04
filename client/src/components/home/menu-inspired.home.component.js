@@ -16,14 +16,20 @@ function MenuCard({ title, price, items = [] }) {
       className="border-b border-[#c7b79a]/35 pb-7 text-center last:border-b-0 last:pb-0 tablet:pb-8 min-[1180px]:text-left"
       data-print-dish
     >
-      <div className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-[minmax(0,1fr)_auto] min-[900px]:items-center min-[900px]:gap-5">
+      <div
+        className="grid grid-cols-1 gap-3 min-[900px]:grid-cols-[minmax(0,1fr)_auto] min-[900px]:items-center min-[900px]:gap-5"
+        data-print-primary-menu-detail-heading
+      >
         <h4 className="yeseva-one-regular min-w-0 text-[22px] uppercase leading-none tracking-[0.04em] text-[#111111] tablet:text-[24px] min-[900px]:whitespace-nowrap tablet:tracking-[0.06em]">
           {title}
         </h4>
 
         {price ? (
           <div className="flex min-w-0 items-center justify-center gap-3 min-[900px]:justify-end tablet:gap-4">
-            <div className="hidden h-px min-w-[24px] flex-1 bg-[radial-gradient(circle,_#b48a45_1.1px,_transparent_1.1px)] bg-[length:8px_2px] bg-repeat-x min-[900px]:block min-[900px]:max-w-[180px]" />
+            <div
+              className="hidden h-px min-w-[24px] flex-1 bg-[radial-gradient(circle,_#b48a45_1.1px,_transparent_1.1px)] bg-[length:8px_2px] bg-repeat-x min-[900px]:block min-[900px]:max-w-[180px]"
+              data-print-menu-detail-rule
+            />
             <span className="shrink-0 whitespace-nowrap text-[18px] font-semibold tracking-[0.08em] text-[#b48a45] tablet:text-[20px]">
               {price}
             </span>
@@ -91,7 +97,6 @@ export default function MenuInspiredHomeComponent(props) {
     <section
       className="w-full bg-[#eeebe6] px-5 py-20 text-[#111111] tablet:px-8 tablet:py-24 desktop:px-[90px] desktop:py-[140px]"
       data-print-menu-section
-      data-print-menus-start={props.printMode ? "true" : undefined}
       data-print-primary-menu-section
     >
       <div className="mx-auto max-w-[1600px]">
