@@ -92,7 +92,7 @@ export default function MenuInspiredHomeComponent(props) {
       className="w-full bg-[#eeebe6] px-5 py-20 text-[#111111] tablet:px-8 tablet:py-24 desktop:px-[90px] desktop:py-[140px]"
       data-print-menu-section
     >
-      <div className="mx-auto max-w-[1600px]">
+      <div className="mx-auto max-w-[1600px]" data-print-menu>
         {/* TITLE */}
         <div className="mx-auto max-w-[1000px] text-center">
           <p className="mb-4 text-[12px] font-light uppercase tracking-[0.28em] text-[#b48a45] tablet:mb-5 tablet:text-[14px] tablet:tracking-[0.36em] desktop:text-[16px] desktop:tracking-[0.42em]">

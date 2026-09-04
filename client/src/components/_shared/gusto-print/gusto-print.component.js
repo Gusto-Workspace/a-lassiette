@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const GUSTO_PRINT_PAGE_STYLE = {
   "--gusto-print-page-width": "210mm",
@@ -11,10 +11,26 @@ const GUSTO_PRINT_PAGE_STYLE = {
 
 export function useGustoPrintMode() {
   const router = useRouter();
+  const [locationPrintMode, setLocationPrintMode] = useState({
+    printMode: false,
+    autoPrint: false,
+  });
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    setLocationPrintMode({
+      printMode: searchParams.get("gustoPrint") === "1",
+      autoPrint: searchParams.get("autoprint") === "1",
+    });
+  }, []);
 
   return {
-    printMode: router.isReady && router.query.gustoPrint === "1",
-    autoPrint: router.isReady && router.query.autoprint === "1",
+    printMode:
+      (router.isReady && router.query.gustoPrint === "1") ||
+      locationPrintMode.printMode,
+    autoPrint:
+      (router.isReady && router.query.autoprint === "1") ||
+      locationPrintMode.autoPrint,
   };
 }
 
