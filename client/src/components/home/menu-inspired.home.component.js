@@ -37,7 +37,7 @@ function MenuCard({ title, price, items = [] }) {
         ) : null}
       </div>
 
-      <div className="mt-4 tablet:mt-5">
+      <div className="mt-4 tablet:mt-5" data-print-primary-menu-details>
         {items.map((item, index) => {
           const isSeparator = isMenuSeparatorLabel(item);
           const isBlankLine = isMenuBlankLine(item);
@@ -53,6 +53,7 @@ function MenuCard({ title, price, items = [] }) {
                 className={
                   index === 0 ? "h-[1.1em]" : "mt-2.5 tablet:mt-3 h-[1.1em]"
                 }
+                data-print-primary-menu-blank-line
                 aria-hidden="true"
               />
             );
@@ -69,6 +70,7 @@ function MenuCard({ title, price, items = [] }) {
               ]
                 .join(" ")
                 .trim()}
+              data-print-primary-menu-detail-line
             >
               {item}
             </p>

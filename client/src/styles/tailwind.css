@@ -100,6 +100,28 @@
 }
 .gusto-print-mode
   [data-print-primary-menu-list]
+  > [data-print-dish] {
+  text-align: center !important;
+}
+.gusto-print-mode [data-print-primary-menu-details] {
+  margin-top: 12px !important;
+  text-align: center !important;
+}
+.gusto-print-mode [data-print-primary-menu-detail-line] {
+  margin-top: 6px !important;
+  line-height: 1.45 !important;
+  text-align: center !important;
+}
+.gusto-print-mode
+  [data-print-primary-menu-detail-line]:first-child {
+  margin-top: 0 !important;
+}
+.gusto-print-mode [data-print-primary-menu-blank-line] {
+  height: 0.6em !important;
+  margin-top: 6px !important;
+}
+.gusto-print-mode
+  [data-print-primary-menu-list]
   > [data-print-dish]:first-child {
   margin-top: 32px !important;
 }
