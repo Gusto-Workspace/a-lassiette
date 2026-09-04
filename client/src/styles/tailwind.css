@@ -176,6 +176,10 @@
     background-color: inherit;
     content: "";
   }
+  .gusto-print-mode [data-print-menus-start] {
+    break-before: page;
+    page-break-before: always;
+  }
   .gusto-print-mode [data-print-category-title],
   .gusto-print-mode [data-print-subcategory-title] {
     break-after: avoid;

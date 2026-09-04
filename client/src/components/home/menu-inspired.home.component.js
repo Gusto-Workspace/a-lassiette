@@ -91,6 +91,7 @@ export default function MenuInspiredHomeComponent(props) {
     <section
       className="w-full bg-[#eeebe6] px-5 py-20 text-[#111111] tablet:px-8 tablet:py-24 desktop:px-[90px] desktop:py-[140px]"
       data-print-menu-section
+      data-print-menus-start={props.printMode ? "true" : undefined}
     >
       <div className="mx-auto max-w-[1600px]" data-print-menu>
         {/* TITLE */}
