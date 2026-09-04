@@ -84,9 +84,13 @@ export default function OtherMenusComponent({ restaurantData }) {
     <section
       className="w-full bg-white px-5 text-[#111111] tablet:px-8 desktop:px-[90px]"
       data-print-menu-section
+      data-print-secondary-menus-start
     >
       <div className="mx-auto max-w-[1600px] border-t border-[#c7b79a]/35 pt-14 tablet:pt-16 desktop:pt-20">
-        <div className="mx-auto max-w-[920px] text-center">
+        <div
+          className="mx-auto max-w-[920px] text-center"
+          data-print-secondary-menu-heading
+        >
           <h2 className="yeseva-one-regular text-balance text-[34px] uppercase leading-[1.06] tracking-[-0.04em] tablet:text-[44px] desktop:text-[52px]">
             Les autres menus
           </h2>
@@ -109,7 +113,7 @@ export default function OtherMenusComponent({ restaurantData }) {
 
             return (
               <article
-                data-print-menu
+                data-print-secondary-menu
                 key={menu?._id || `menu-${index}`}
                 className={`rounded-[34px] text-center border border-[#c7b79a]/35 bg-[#f6f1e8] px-5 py-6 shadow-[0_24px_70px_rgba(45,31,7,0.08)] tablet:px-8 tablet:py-8 ${
                   isLastOddCard
@@ -120,6 +124,7 @@ export default function OtherMenusComponent({ restaurantData }) {
                 <div
                   className="max-w-[620px] mx-auto"
                   data-print-title-price-row
+                  data-print-secondary-menu-title
                 >
                   <h3
                     className="yeseva-one-regular text-[28px] leading-[1.08] text-[#111111] tablet:text-[34px]"
@@ -139,13 +144,19 @@ export default function OtherMenusComponent({ restaurantData }) {
                 </div>
 
                 {menu?.description ? (
-                  <p className="mt-5 text-[16px] font-light leading-[1.8] text-black/60 whitespace-pre-line tablet:text-[17px]">
+                  <p
+                    className="mt-5 text-[16px] font-light leading-[1.8] text-black/60 whitespace-pre-line tablet:text-[17px]"
+                    data-print-secondary-menu-description
+                  >
                     {menu.description}
                   </p>
                 ) : null}
 
                 {menuBlocks.length ? (
-                  <div className={blocksLayoutClass}>
+                  <div
+                    className={blocksLayoutClass}
+                    data-print-secondary-menu-blocks
+                  >
                     {menuBlocks.map((block) => (
                       <MenuBlock
                         key={block.id}

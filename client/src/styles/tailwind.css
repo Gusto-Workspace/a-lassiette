@@ -52,7 +52,71 @@
   [data-print-dish-list]
   > [data-print-dish]
   + [data-print-dish] {
+  margin-top: 12px !important;
+}
+.gusto-print-mode [data-print-dish-list] > [data-print-dish] {
+  padding-bottom: 12px !important;
+}
+.gusto-print-mode [data-print-menu-page] {
+  padding-top: 16px !important;
+}
+.gusto-print-mode [data-print-card-eyebrow] {
+  font-size: 30px !important;
+  letter-spacing: 0.24em !important;
+}
+.gusto-print-mode [data-print-category-stack] {
+  margin-top: 32px !important;
+}
+.gusto-print-mode
+  [data-print-category-stack]
+  > *
+  + * {
+  margin-top: 32px !important;
+}
+.gusto-print-mode [data-print-primary-menu-section] {
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+}
+.gusto-print-mode [data-print-primary-menu-content],
+.gusto-print-mode [data-print-primary-menu-list] {
+  display: contents !important;
+}
+.gusto-print-mode
+  [data-print-primary-menu-list]
+  > [data-print-dish]:first-child {
+  margin-top: 32px !important;
+}
+.gusto-print-mode
+  [data-print-primary-menu-list]
+  > [data-print-dish]
+  + [data-print-dish] {
   margin-top: 24px !important;
+}
+.gusto-print-mode [data-print-secondary-menus-start] > div {
+  border-top: 0 !important;
+  padding-top: 24px !important;
+}
+.gusto-print-mode [data-print-primary-menu-heading],
+.gusto-print-mode [data-print-secondary-menu-heading],
+.gusto-print-mode [data-print-secondary-menu-title],
+.gusto-print-mode [data-print-secondary-menu-description] {
+  break-after: avoid;
+  page-break-after: avoid;
+}
+.gusto-print-mode [data-print-secondary-menu] {
+  break-inside: auto !important;
+  page-break-inside: auto !important;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.gusto-print-mode [data-print-secondary-menu-blocks] {
+  display: block !important;
+}
+.gusto-print-mode
+  [data-print-secondary-menu-blocks]
+  > [data-print-dish]
+  + [data-print-dish] {
+  margin-top: 16px !important;
 }
 .gusto-print-mode [data-print-menu-list] {
   grid-template-columns: minmax(0, 1fr) !important;
@@ -136,6 +200,10 @@
   .gusto-print-toolbar > span {
     display: none;
   }
+  .gusto-print-mode [data-print-card-content] {
+    padding-right: 50px !important;
+    padding-left: 50px !important;
+  }
 }
 
 @media print {
@@ -177,6 +245,10 @@
     content: "";
   }
   .gusto-print-mode [data-print-menus-start] {
+    break-before: page;
+    page-break-before: always;
+  }
+  .gusto-print-mode [data-print-secondary-menus-start] {
     break-before: page;
     page-break-before: always;
   }

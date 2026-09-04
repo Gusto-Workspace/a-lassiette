@@ -197,11 +197,18 @@ export default function FullMenuHomeComponent({
     <section
       className="w-full bg-[#eeebe6] pt-[90px] text-[#111111]"
       data-print-page-surface
+      data-print-menu-page
     >
-      <div className=" text-[#111111] mx-auto max-w-[1600px] px-6 tablet:px-[50px] desktop:px-[90px]">
+      <div
+        className=" text-[#111111] mx-auto max-w-[1600px] px-6 tablet:px-[50px] desktop:px-[90px]"
+        data-print-card-content
+      >
         {/* TITLE */}
         <div className="mx-auto max-w-[980px] text-center">
-          <p className="mb-5 text-[13px] font-light uppercase tracking-[0.42em] text-[#b48a45] tablet:text-[16px]">
+          <p
+            className="mb-5 text-[13px] font-light uppercase tracking-[0.42em] text-[#b48a45] tablet:text-[16px]"
+            data-print-card-eyebrow
+          >
             Carte
           </p>
 
@@ -216,7 +223,7 @@ export default function FullMenuHomeComponent({
         </div>
 
         {/* CONTENT */}
-        <div className="mt-16 space-y-16">
+        <div className="mt-16 space-y-16" data-print-category-stack>
           {menuCategories.map((category) => (
             <CategoryBlock
               key={category.id || category.title}

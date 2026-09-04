@@ -92,10 +92,14 @@ export default function MenuInspiredHomeComponent(props) {
       className="w-full bg-[#eeebe6] px-5 py-20 text-[#111111] tablet:px-8 tablet:py-24 desktop:px-[90px] desktop:py-[140px]"
       data-print-menu-section
       data-print-menus-start={props.printMode ? "true" : undefined}
+      data-print-primary-menu-section
     >
-      <div className="mx-auto max-w-[1600px]" data-print-menu>
+      <div className="mx-auto max-w-[1600px]">
         {/* TITLE */}
-        <div className="mx-auto max-w-[1000px] text-center">
+        <div
+          className="mx-auto max-w-[1000px] text-center"
+          data-print-primary-menu-heading
+        >
           <p className="mb-4 text-[12px] font-light uppercase tracking-[0.28em] text-[#b48a45] tablet:mb-5 tablet:text-[14px] tablet:tracking-[0.36em] desktop:text-[16px] desktop:tracking-[0.42em]">
             {!props.menusPage ? "Carte et menus" : "Menus"}
           </p>
@@ -114,7 +118,7 @@ export default function MenuInspiredHomeComponent(props) {
         {/* CONTENT */}
         <div
           className={`mt-14 grid grid-cols-1 gap-14 tablet:mt-16 tablet:gap-16 desktop:mt-[70px] ${props.printMode ? "" : "min-[1180px]:grid-cols-[420px_minmax(0,1fr)] min-[1180px]:items-center min-[1180px]:gap-[60px] desktop:gap-[80px] ultraWild:grid-cols-[470px_minmax(0,1fr)]"}`}
-          data-print-menu
+          data-print-primary-menu-content
         >
           {/* LEFT IMAGE */}
           {!props.printMode ? (
@@ -142,7 +146,10 @@ export default function MenuInspiredHomeComponent(props) {
           ) : null}
 
           {/* RIGHT MENUS */}
-          <div className="grid gap-7 tablet:gap-8">
+          <div
+            className="grid gap-7 tablet:gap-8"
+            data-print-primary-menu-list
+          >
             {featuredMenuBlocks.map((menu) => (
               <MenuCard
                 key={menu.id}
