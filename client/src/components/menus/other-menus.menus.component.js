@@ -32,7 +32,10 @@ function MenuLine({ value, previousValue, isFirst = false }) {
         .join(" ")
         .trim()}
     >
-      {value}
+      {value?.name || value}
+      {value?.description ? (
+        <span className="block text-[0.85em] opacity-70">{value.description}</span>
+      ) : null}
     </p>
   );
 }
