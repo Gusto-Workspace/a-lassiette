@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import Image from "@/components/_shared/static-photo.component";
 import { Play, X } from "lucide-react";
 
 export default function VideoBannerHomeComponent() {

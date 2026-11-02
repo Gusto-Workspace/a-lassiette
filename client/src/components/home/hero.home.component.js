@@ -1,10 +1,14 @@
-import Image from "next/image";
+import Head from "next/head";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState, useEffect, useContext } from "react";
 import BookingBarComponent from "@/components/reservations/booking-bar.component";
 import { GlobalContext } from "@/contexts/global.context";
 
 const images = ["/img/hero/1.jpg", "/img/hero/2.jpg", "/img/hero/3.jpg"];
+const heroSizes = "(max-width: 767px) 300vw, 100vw";
+const heroSrcSet = (src) => [800, 1600, 2400, 2880]
+  .map((width) => `${src.replace(/\.jpg$/, `-${width}.webp`)} ${width}w`)
+  .join(", ");
 
 export default function HeroSectionHomeComponent() {
   const { restaurantContext } = useContext(GlobalContext);
@@ -37,16 +41,21 @@ export default function HeroSectionHomeComponent() {
 
   return (
     <section className="relative min-h-[760px] w-full overflow-hidden bg-[#022401] text-white tablet:min-h-[860px] desktop:h-screen desktop:min-h-[930px]">
+      <Head><link rel="preload" as="image" imageSrcSet={heroSrcSet(images[0])} imageSizes={heroSizes} fetchPriority="high" /></Head>
       <div className="relative h-full min-h-[760px] w-full tablet:min-h-[860px] desktop:min-h-[900px]">
         {/* IMAGE */}
         <div className="absolute inset-0 overflow-hidden desktop:left-[30%] desktop:top-[102px] desktop:h-[695px] desktop:w-full ultraWild:left-[30%]">
           {images.map((src, index) => (
-            <Image
+            <img
               key={index}
-              src={src}
+              src={src.replace(/\.jpg$/, "-2880.webp")}
+              srcSet={heroSrcSet(src)}
               alt=""
-              fill
-              priority
+              sizes={heroSizes}
+              loading="eager"
+              fetchPriority={index === 0 ? "high" : undefined}
+              decoding="async"
+              style={{ position: "absolute", height: "100%", width: "100%", inset: 0, color: "transparent" }}
               className={`object-cover transition-opacity duration-[1200ms] ease-in-out ${
                 index === current ? "opacity-100" : "opacity-0"
               }`}

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/components/_shared/static-photo.component";
 import MenuInspiredHomeComponent from "../home/menu-inspired.home.component";
 import BookingBarComponent from "../reservations/booking-bar.component";
 import OtherMenusComponent from "./other-menus.menus.component";

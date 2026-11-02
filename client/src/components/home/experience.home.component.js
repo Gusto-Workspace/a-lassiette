@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/components/_shared/static-photo.component";
 
 export default function ExperienceHomeComponent() {
   return (

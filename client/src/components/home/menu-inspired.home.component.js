@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/components/_shared/static-photo.component";
 import { useContext } from "react";
 import { useRouter } from "next/router";
 import { GlobalContext } from "@/contexts/global.context";
